@@ -126,12 +126,39 @@ def get_orders_gy_site(site_id:int):
     return result
 
 
+
+
+@order_router.get('/last-post')
+def get_orders_gy_site():
+    order_instance = Order2()
+    result = order_instance.get_last_post()
+    order_instance.close_connection()
+    return result
+
+
+
+
+    
+class update(BaseModel):
+    link:str
+
+@order_router.put('/update-last-post/')
+def get_orders_gy_site( link:update):
+    order_instance = Order2()
+    result = order_instance.update_last_post(link)
+    order_instance.close_connection()
+    return result
+
+
+
 @order_router.get('/order-cancellation-request-categories')
 def get_orders_gy_site():
     order_instance = Order2()
     result = order_instance.get_all_cancellation_request_categories()
     order_instance.close_connection()
     return result
+
+
 
 
 

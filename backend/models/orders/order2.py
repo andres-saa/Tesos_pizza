@@ -4,6 +4,7 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import os
 from schema.city import citySchema
+from db.db import Db as dataBase
 # from schema.order import OrderSchemaPost
 from schema.order import OrderSchemaPost
 from models.user import User
@@ -37,6 +38,7 @@ class Order2:
         self.conn_str = f"dbname={DB_NAME} user={DB_USER} password={DB_PASSWORD} host={DB_HOST} port={DB_PORT}"
         self.conn = psycopg2.connect(self.conn_str)
         self.cursor = self.conn.cursor()
+        self.db = dataBase()
         
     def create_order(self, order_data: OrderSchemaPost):
         user_id = self.create_user(order_data.user_data)
@@ -620,7 +622,26 @@ class Order2:
         # Devuelve None si no hay resultados o el timestamp del evento si existe un evento reciente de tipo 1
         return None if result is None else result[0]
 
-        
+
+
+    def get_last_post(self):
+        query = self.db.build_select_query(
+            table_name='social.last_post',
+            fields=['*'],
+            condition='',
+            order_by='id',
+            )
+        result = self.db.execute_query(query=query,fetch=True)
+        return result[0] 
+    
+    
+    class update(BaseModel):
+        link:str
+    
+    def update_last_post(self,data:update):
+        query,params = self.db.build_update_query(table_name='social.last_post',data=data,condition='true',returning='link')
+        result = self.db.execute_query(query=query,params=params,fetch=True)
+        return result
 
 
     def get_orders_by_site_id_for_today(self, site_id):
