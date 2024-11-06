@@ -1,7 +1,7 @@
 <template>
     <Toast />
 
-    <div class="container2 p-shadow p-3"
+    <div class="container2 p-shadow p-3" @click="open(props.product)"
         style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 1rem #00000060;">
 
         <div class="name-phone">
@@ -15,7 +15,7 @@
         </div>
         <div class="container p-0 pt-2">
             
-        <div class="imagen" style="display: flex;align-items: center; " @click="open(props.product)">
+        <div class="imagen" style="display: flex;align-items: center; " >
             <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem;"
                 :src="currentImage(props.product.img_identifier)" @load="loadHighResImage(props.product.img_identifier)"
                 alt="">
@@ -341,9 +341,6 @@ onMounted(async () => {
 }
 
 
-.p-shadow {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-}
 
 
 .fade-enter-active,
