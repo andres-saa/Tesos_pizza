@@ -277,7 +277,7 @@ onMounted(async () => {
     align-items: start;
     margin: 0;
     padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     border-radius: 0.5rem 0.5rem 1.4rem 0.6rem;
 }
 
