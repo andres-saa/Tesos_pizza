@@ -1,40 +1,44 @@
 <template>
     <Toast />
 
-    <div class="container p-shadow col-12"
+    <div class="container2 p-shadow p-3"
         style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 1rem #00000060;">
 
-
-
-
-
-
-
-        <div class="imagen" style="display: flex;align-items: center; " @click="open(props.product)">
-
-
-            <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: 1rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.5rem;"
-                :src="currentImage(props.product.img_identifier)" @load="loadHighResImage(props.product.img_identifier)"
-                alt="">
-
-
-        </div>
-
-
-        <div class="texto" style="">
-            <div style="display: flex;gap: 0rem; height: 100%; flex-direction: column;justify-content: space-between;">
-
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="pt-0">
-                        <b style="text-transform: uppercase;">
+        <div class="name-phone">
+            
+                    <span class="p-0" style="text-align: end;">
+                        <b style="text-transform: uppercase;text-align: end;">
                             {{ props.product.product_name }}
                         </b>
                     </span>
+                  
+        </div>
+        <div class="container p-0 pt-2">
+            
+        <div class="imagen" style="display: flex;align-items: center; " @click="open(props.product)">
+            <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem;"
+                :src="currentImage(props.product.img_identifier)" @load="loadHighResImage(props.product.img_identifier)"
+                alt="">
+        </div>
+
+
+        <div class="texto" style="display: flex;justify-content: space-between; flex-direction: column;">
+            <div style="display: flex;gap: 0rem; height: 100%; flex-direction: column;justify-content: space-between;">
+
+             
+
+                <div class="name-pc">
+                    <p class="pt-0" style="">
+                        <b style="text-transform: uppercase;">
+                            {{ props.product.product_name }}
+                        </b>
+                    </p>
                     <!-- <Button text style="color: black;" icon="pi pi-ellipsis-v p-0 text-xl" /> -->
                     <!-- <img class="character" style="width:4rem;" :src="`/images/characters/${props.index}.png`" alt=""> -->
                 </div>
 
-                <h6 class="py-2 m-0" style="font-weight: 400;">
+
+                <h6 class="py-0 m-0" style="font-weight: 400;">
                     {{ truncatedDescription?.toLocaleLowerCase() }}
                 </h6>
 
@@ -42,13 +46,24 @@
 
             </div>
 
-            <div class="select-price-containe" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
+
+
+
+
+        </div>
+
+        
+        </div>
+  
+
+        <div class="select-price-containe pt-3" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
                 <div>
                     <div style="display: flex;justify-content: end; align-items: center; gap: 1rem;">
                         <h6 v-if="props.product?.last_price" class="text-xl p-0 m-0"
                             style="text-decoration: line-through; opacity: .5;">
                             {{ props?.product?.last_price }}
                         </h6>
+                         <!-- <h6>nuevo</h6> -->
                         <h4 class="text-xl p-0 m-0"><b>{{ formatoPesosColombianos(props.product.price +
                             (selected_size.price || 0)) }}</b></h4>
                     </div>
@@ -56,19 +71,6 @@
 
 
             </div>
-
-
-
-
-        </div>
-
-
-
-        <!-- 
-
-        <Button style="position: absolute; right: -1rem; top:-1rem;" @click="addToCart(props.product)"
-            severity="success" rounded icon="pi pi-plus text-xl fw-100" /> -->
-
 
     </div>
 
@@ -272,7 +274,7 @@ onMounted(async () => {
     gap: 1rem;
     /* Spacing between grid items */
     grid-template-columns: 1fr;
-
+    align-items: start;
     margin: 0;
     padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -282,6 +284,38 @@ onMounted(async () => {
 .character {
     display: none;
 }
+
+
+.name-phone{
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        grid-template-columns: 1fr 2fr;
+        width: 100%;
+        /* Stack elements vertically on smaller screens */
+    }
+
+    .name-phone{
+        display: inline;
+    }
+    .name-pc{
+        display: none;
+    }
+
+    .imagen,
+    .texto {
+        width: 100%;
+        /* Ensure full width on smaller screens */
+    }
+
+    .character {
+        display: inline;
+    }
+}
+
 
 /* Responsive adjustments */
 

@@ -14,16 +14,16 @@
                         style=" align-items:end; position: relative;box-shadow: 0 0 1rem #00000060; gap:1rem; border-radius: 0.3rem;">
 
 
-                        <div style="display: flex;justify-content: space-between;">
+                        <div style="display: flex;gap: 1rem; justify-content: end;">
                             <img style="width:5rem; object-fit:cover; height:5rem ;background-color: ;"
                                 :src="`${URI}/read-photo-product/${product.product.img_identifier}/600`" alt="">
                             <div style="display: flex; flex-direction:column; gap:0.4rem">
-                                <div style="display: flex; flex-direction:column; gap:0.3rem; width:100%">
+                                <div style="display: flex; flex-direction:column;align-items: end; gap:0.3rem; width:100%">
                                     <div
                                         style="display:flex; justify-content:space-between; align-items: center; width:100%; gap:1rem">
                                         <span class="p-0 m-0"> {{ product.product.product_name }} </span>
                                     </div>
-                                    <span style="text-transform: uppercase; font-weight: bold;">{{
+                                    <span style="text-transform: uppercase; font-weight: bold;width: 100%;">{{
                                         product.product.category_name }}</span>
 
                                     <div style="display:flex">

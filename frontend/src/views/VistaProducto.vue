@@ -1,7 +1,7 @@
 <template>
   <Dialog :closable="false" v-model:visible="store.visibles.currentProduct" :style="{ width: '30rem', }" :modal="true"
     class="p-fluid pt-0 m-0"
-    style="justify-content: center;z-index: ;margin: 0 1rem;  background-color: white;position: relative ; border-radius: 1rem;padding-top: 2rem;">
+    style="justify-content: center;z-index: ;margin: 0 1rem;max-width: 90%;  background-color: white;position: relative ; border-radius: 1rem;padding-top: 2rem;">
 
 
 
