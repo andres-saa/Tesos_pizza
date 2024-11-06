@@ -18,7 +18,7 @@
 
             <img  v-show="loaded" @load="see" :class="loaded? 'cargado': 'sin-cargar'" class=""
                 style="width: 100%;aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.2rem;"
-                :src="`${URI}/read-photo-product/${props.product.img_identifier}/600`" alt=""
+                :src="src" alt=""
                 >
 
                 
@@ -75,13 +75,17 @@
 <script setup>
 
 import { formatoPesosColombianos } from '../service/formatoPesos'
-import { computed,ref } from 'vue';
+import { computed,ref, watch } from 'vue';
 import { productService } from '../service/ProductService';
 
 import { useProductStore } from '../store/productStore';
 import { URI } from '../service/conection';
+import { useSitesStore } from '../store/site';
 
 const store = useProductStore()
+
+
+
 
 const props = defineProps({
     product: {
@@ -92,17 +96,27 @@ const props = defineProps({
 
 });
 
-const loaded = ref(false)
+
+const src = computed(() => `${URI}/read-photo-product/${props.product.img_identifier}/600?update=${siteStore.update}`);
+
+const loaded = ref(false);
 
 const see = () => {
-    loaded.value = true
-}
+    loaded.value = true;
+};
 
 
 const prepareToEdit = (product) => {
     store.visibles.dialogEditProduct = true
     store.currentProductToEdit = product
 }
+
+
+
+
+
+const siteStore = useSitesStore()
+
 
 
 const prepareToDelete = (product) => {

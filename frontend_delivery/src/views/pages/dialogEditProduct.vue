@@ -7,16 +7,20 @@
 
         <!-- {{ store.currentProductToEdit }} -->
 
-        <div class="image" style="display: flex;flex-direction: column; justify-content: end; align-items: end;">
+
+        <div class="image" style="display: flex; flex-direction: column;position: relative; justify-content: end; align-items: end;">
             <img v-if="imagePreview" :src="imagePreview" alt="Preview"
-                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: contain; border-radius: 0.2rem;" />
+                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: cover; border-radius: 0.2rem;" />
 
-            <!-- Mostrar la imagen del servidor si no hay imagen cargada -->
-            <img v-else class=""
-                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: contain; border-radius: 0.2rem;"
-                :src="`${URI}/read-photo-product/${store.currentProductToEdit.img_identifier}/600`" alt="">
+                <img v-else :src="`${URI}/read-photo-product/${store?.currentProductToEdit?.img_identifier}`" alt="Preview"
+                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: cover; border-radius: 0.2rem;" />
+                
 
-            <Button style="" class="my-3" severity="help" @click="fileInput.click()">Cambiar foto</Button>
+            <div v-if="subiendo_foto" style="position: absolute;left: 0; top: 0; width: 100%;display: flex;justify-content: center;align-items: center; height: 100%;background-color: #ffffff80;">
+                <ProgressSpinner strokeWidth="8" style="color: white;"></ProgressSpinner>
+            </div>
+            
+            <Button class="my-3" severity="help" @click="fileInput.click()">Agregar foto</Button>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </div>
 
@@ -105,6 +109,10 @@ import { productService } from '@/service/ProductService';
 import { URI } from '@/service/conection';
 
 
+import { useSitesStore } from '../../store/site';
+
+
+const site_store = useSitesStore()
 const currentAditions = ref([]);
 const store = useProductStore();
 const adicionales = ref([]);
@@ -124,30 +132,32 @@ const fileInput = ref(null);
 
 
 
+const subiendo_foto = ref(false)
+
+const img = ref('')
+
 const handleFileUpload = async (event) => {
     const file = event.target.files[0];
-
     if (!file) return;
 
-    // Crear una URL temporal para mostrar la imagen seleccionada
     imagePreview.value = URL.createObjectURL(file);
 
-    // Llamar al servicio para subir la imagen
     const formData = new FormData();
     formData.append("file", file);
 
     try {
+        subiendo_foto.value = true
         const response = await productService.uploadPhoto(formData);
-        const newImageIdentifier = response.image_identifier;
-
-        // Actualizar el identificador de la imagen en el producto actual
-        store.currentProductToEdit.img_identifier = newImageIdentifier;
-
-        // Limpiar la URL temporal después de que se haya subido la imagen
+        img.value = response.image_identifier;
         URL.revokeObjectURL(imagePreview.value);
+        subiendo_foto.value = false
+        
     } catch (error) {
-        console.error("Error al subir la imagen:", error);
+        console.error("Error uploading image:", error);
+        subiendo_foto.value = false 
+      
     }
+   
 };
 
 const updateAdicionalesStatus = () => {
@@ -233,7 +243,7 @@ const send = () => {
         "description": store.currentProductToEdit.product_description,
         "category_id": store.currentProductToEdit.category_id,
         "status": true,
-        "img_identifier": store.currentProductToEdit.img_identifier,
+        "img_identifier": img.value,
         "parent_id": store.currentProductToEdit.product_id // Incluir el nuevo identificador
     };
 
@@ -241,5 +251,7 @@ const send = () => {
 
     // Llamar al servicio para actualizar el producto
     productService.updateProductInstance(product, additional_item_ids);
+    site_store.update += 1
+
 };
 </script>
