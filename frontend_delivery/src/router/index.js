@@ -40,15 +40,9 @@ const router = createRouter({
               children:[
 
                 {
-                  path: '/admin/menu',
-                  name: 'admin-menu',
-                  component: () => import('@/views/pages/cuadre.vue'),
-                  
-                },
-                {
                   path: '/admin/post',
                   name: 'admin-post',
-                  component: () => import('@/views/pages/cuadre.vue'),
+                  component: () => import('@/views/pages/post.vue'),
                   
                 },
                 {
@@ -154,13 +148,7 @@ const router = createRouter({
               component: () => import('@/views/pages/views_admin/resumen_sedes.vue'),
               
             },
-            {
-              path: '/pedido-manual',
-              name: 'pedido-manual',
-              component: () => import('@/views/pages/tienda/pedidoManual.vue'),
-              
-            },
-
+  
           ]
         },
 

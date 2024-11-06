@@ -77,11 +77,6 @@ const acept = () => {
 </script>
 
 <template>
-    <div  style="width:100vw;height:100vh;display:flex;position: absolute; align-items:center;justify-content:center; z-index: 999;top:0;left:0;background-color:rgba(0,0,0,0.5)" :closable="false" v-if="notif">
-        <div style="width:20rem;display:flex; gap:1rem;flex-direction:column;justify-content:center;align-items:center">
-            <img style="width:100%;" src="/images/NOTI.png" alt="">
-            <Button  rounded @click="acept" style="width:max-content;border-radius:2rem" severity="help" icon="pi pi-bell" label="Aceptar notificaciones"></Button>
-        </div>
-    </div>
+  
     <router-view class="col-12 p-0" />
 </template>

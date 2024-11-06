@@ -94,12 +94,11 @@ const { onMenuToggle } = useLayout();
             
             <app-sidebar></app-sidebar>
 
-           
 
             
         </div>
 
-        <div class="layout-main-container  pr-0 pl-0  " :class="route.path != '/pedido-manual'?'pt-7':'pt-0 pb-0'" style="contain:paint ;">
+        <div class="layout-main-container  pr-0 pl-0  " :class="route.path != '/pedido-manual'?'pt-7':'pt-0 pb-0'" style="">
 
             <div class="layout-main  ">
                

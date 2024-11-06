@@ -1,21 +1,24 @@
 <template>
+
+    <Toast></Toast>
     <Dialog closeOnEscape v-model:visible="store.visibles.dialogAddProduct" modal style="width: 40rem;">
         <Button @click="store.visibles.dialogAddProduct = false" severity="danger"
             style="position: absolute; right: 0; top: 0; right: -1rem; top: -1rem;" rounded icon="pi pi-times"></Button>
 
-        <div class="image" style="display: flex; flex-direction: column; justify-content: end; align-items: end;">
+        <div class="image" style="display: flex; flex-direction: column;position: relative; justify-content: end; align-items: end;">
             <img v-if="imagePreview" :src="imagePreview" alt="Preview"
-                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: contain; border-radius: 0.2rem;" />
+                style="width: 100%; aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255); object-fit: cover; border-radius: 0.2rem;" />
+
+            <div v-if="subiendo_foto" style="position: absolute;left: 0; top: 0; width: 100%;display: flex;justify-content: center;align-items: center; height: 100%;background-color: #ffffff80;">
+                <ProgressSpinner strokeWidth="8" style="color: white;"></ProgressSpinner>
+            </div>
+            
             <Button class="my-3" severity="help" @click="fileInput.click()">Agregar foto</Button>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <div>
-                <span>ID de Restaurante:</span>
-                <Dropdown v-model="newProduct.restaurant_id" :options="restaurants" optionLabel="name" optionValue="id" placeholder="Selecciona un restaurante" style="width: 100%;" />
-            </div>
-
+     
             <div>
                 <span>ID de Categoría:</span>
                 <Dropdown v-model="newProduct.category_id" :options="categories" optionLabel="name" optionValue="id" placeholder="Selecciona una categoría" style="width: 100%;" />
@@ -82,6 +85,19 @@ import { productService } from '@/service/ProductService';
 import { restaurantService } from '@/service/restaurant/restaurantService.js';
 import { categoriesService } from '@/service/restaurant/categoriesService';
 
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+
+import { useSitesStore } from '../../store/site';
+
+
+
+
+const site_store = useSitesStore()
+const toast = useToast()
+
+const subiendo_foto = ref(false)
+
 const seleccionados = ref([])
 const store = useProductStore();
 const adicionales = ref([]);
@@ -91,7 +107,7 @@ const newProduct = ref({
     price: 0,
     last_price: 0,
     category_id: null,
-    restaurant_id: null,
+    restaurant_id: 5,
     img_identifier: null
 });
 const categories = ref([]);
@@ -104,6 +120,7 @@ onMounted(async () => {
     try {
         // categories.value = await categoriesService.getCategories();
         restaurants.value = await restaurantService.getAllRestaurants();
+        categories.value = await categoriesService.getCategoriesByRestaurantId(5);
         adicionales.value = await adicionalesService.getAllAditionsRegistered();
     } catch (error) {
         console.error('Error loading data:', error);
@@ -111,16 +128,18 @@ onMounted(async () => {
 });
 
 
-const restaurantId = computed(() => newProduct.value.restaurant_id);
+const restaurantId = 5
 
 watch(restaurantId, async (newRestaurantId, oldRestaurantId) => {
     if (newRestaurantId !== oldRestaurantId) {
-        categories.value = await categoriesService.getCategoriesByRestaurantId(newRestaurantId);
+        categories.value = await categoriesService.getCategoriesByRestaurantId(5);
         newProduct.value.category_id = null
     }
 }, { deep: true });
 
-// Manejar la vista previa de la imagen
+
+
+
 const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -131,11 +150,14 @@ const handleFileUpload = async (event) => {
     formData.append("file", file);
 
     try {
+        subiendo_foto.value = true
         const response = await productService.uploadPhoto(formData);
         newProduct.value.img_identifier = response.image_identifier;
         URL.revokeObjectURL(imagePreview.value);
+        subiendo_foto.value = false
     } catch (error) {
         console.error("Error uploading image:", error);
+        subiendo_foto.value = false 
     }
 };
 
@@ -180,22 +202,24 @@ const prepareToSend = () => {
     send();
 };
 
-const send = () => {
+const send = async() => {
     const product = {
         "name": newProduct.value.product_name,
         "price": newProduct.value.price || 0,
         "last_price": newProduct.value.last_price || 0,
         "description": newProduct.value.product_description,
         "category_id": newProduct.value.category_id,
-        "restaurant_id": newProduct.value.restaurant_id,
+        "restaurant_id":5,
         "status": true,
         "img_identifier": newProduct.value.img_identifier || '', // Establecer un valor predeterminado
         "parent_id": null // Asegúrate de que este campo esté incluido si es necesario
     };
 
     const additional_item_ids = seleccionados.value;
-    productService.createProductInstance(product, additional_item_ids);
+    await productService.createProductInstance(product, additional_item_ids);
     resetForm()
+   
+
 };
 
 // Resetear el formulario
@@ -206,17 +230,32 @@ const resetForm = () => {
         price: 0,
         last_price: 0,
         category_id: null,
-        restaurant_id: null,
+        restaurant_id: 5,
         img_identifier: null
     };
     imagePreview.value = null;
     // Resetear adicionales si es necesario
-    adicionales.value.forEach(items => {
+
+    if (adicionales.value?.length > 0){
+        adicionales.value?.forEach(items => {
         items.forEach(item => {
             item.status = false; // o el estado que desees
         });
     });
 
+   
+
+    }
+
+    toast.add({
+        severity: 'success',
+        summary: 'Producto agregado',
+        detail: `Listo`,
+        life: 3000 // Duración del toast en milisegundos (3 segundos)
+    });
+
+    store.visibles.dialogAddProduct = false
+    site_store.update += 1
 
 };
 </script>

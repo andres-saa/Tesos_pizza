@@ -59,6 +59,8 @@ onMounted( async () => {
 })
 
 
+
+
 const getProducts = async()=> {
     let category_id = route.params.category_id
     let site_id = siteStore.site.site_id;
@@ -77,6 +79,12 @@ watch(() => siteStore.site, async () => {
         getProducts();
     await nextTick(); 
     }
+},{deep:true});
+
+
+watch(() => siteStore.update, async () => {
+    
+    getProducts()
 },{deep:true});
 
 </script>

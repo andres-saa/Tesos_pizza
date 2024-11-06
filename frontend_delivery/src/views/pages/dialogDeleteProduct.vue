@@ -36,7 +36,12 @@ import { adicionalesService } from '@/service/restaurant/aditionalService';
 
 
 import { productService } from '@/service/ProductService';
+import { useSitesStore } from '@/store/site';
 
+
+
+
+const site_store = useSitesStore()
 
 const loaded = ref(false)
 
@@ -99,7 +104,7 @@ const handleSwitch = (itemId, grupo, value) => {
 const deleteProduct = async(product_id) => {
    await productService.deleteProduct(product_id)
    store.visibles.dialogDeleteProduct = false
-   location.reload()
+   site_store.update += 1
 }
 
 watch(() => store.currentProductToEdit.id, async () => {

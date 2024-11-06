@@ -2,10 +2,6 @@
 
   <div style="position: sticky;top: 4rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-1 p-0 md:p-0">
 
-      <Button class="px-0" style="position: absolute;border: none;background-color: white;color: black; left: -0.5rem;z-index: 99;height: 100%;width: 1.7rem; border-radius: 0;" severity="help"  icon="pi pi-angle-left text-2xl"></Button>
-
-
-      <Button class="px-0" style="position: absolute;border: none;background-color: white;color: black; right: -0.5rem;z-index: 99;height: 100%; width: 1.7rem; border-radius: none;" severity="help"  icon="pi pi-angle-right text-2xl"></Button>
 
       <div class="col-12  d-flex p lg:justify-content-center align-items-center  p-0 md:p-1"
       style="overflow-x: auto;background-color: rgba(255, 255, 255, 0.913)">
@@ -45,11 +41,12 @@ const categories = ref([
   {
     category_id:1,
     category_name:'Administrar Menu',
-    to:'/tienda-menu/'
+    to:'/tienda-menu/productos/PROMOCIONES/31'
   },
   { 
     category_id:2,
-    category_name:'Ultimo post'
+    category_name:'Ultimo post',
+    to:'/admin/post'
   },
   
   { 
