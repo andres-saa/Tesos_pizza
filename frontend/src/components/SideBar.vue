@@ -107,7 +107,7 @@
 
 
 
-                    <iframe src="https://www.instagram.com/p/C5WwaZPPxoK/embed" width="100%" style="height: 600px;"
+                    <iframe src="/embed" width="100%" style="height: 600px;"
                         frameborder="0" scrolling="no" allowtransparency="true">
                     </iframe>
 
