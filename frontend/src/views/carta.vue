@@ -1,7 +1,7 @@
 <template>
     <div class="carta" style="max-width: 900px;margin: auto;">
         <h2 style="">🍕 CARTA 🍕</h2>
-        <img v-for="i in [1, 2]" :src="`/src/assets/images/carta/${i}.jpeg`" alt="" class="img">
+        <img v-for="i in [1, 2]" :src="`/public/images/carta/${i}.jpeg`" alt="" class="img">
 
     </div>
 </template>

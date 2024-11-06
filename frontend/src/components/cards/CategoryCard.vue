@@ -1,7 +1,7 @@
 <template>
     <div class="container" @click="navigate_to_category(category.category_name, category.category_id)"
         style="padding: 1rem;">
-        <img class="imagen" :src="`src/assets/images/categorias/${category.category_id}.png`">
+        <img class="imagen" :src="`/public/images/categorias/${category.category_id}.png`">
 
         <h4 class="name" style="text-transform: capitalize;">{{ category.category_name?.toLowerCase() }} </h4>
     </div>

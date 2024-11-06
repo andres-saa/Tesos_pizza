@@ -107,9 +107,9 @@
 
 
 
-                    <iframe src="/embed" width="100%" style="height: 600px;"
+                    <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: 900px;"
                         frameborder="0" scrolling="no" allowtransparency="true">
-                    </iframe>
+                </iframe>
 
 
 
@@ -295,7 +295,27 @@ import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()
 
+const currentPost = ref({ link: '' });
 
+onMounted(async () => {
+    try {
+        const response = await fetchService.get(`${URI}/last-post`);
+        if (response.link) {
+            const url = new URL(response.link);
+
+            // Convert URL to /p/ format for iframe preview
+            if (url.pathname.includes('/reel/')) {
+                url.pathname = url.pathname.replace('/reel/', '/p/');
+            } else if (!url.pathname.includes('/p/')) {
+                url.pathname = `/p${url.pathname}`;
+            }
+
+            currentPost.value.link = `${url.origin}${url.pathname}`;
+        }
+    } catch (error) {
+        console.error('Error al obtener el enlace actual:', error);
+    }
+});
 
 const is_active_router = (r) => {
     return route.path === r
