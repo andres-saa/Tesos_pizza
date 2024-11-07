@@ -160,6 +160,7 @@ const handleFileUpload = async (event) => {
    
 };
 
+
 const updateAdicionalesStatus = () => {
     // Asegurar que adicionales está completo y listo para ser procesado
     if (!adicionales.value || adicionales.value.length === 0) return;
@@ -203,6 +204,9 @@ const handleSwitch = (itemId, grupo, value) => {
 };
 
 
+onMounted(() => {
+    img.value = store.currentProductToEdit.img_identifier
+})
 
 watch(() => store.currentProductToEdit.id, async () => {
     currentAditions.value = await adicionalesService.getAditional(store.currentProductToEdit.id); // Obtener las adiciones actuales
@@ -243,7 +247,7 @@ const send = () => {
         "description": store.currentProductToEdit.product_description,
         "category_id": store.currentProductToEdit.category_id,
         "status": true,
-        "img_identifier": img.value,
+        "img_identifier": img.value || store.currentProductToEdit.img_identifier,
         "parent_id": store.currentProductToEdit.product_id // Incluir el nuevo identificador
     };
 
