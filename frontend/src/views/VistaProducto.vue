@@ -121,12 +121,12 @@
     </div>
 
 
-    <div v-if="store.currentProduct.category_id == 25">
+    <div v-if="sizes?.length > 0">
 
 
 
-      <div style="display: flex;gap: 1rem;align-items: center;">
-        <h6 class="py-3"> <b> La quieres de 2 sabores combinados?</b></h6>
+      <div v-if="store.currentProduct?.max_flavor > 1" style="display: flex;gap: 1rem;align-items: center;">
+        <h6  class="py-3"> <b> La quieres de 2 sabores combinados?</b></h6>
         <InputSwitch v-model="saboresmultiples"></InputSwitch>
 
       </div>
@@ -168,7 +168,7 @@
                 formatoPesosColombianos(value.value.price) }}</h6>
             </div>
 
-            <span style="opacity: .8;" v-if="!sabor1?.id"> Selecciona el sabor de tu pizza</span>
+            <span style="opacity: .8;" v-if="!sabor1?.id"> Selecciona el sabor </span>
 
           </template>
 
@@ -209,7 +209,7 @@
                 formatoPesosColombianos(value.value.price) }}</h6>
             </div>
 
-            <span style="opacity: .8;" v-if="!sabor2?.id"> Selecciona el sabor de tu pizza</span>
+            <span style="opacity: .8;" v-if="!sabor2?.id"> Selecciona el sabor</span>
 
           </template>
 
@@ -490,6 +490,10 @@ watch(() => store.currentProduct, async () => {
 
   if (product_id) {
     adicionales.value = await adicionalesService.getAditional(product_id)
+    sizes.value = await fetchService.get(`${URI}/sabores/product_id/${store.currentProduct?.product_id}`);
+    sabor1.value = {}
+    sabor2.value = {}
+
   }
 })
 
@@ -1026,10 +1030,6 @@ const selected_size = ref({
   "name": "Mediana"
 },)
 const sizes = ref([])
-onMounted(async () => {
-  sizes.value = await fetchService.get(`${URI}/sabores`);
-});
-
 
 
 

@@ -77,25 +77,23 @@ export const usecartStore = defineStore('cart', {
       this.visibles[item] = status
     },
 
-    addProductToCart(
-      product,
-      quantity = 1,
-      additionalItems = [],
-      flavors = [],
-    ) {
+    addProductToCart(product, quantity = 1, additionalItems = [], flavors = []) {
+      // Busca el producto en el carrito, pero también revisa que los sabores coincidan
       const cartProduct = this.cart.products.find(
-        p => p.product.id === product.id,
-      )
-
+        p => p.product.id === product.id && JSON.stringify(p.flavors) === JSON.stringify(this.groupFlavors(flavors))
+      );
+    
       if (cartProduct) {
-        cartProduct.quantity += quantity
+        // Si el producto y los sabores coinciden, incrementa la cantidad y el costo total
+        cartProduct.quantity += quantity;
         cartProduct.total_cost += this.calculateProductTotal(
           product,
           quantity,
           additionalItems,
           flavors,
-        )
+        );
       } else {
+        // Si el producto o sabores son diferentes, agrega una nueva entrada en el carrito
         this.cart.products.push({
           product,
           quantity,
@@ -107,16 +105,21 @@ export const usecartStore = defineStore('cart', {
             additionalItems,
             flavors,
           ),
-        })
+        });
       }
-      this.calculateCartTotal()
+      this.calculateCartTotal();
     },
+    
 
-    removeProductFromCart(productId) {
+    removeProductFromCart(productId, flavors = []) {
+      // Agrupamos los sabores para que coincidan con el formato usado en el carrito
+      const groupedFlavors = this.groupFlavors(flavors);
+    
+      // Filtramos el carrito para eliminar el producto específico
       this.cart.products = this.cart.products.filter(
-        product => product.product.id !== productId,
-      )
-      this.calculateCartTotal()
+        p => !(p.product.id === productId && JSON.stringify(p.flavors) === JSON.stringify(groupedFlavors))
+      );
+      this.calculateCartTotal();
     },
 
     addAdditionalItem(productId, additionalItem) {
