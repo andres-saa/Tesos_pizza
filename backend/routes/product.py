@@ -28,6 +28,16 @@ def get_products():
 
 
 
+@product_router.get("/sabores/product_id/{product_id}")
+def get_products(product_id:int):
+    product_instance = Product()
+    products = product_instance.select_all_sabores_by_product_id(product_id)
+    product_instance.close_connection()
+    return products
+
+
+
+
 @product_router.get("/restaurants")
 def get_productss():
     product_instance = Product()

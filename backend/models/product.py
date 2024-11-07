@@ -100,6 +100,14 @@ class Product:
     
     
     
+    def select_all_sabores_by_product_id(self,product_id:int):
+        select_query = f"SELECT * FROM inventory.sabor_product_view where product_id = {product_id};"
+        self.cursor.execute(select_query)
+        columns = [desc[0] for desc in self.cursor.description]
+        return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
+    
+    
+    
     def select_all_sabores(self):
         select_query = "SELECT * FROM inventory.sabor;"
         self.cursor.execute(select_query)
