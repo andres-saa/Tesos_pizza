@@ -1,7 +1,7 @@
 <template>
     <div class="container" @click="navigate_to_category(category.category_name, category.category_id)"
         style="padding: 1rem;">
-        <img class="imagen" :src="`/public/images/categorias/${category.category_id}.png`">
+        <img class="imagen" :src="`${URI}/read-photo-product/${category.image_identifier}/600`">
 
         <h4 class="name" style="text-transform: capitalize;">{{ category.category_name?.toLowerCase() }} </h4>
     </div>
@@ -10,6 +10,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import router from '@/router';
+import { URI } from '@/service/conection';
 
 
 
@@ -33,7 +34,7 @@ const props = defineProps({
 .container {
     width: 100%;
     /* height: 100%; */
-    aspect-ratio: 1 / 1;
+    /* aspect-ratio: 1 / 1;/ */
     height: 100%;
     transition: all ease 0.2s;
     overflow: hidden;
@@ -61,9 +62,9 @@ p {
 .imagen {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     aspect-ratio: 1 / 1;
-    padding: 1rem;
+    /* padding: 1rem; */
     transition: all ease 0.2s;
 }
 
