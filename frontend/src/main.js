@@ -19,10 +19,16 @@ const pinia = createPinia()
 pinia.use(persistedState) // Usa el plugin de persistencia
 
 app.use(PrimeVue, {
+  // Default theme configuration
   theme: {
-    preset: lara,
-  },
-})
+      preset: Aura,
+      options: {
+          prefix: 'p',
+          darkModeSelector: 'light',
+          cssLayer: false
+      }
+  }
+});
 
 app.use(ToastService) // Registra el servicio ToastService
 
