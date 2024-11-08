@@ -1,5 +1,5 @@
 // const URI = 'https://backend.novatocode.online'
-const URI = 'http://tezos-back.arhook.com'
+const URI = 'https://tezos-back.arhook.com'
 // http://192.168.1.142:5173/
 // const URI = 'http://localhost:9500'
 // const URI = 'http://167.71.178.54:8200'
