@@ -43,7 +43,7 @@ const props = defineProps({
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.185);
+    box-shadow: 0 0 .5rem #00000020; border: 1px solid #00000030;
     border-radius: .5rem;
     background-color: white;
     cursor: pointer;
@@ -79,8 +79,8 @@ p {
 }
 
 .imagen:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
+    /* transform: scale(1.05); */
+    filter: brightness(1.3);
 }
 
 

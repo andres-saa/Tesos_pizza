@@ -2,7 +2,7 @@
     <Toast />
 
     <div class="container2 p-shadow p-3" @click="open(props.product)"
-        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 1rem #00000060;">
+        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020;background-color: #fff; border: 1px solid #00000030;">
 
         <div class="name-phone">
             
@@ -58,12 +58,14 @@
 
         <div class="select-price-containe pt-3" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
                 <div>
-                    <div style="display: flex;justify-content: end; align-items: center; gap: 1rem;">
+                    <div style="display: flex;justify-content: end; align-items: center; gap: 1rem;justify-content:end;">
+                        
+                        <!-- <Button label="Ver mas" rounded></Button> -->
                         <h6 v-if="props.product?.last_price" class="text-xl p-0 m-0"
                             style="text-decoration: line-through; opacity: .5;">
                             {{ props?.product?.last_price }}
                         </h6>
-                         <!-- <h6>nuevo</h6> -->
+               
                         <h4 class="text-xl p-0 m-0"><b>{{ formatoPesosColombianos(props.product.price +
                             (selected_size.price || 0)) }}</b></h4>
                     </div>
@@ -259,9 +261,7 @@ const selected_size = ref({
     "premium": false
 })
 const sizes = ref([])
-onMounted(async () => {
-    sizes.value = await fetchService.get(`${URI}/sabores`);
-});
+
 
 
 </script>

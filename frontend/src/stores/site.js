@@ -30,6 +30,7 @@ export const useSitesStore = defineStore('site', {
       },
       visibles: {
         currentSite: false,
+        loading:false
       },
       current_delivery: 0,
       webSocket: null,
@@ -52,9 +53,21 @@ export const useSitesStore = defineStore('site', {
       this.connectWebSocket(location.site.site_id)
       this.location = location
     },
-    setVisible(item, status) {
-      this.visibles[item] = status
+    async setVisible(item, status) {
+      if (item === 'loading') {
+        this.visibles.loading = true
+        if (!status) {
+          setTimeout(() => {
+            this.visibles.loading = false
+          }, 500)
+        } else {
+          this.visibles.loading = status
+        }
+      } else {
+        this.visibles[item] = status
+      }
     },
+
     async connectWebSocket(siteId) {
       if (this.webSocket !== null) {
         this.webSocket.close // Make sure to close any existing connections
@@ -80,6 +93,8 @@ export const useSitesStore = defineStore('site', {
       this.webSocket.onerror = error => console.error('WebSocket error:', error)
     },
     async setNeighborhoodPrice() {
+
+      if (this.location?.neigborhood?.neighborhood_id){
       try {
         const response = await axios.get(
           `${URI}/neighborhood/${this.location.neigborhood.neighborhood_id}/`,
@@ -101,6 +116,7 @@ export const useSitesStore = defineStore('site', {
         )
         return null
       }
+    }
     },
     async setNeighborhoodPriceCero() {
       this.location.neigborhood.delivery_price = 0

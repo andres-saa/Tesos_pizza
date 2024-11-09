@@ -1,11 +1,11 @@
 <template>
-    <div class="app-topbar-container" style="background-color: var(--primary-color);">
+    <div class="app-topbar-container p-2" style="background-color: var(--primary-color);">
         <div class="header" style="max-width: 1280px;margin: auto;">
 
 
             <div class="header-container">
 
-                <router-link to="/">
+                <router-link to="/" style="text-decoration: none;">
                     <div class="logo-sesion">
                         <img src="/src/assets/images/logo.webp" alt="">
                         <h1 class="title roboto-thin m-0 p-0">
@@ -28,8 +28,14 @@
                     </router-link>
 
                     <router-link to="/carta">
-                        <Button :style="is_active_router('/carta') ? 'box-shadow:0 .3rem white' : ''"
+                        <div>
+                            <Button :style="is_active_router('/carta') ? 'box-shadow:0 .3rem white' : ''"
                             style="color:white;border-radius: 0;" text label="Carta"></Button>
+
+                       
+                        </div>
+                     
+
                     </router-link>
 
                     <router-link to="/rastrear">
@@ -78,14 +84,15 @@
 
                 <RouterLink to="/cart" class="button-barrras">
                     <div style="padding: 0;color: #fff;margin: 0;position: relative;">
-                        <Button size="large" style="color: white;padding: 1rem" text="" class="menu-bars ">
+                        <Button size="large" style="color: white;padding: 1rem" text="" class="menu-bars p-0">
                             <i class="pi pi-shopping-cart"></i>
-
+                        
                         </Button>
+                        <Badge style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">{{ cart.cart.products?.length }}</Badge>
                     </div>
                 </RouterLink>
 
-                <Button @click="store.toggle()" size="large" style="padding: 0;color: #fff;margin: 0;" text
+                <Button @click="toggleSidebar" size="large" style="padding: 0;color: #fff;margin: 0;" text
                     class="menu-bars button-barrras">
                     <i class="pi pi-bars"></i>
                 </Button>
@@ -125,8 +132,18 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useRoute, useRouter } from 'vue-router';
 import Tag from 'primevue/tag';
+import Badge from 'primevue/badge';
+import { usecartStore } from '@/stores/shoping_cart';
+
+
+const cart = usecartStore()
 const route = useRoute()
 
+
+const toggleSidebar = (event) => {
+  event.stopPropagation(); // Evita que el clic se propague
+  store.toggle(); // Alterna el estado del sidebar
+};
 
 const is_active_router = (r) => {
     return route.path === r
@@ -163,11 +180,16 @@ i {
 }
 
 
+.menus{
+    display: flex;
+    padding: .5rem;
+}
+
 .header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: .5rem;
+    /* padding-top: .5rem; */
 }
 
 .text-facebook {
@@ -186,6 +208,11 @@ i {
     background: var(--whatsapp-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+
+*:focus{
+    background-color: rgba(0, 0, 0, 0.24) !important;
 }
 
 
@@ -208,7 +235,7 @@ i {
     width: 100%;
     gap: 1rem;
     align-items: center;
-    height: 2.5rem;
+    height: 2rem;
 
     justify-content: end;
 }
@@ -227,7 +254,7 @@ i {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding-bottom: .5rem;
+    /* padding-bottom: .5rem; */
 
 }
 

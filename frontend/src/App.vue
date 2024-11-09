@@ -5,22 +5,31 @@ import VistaProducto from './views/VistaProducto.vue';
 import siteDialog from './views/siteDialog.vue';
 import router from './router';
 import Toast from 'primevue/toast';
+import Badge from 'primevue/badge';
+import { useSitesStore } from './stores/site';
 
-
-
-
+const store  = useSitesStore()
 </script>
 
 <template>
+
+
+  <div class="" v-if="store.visibles.loading" style="width: 100vw; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
+    <img class="imagen" src="/public/images/logo.png" style="width:20vw ;max-width: 200px;" alt="">
+  </div>
 
   <Toast></Toast>
   <router-view></router-view>
 
 
-  <div class="menu-button2 " style="position: fixed; left: 0rem;top: 50%;background-color: white; z-index: 900; ">
+  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: end;">
     <div class="social-media2 "
-      style="background-color: #fff;box-shadow: 0 0 .4rem #00000050; padding: .1rem; border-radius: 10rem ;overflow: hidden;">
+      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;padding: .5rem;">
 
+<RouterLink to="/rastrear"> 
+  <Button label="Rastrear mi pedido" style="min-width: max-content;padding: 0 1rem; height: 2rem;" rounded ></Button>
+
+</RouterLink>
 
       <a href="https://www.facebook.com/tezospizza/?locale=es_LA">
         <Button style="padding: 0;color: #4267B2;" size="large" text class="menu-bars text-facebook">
@@ -52,11 +61,17 @@ import Toast from 'primevue/toast';
   <vista-producto />
   <siteDialog></siteDialog>
 
-  <Button @click="router.push('/cart')" class="cart-button" style="">
-
+  <div class="cart-button" style="">
+    <Button class="botomcar" @click="router.push('/cart')"  style="">
+ 
     <i class="pi pi-shopping-cart"></i>
 
-  </Button>
+    </Button>
+  
+    <Badge style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">3</Badge>
+
+  </div>
+
 </template>
 
 <style scoped>
@@ -72,13 +87,19 @@ import Toast from 'primevue/toast';
   position: fixed;
   right: 1rem;
   bottom: 1rem;
+  display: none;
+
+
+}
+
+
+.botomcar{
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   width: 4rem;
   background-color: var(--primary-color);
   border: none;
-  display: none;
-
+  /* display: none; */
 }
 
 
@@ -115,6 +136,11 @@ i {
 }
 
 
+.menu-button2{
+  display: flex;
+  padding: .4rem 0;
+}
+
 .header-container {
   display: flex;
   align-items: center;
@@ -143,7 +169,7 @@ i {
 
 .social-media2 {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column;   */
   gap: .5rem;
 }
 
@@ -183,6 +209,21 @@ i {
 
 }
 
+
+.imagen {
+  animation: hithere 1s ease infinite;
+
+}
+
+@keyframes hithere {
+  30% { transform: scale(1.2); }
+  40%, 60% { transform: rotate(-20deg) scale(1.2); }
+  50% { transform: rotate(20deg) scale(1.2); }
+  70% { transform: rotate(0deg) scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+
 h1 {
   font-family: "Luckiest Guy", cursive;
   letter-spacing: .1cap;
@@ -195,12 +236,6 @@ h1 {
 
 }
 
-img {
-  width: 30%;
-  max-width: 3rem;
-  border-radius: 50%;
-  overflow: hidden;
-}
 
 .menu-button {
   display: flex;

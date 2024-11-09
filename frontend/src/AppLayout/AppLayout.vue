@@ -21,7 +21,7 @@
 
 
             <div class="view" :style="route.fullPath != '/' ? 'margin-left : 0' : ''"
-                style="width: 100%; overflow: hidden;padding-bottom: 2rem;">
+                style="width: 100%; overflow: hidden;padding-bottom: 5rem;">
                 <router-view />
             </div>
         </div>

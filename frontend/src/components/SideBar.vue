@@ -1,6 +1,6 @@
 <template>
-    <div class="side-bar-container">
-        <div class="sidebar-content" style="position: relative;">
+    <div class="side-bar-container " ref="sidebarContainer">
+        <div class="sidebar-content" style="position: relative;background-color: white;">
             <!-- <Button icon="pi pi-bars" @click="store.toggle_visible_categories" label="CATEGORIAS"
 
 
@@ -42,16 +42,16 @@
             <div class="banner-container" style="margin: auto; position: relative; margin: auto;min-width: 100%;">
                 <div class="title" style="max-width: 100%; margin: auto;">
                     <div class="categories">
-                        <h2 @click="navigate_to_category(i.category_name, i.category_id)"
+                        <div @click="navigate_to_category(i.category_name, i.category_id)"
                             :style="route.params.category_id == i.category_id ? 'background-color: var(--primary-color); color: #fff;' : ''"
                             class="categorie" v-for="i in categories" :key="i.category_id">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShmV9w5hL6O_z_2mm_aYvcpBZQIqhiVcb606ZchvYetf3cXw2STy0lzsDXYhRpOH1vuOM&usqp=CAU"
+                            <img :src="`${URI}/read-photo-product/${i.image_identifier}/600`"
                                 style="height: 2rem; object-fit: cover;aspect-ratio: 1 / 1;border-radius: 50%; text-align: center; filter: brightness(1.2); margin-right:
                     0.5rem;" />
-                            <h5 class="m-0 p-0" style="text-transform: capitalize;font-weight: 400;">{{
+                            <h5 class="" style="text-transform: capitalize;font-weight: 400;">{{
                                 i.category_name?.toLowerCase() }}
                             </h5>
-                        </h2>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
 
 
 
-                    <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: 900px;"
+                    <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: calc(100vh - 9rem) ;"
                         frameborder="0" scrolling="no" allowtransparency="true">
                 </iframe>
 
@@ -252,6 +252,7 @@ h3 {
 .selector {
     display: flex;
 }
+    
 
 @media (width > 900px) {
 
@@ -272,7 +273,7 @@ h3 {
     background-color: #00000020;
     border-radius: .5rem;
     padding: .2rem .5rem;
-
+    margin-bottom: .5rem;
     transition: all 0.2s ease;
     cursor: pointer;
     white-space: nowrap;
@@ -289,9 +290,12 @@ import Button from 'primevue/button';
 import { useSidebarStore } from '@/stores/sidebar';
 import { onMounted, ref } from 'vue';
 import { URI } from '@/service/conection';
+import { onBeforeMount } from 'vue';
+import { onBeforeUnmount } from 'vue';
 const store = useSidebarStore()
 
 import { useRoute, useRouter } from 'vue-router';
+const sidebarContainer = ref(null);
 
 const route = useRoute()
 
@@ -321,6 +325,20 @@ const is_active_router = (r) => {
     return route.path === r
 }
 
+
+const handleClickOutside = (event) => {
+  if (sidebarContainer.value && !sidebarContainer.value.contains(event.target) && store.side_bar_visible) {
+    store.toggle(); // Cierra el sidebar usando toggle
+  }
+};
+
+onMounted(() => {
+    document.body.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.body.removeEventListener('click', handleClickOutside);
+});
 
 import router from '@/router';
 import { fetchService } from '@/service/utils/fetchService';

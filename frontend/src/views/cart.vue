@@ -11,7 +11,7 @@
                 <div v-else
                     style="display: flex; flex-direction: column; position: sticky; top: 8rem; gap:1rem; justify-content: center;">
                     <div class="p-3 p-shadow" v-for="product in store.cart.products" :key="product.product.id"
-                        style=" align-items:end; position: relative;box-shadow: 0 0 1rem #00000060; gap:1rem; border-radius: 0.3rem;">
+                        style=" align-items:end; position: relative;box-shadow: 0 .5rem 2rem #00000010;border: 1px solid #00000030; gap:1rem; border-radius: 0.3rem;">
 
 
                         <div style="display: flex;gap: 1rem; justify-content: end;">
@@ -371,8 +371,8 @@ h2:hover {
     padding: 0.1rem 1rem;
     /* border: 1px solid var(--primary-color); */
     border-radius: 0.5rem;
-    box-shadow: 0 .3rem 5px rgba(0, 0, 0, 0.174);
     /* bottom: 0.5rem; */
+    border: 1px solid;
     position: absolute;
     right: 1rem;
     bottom: 1rem;

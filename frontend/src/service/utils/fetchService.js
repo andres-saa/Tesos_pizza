@@ -1,12 +1,14 @@
 import axios from 'axios'
 // import { useReportesStore } from '@/store/reportes';
 import router from '@/router'
-
+import { useSitesStore } from '@/stores/site'
 export const fetchService = {
   router: router,
 
+
   async get(url, loadingMessage, options = {}) {
-    // const store = useReportesStore()
+    const store = useSitesStore()
+    store.setVisible('loading',true)
     try {
       if (loadingMessage) {
         // store.setLoading(true, loadingMessage)
@@ -22,20 +24,24 @@ export const fetchService = {
       // Realizar la solicitud GET con los headers configurados
       const response = await axios.get(url, config)
 
+
       // Comprobar el estado de la respuesta
       if (response.status === 200) {
         // Desactivar el estado de carga
+        store.setVisible('loading',false)
         // store.setLoading(false)
         return response.data
       } else {
         // Desactivar el estado de carga
         // store.setLoading(false)
+        store.setVisible('loading',false)
         console.error('An error occurred while fetching data:', response.status)
         return null
       }
     } catch (error) {
       // Desactivar el estado de carga
       //   store.setLoading(false)
+      this.store.setVisible('loading',false)
       console.error('An error occurred while fetching data:', error)
       return null
     }
@@ -43,6 +49,8 @@ export const fetchService = {
 
   async post(url, data, loadingMessage, redirectPath = null) {
     // const store = useReportesStore()
+    const store = useSitesStore()
+    store.setVisible('loading',true)
     try {
       // Establecer el mensaje de carga y activar el estado de carga
       //   store.setLoading(true, loadingMessage)
@@ -60,17 +68,21 @@ export const fetchService = {
           this.router.push(redirectPath)
         }
 
+        store.setVisible('loading',false)
         return response.data
       } else {
         // Desactivar el estado de carga
         // store.setLoading(false)
         console.error('An error occurred while posting data:', response.status)
+        store.setVisible('loading',false)
         return null
+
       }
     } catch (error) {
       // Desactivar el estado de carga
       //   store.setLoading(false)
       console.error('An error occurred while posting data:', error)
+      store.setVisible('loading',false)
       return null
     }
   },

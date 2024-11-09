@@ -1,6 +1,6 @@
 <template>
-    <div class="p-1 my-0 md:my-0 col-12">
-        <div style="position: sticky; top: 5rem;border-radius: 0.5rem; z-index: 10= 0;box-shadow: 0 0 1rem #00000060;"
+    <div class="p-0 my-1 md:my col-12" v-if="store.cart?.products?.length > 0">
+        <div style="position: sticky; top: 5rem;border-radius: 0.5rem; z-index: 100;box-shadow: 0 .5rem 1rem #00000020;border: 1px solid #00000040;"
             class="col-12 p-3 p-shadow m-0  ">
 
             <h5> <b>Resumen</b> </h5>
