@@ -410,8 +410,8 @@ const decrement = (item) => {
 
 const addToCart = (product) => {
   // Verificar que el producto es de la categoría 5 y que los sabores se seleccionen según la opción de múltiples sabores
-  if (product.category_id === 25) {
-    if (saboresmultiples.value) {
+
+    if (saboresmultiples.value && product.max_flavor > 1) {
       // Si se selecciona múltiples sabores, verificar que ambos sabores estén seleccionados
       if (!sabor1.value.id || !sabor2.value.id) {
         alert('Por favor, selecciona dos sabores para la combinación.');
@@ -419,12 +419,12 @@ const addToCart = (product) => {
       }
     } else {
       // Si no es múltiple, verificar que al menos un sabor esté seleccionado
-      if (!sabor1.value.id) {
+      if (!sabor1.value.id && product.max_flavor > 0) {
         alert('Por favor, selecciona un sabor para el producto.');
         return; // No continuar si no se selecciona al menos un sabor
       }
     }
-  }
+  
 
   // Convertir las adiciones seleccionadas de un objeto a un array
   const additionsArray = Object.values(selectedAdditions.value);

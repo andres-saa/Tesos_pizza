@@ -181,19 +181,35 @@ export const usecartStore = defineStore('cart', {
       return (product.price + additionalCost + flavorCost) * quantity
     },
 
-    removeProductInstance(productId) {
+    removeProductInstance(productId, flavors = []) {
+      // Agrupamos los sabores para que coincidan con el formato usado en el carrito
+      const groupedFlavors = this.groupFlavors(flavors);
+      
+      // Encontramos el producto específico en el carrito
       const cartProduct = this.cart.products.find(
-        p => p.product.id === productId,
-      )
-
-      if (cartProduct && cartProduct.quantity > 1) {
-        cartProduct.quantity -= 1
-        cartProduct.total_cost -= cartProduct.product.price
-        this.calculateCartTotal()
-      } else if (cartProduct && cartProduct.quantity === 1) {
-        this.removeProductFromCart(productId)
+        p => p.product.id === productId && JSON.stringify(p.flavors) === JSON.stringify(groupedFlavors)
+      );
+    
+      if (cartProduct) {
+        if (cartProduct.quantity > 1) {
+          cartProduct.quantity -= 1;
+    
+          // Calcula el costo de los sabores asociados al producto, si los tiene
+          const flavorsTotal = cartProduct.flavors.reduce((total, flavor) => {
+            return total + (cartProduct.flavors.length === 2 ? flavor.price / 2 : flavor.price);
+          }, 0);
+    
+          // Restamos el precio del producto y el costo de los sabores
+          cartProduct.total_cost -= (cartProduct.product.price + flavorsTotal);
+        } else {
+          // Si solo queda una instancia, eliminamos el producto completo del carrito
+          this.removeProductFromCart(productId, groupedFlavors);
+        }
       }
-    },
+    
+      this.calculateCartTotal();
+    }
+,    
 
     calculateCartTotal() {
       const productsTotal = this.cart.products.reduce((total, product) => {

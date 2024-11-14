@@ -16,7 +16,6 @@
                         <span>{{ product.product.product_name }}</span>
                     </div>
 
-
                     <div style="text-align: right; padding: 0; margin: 0;">
                         <span>{{ formatoPesosColombianos(product.total_cost) }}</span>
                     </div>
@@ -28,9 +27,9 @@
                     <div style="display: flex; gap: 0.2rem; align-items: end; flex-direction: column;">
                         <Tag v-for="(flavor, index) in product.flavors" :key="index" style="padding: 0;">
                             <span style="color: black;">
-                                {{ product.flavors.length > 1 ? `sabor ${index + 1}` : 'sabor' }}
+                                {{ product.flavors.length > 1 ? `1/2` : 'sabor' }}
                             </span>
-                            {{ flavor.name }} {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price / 2) : '' }}
+                            {{ flavor.name }} {{ product?.quantity > 1 && flavor.price > 0? `x ${product.quantity} =` : '' }} {{ flavor.price * product.quantity > 0 ? formatoPesosColombianos(flavor.price / 2 * product.quantity) : '' }}
                         </Tag>
                     </div>
 
@@ -211,6 +210,10 @@ onMounted(() => {
     else {
         siteStore.setNeighborhoodPriceCero()
 
+    }
+
+    if(!siteStore.location?.neigborhood.neighborhood_id){
+        siteStore.visibles.currentSite = true
     }
 
 

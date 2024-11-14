@@ -29,7 +29,7 @@
                                     <div style="display:flex">
                                         <div class="p-0"
                                             style="box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2); background-color:#ff620000; border-radius: 5rem; display: flex;">
-                                            <Button @click="store.removeProductInstance(product.product.id)"
+                                            <Button @click="store.removeProductInstance(product.product.id,product.flavors)"
                                                 icon="pi pi-minus" severity="success"
                                                 style="border:none; outline:none; width:2rem; height:1.5rem; border-radius: 0.4rem 0 0 0.4rem;">
                                             </Button>
@@ -38,7 +38,9 @@
                                                 style="background-color:transparent; font-weight:bold; width:3rem; height:1.5rem; color:black; border:none"
                                                 :modelValue="product.quantity" readonly></InputText>
 
-                                            <Button @click="store.addProductToCart(product.product)" icon="pi pi-plus"
+                                     
+
+                                            <Button @click="store.addProductToCart(product.product,1,[],product.flavors)" icon="pi pi-plus"
                                                 severity="success"
                                                 style="font-weight: bold; border:none; outline:none; width:2rem; height:1.5rem; border-radius:0 0.4rem 0.4rem 0;">
                                             </Button>
@@ -52,7 +54,7 @@
                         </div>
 
 
-                        <Button class="ml-2" @click="store.removeProductFromCart(product.product.id)" icon="pi pi-times"
+                        <Button class="ml-2" @click="store.removeProductFromCart(product.product.id,product.flavors)" icon="pi pi-times"
                             severity="danger" rounded
                             style="border:none; right: -.5rem; top: -.5rem; position: absolute; outline:none; width:2rem; height:2rem" />
 

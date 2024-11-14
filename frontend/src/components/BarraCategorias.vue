@@ -5,8 +5,8 @@
                 <div @click="navigate_to_category(i.category_name, i.category_id)"
                     :style="route.params.category_id == i.category_id ? 'background-color: var(--primary-color); color: #fff;' : ''"
                     class="categorie" v-for="i in categories" :key="i.category_id">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShmV9w5hL6O_z_2mm_aYvcpBZQIqhiVcb606ZchvYetf3cXw2STy0lzsDXYhRpOH1vuOM&usqp=CAU"
-                        style="height: 2rem; object-fit: cover;aspect-ratio: 1 / 1;border-radius: 50%; text-align: center; filter: brightness(1.2); margin-right:
+                    <img :src="`${URI}/read-photo-product/${i.image_identifier}/600`"
+                        style="height: 2rem; object-fit: cover;aspect-ratio: 1 / 1;background-color: var(--primary-color); border-radius: 50%; text-align: center; filter: brightness(1.2); margin-right:
                     0.5rem;" />
                     <h5 class="m-0 p-0">{{ i.category_name }}</h5>
             </div>
