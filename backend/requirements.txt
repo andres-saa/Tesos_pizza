@@ -16,3 +16,6 @@ schedule
 python-dateutil
 requests
 pydrive2
+shapely
+lxml
+pydantic

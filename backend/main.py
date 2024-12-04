@@ -6,6 +6,7 @@ from routes.site import site_router
 from routes.delivery_person import delivery_person_router 
 from routes.drive_files.drive_files import drive_file_router # Importa el nuevo router de delivery persons
 # from routes.order import order_router
+from routes.zonas.zonas import zona_rputer
 from routes.orders.order import order_router
 from routes.inventory.daily_inventory import daily_inventory_router
 from routes.inventory.monthly_inventory import monthly_inventory_router
@@ -65,6 +66,7 @@ app.add_middleware(
 
 
 app.include_router(requisition_router)
+app.include_router(zona_rputer)
 app.include_router(salchigest_router)
 app.include_router(permission_employer_router)
 app.include_router(permission_router)
