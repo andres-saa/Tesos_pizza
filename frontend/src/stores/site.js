@@ -26,7 +26,11 @@ export const useSitesStore = defineStore('site', {
           status: false,
           comming_soon: false,
         },
-        neigborhood: {},
+        neigborhood: {
+          name:'',
+          delivery_price:0
+        },
+        
       },
       visibles: {
         currentSite: false,

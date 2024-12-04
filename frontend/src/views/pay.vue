@@ -42,7 +42,7 @@
                     <!-- <label for="username" class="p-sr-only">Username</label> -->
 
                     <InputText @click="siteStore.setVisible('currentSite', true)"
-                        :modelValue="siteStore.location.neigborhood.name" style="width: 100%;" id="username"
+                        :modelValue="siteStore.location.neigborhood?.name" style="width: 100%;" id="username"
                         placeholder="Selecciona un barrio" invalid readonly />
                 </div>
 
@@ -55,7 +55,7 @@
 
                 <div class="flex flex-wrap align-items-center mb-2 gap-2" style="width: 100%;">
                     <!-- <label for="username" class="p-sr-only">Username</label> -->
-                    <InputText v-model="user.user.address" style="width: 100%;" id="username"
+                    <InputText @click="siteStore.setVisible('currentSite', true)"  v-model="user.user.address" style="width: 100%;" id="username"
                         placeholder="Escribe tu direccion" invalid />
                 </div>
 

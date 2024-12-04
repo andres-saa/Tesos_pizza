@@ -7,8 +7,14 @@ import router from './router';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { useSitesStore } from './stores/site';
+import { onMounted, watch } from 'vue';
 
 const store  = useSitesStore()
+
+
+
+
+
 </script>
 
 <template>
@@ -62,6 +68,7 @@ const store  = useSitesStore()
   <siteDialog></siteDialog>
 
   <div class="cart-button" style="">
+    
     <Button class="botomcar" @click="router.push('/cart')"  style="">
  
     <i class="pi pi-shopping-cart"></i>

@@ -1,293 +1,245 @@
 <template>
-    <Dialog :closable="false" v-model:visible="store.visibles.currentSite" :style="{ width: '380px' }"
-        header="Seleccion del Barrio" :modal="true" class="p-fluid m-3"
-        style=" background-color: white;position: relative; border-radius: 1rem;padding-top: 2rem;">
-
-
-
-
-        <b style="color:black">
-            <!-- {{ store.location }} -->
-        </b>
-
+    <Dialog
+       
+        :closable="false"
+        v-model:visible="store.visibles.currentSite"
+        :style="{ width: '100vw' }"
+        header="Seleccion del Barrio"
+        :modal="true"
+        class="p-fluid m-2 p-2"
+        style="background-color: white; position: relative; border-radius: .5rem; padding-top: 2rem;max-width: 35rem;"
+    >
+        
 
         <template #header>
 
-            <img src="/src/assets/images/logo.webp" alt="" style="width: 5rem;border-radius: 50%;margin: auto;">
+            
+            <!-- <img src="/src/assets/images/logo.webp" alt="" style="width: 5rem; border-radius: 50%; margin: auto;" /> -->
+            <div style="width: 100%">
+            <!-- <h5>Validar Zona</h5> -->
+            <div style="width: 100%;display: flex;flex-direction: column;gap: 1rem;">
 
-        </template>
-
-
-
-        <div
-            style="width: 100%;display: flex; flex-direction: column; align-items: center; border-radius: ;background-color: ">
-
-            <!-- <img style="width: 50px;" src="http://localhost:5173/src/images/logo.png" alt=""> -->
-
-
+                    <div >
+                        <!-- <label for="direccion">Dirección:</label> -->
+                        <InputText style="width: 100%;" type="text" v-model="user.user.address" placeholder="Ingresa una dirección" />
+                    </div>
 
 
+                    <div>
+                        <!-- <label for="barrio">Barrio:</label> -->
+                        <InputText style="width: 100%;" type="text" v-model="store.location.neigborhood.name" placeholder="Ingresa un barrio" />
+                    </div>
 
+                    <div style="display: flex;width: 100%;justify-content: end">
+                        <Button  size="small" @click="validarDireccion">Validar</Button>
 
-
-            <div class="" style="width: 100%;gap: ; display: block;">
-                <div style="display: flex;width: min-content; justify-content:start;gap: 1rem;align-items: center;">
-                    <span for="site_id" style="color: black;min-width: max-content;">Cual es tu barrio? </span>
-
-
-
-
-                </div>
-
-                <Select class="my-2" style="width: 100%;" filter v-model="currenNeigborhood"
-                    :options="possibleNeigborhoods" optionLabel="name" required="true"
-                    placeholder="Selecciona un barrio" filterPlaceholder="Escribe el nombre de tu barrio" />
-
-
-
-                <!-- <Dropdown v-model="seleFcarrctedCity" editable :options="possibleNeigborhoods"  placeholder="Select a City" class="w-full md:w-14rem" /> -->
-
-            </div>
-
-            <div class="field col-12 p-0" style="width: 100%; height:15rem ; position: relative;">
-
-
-                <div class="img-cont col-12 p-0" style="overflow: hidden;position: relative;">
-
-
-
-
-
-
-
-
-
-                    <div
-                        style=" position: absolute; top: 0; left: 0; width: 100%; height: 100%; display:flex; padding: ; align-items: end;border-radius: 0.5rem; ">
-                        <p v-if="currenNeigborhood?.site_id" class="col-12 py-1"
-                            style="background-color: black; text-align: center; height: min-content;  width: 100%;  font-weight: 500; background-color: rgba(0, 0, 0, 0.7);">
-                            <span class="text-xl lg:text-lg p-0" style=""> SALCHIMONSTER</span> <span
-                                style="text-transform: uppercase;" class="text-xl lg:text-lg p-0">{{
-                                    currentSite?.site_name }}</span>
-                        </p>
                     </div>
                 </div>
+           
+        </div>
+        </template>
+
+        <div class="my-4" id="map" ref="mapContainer" style="aspect-ratio: 4 / 2; width: 100%; "></div>
+
+        <template #footer >
+            <div
+            style="width: 100%; display: flex; flex-direction: column; align-items: center; border-radius: ;background-color: "
+        >
 
 
-
-
-
-
+            <div class="field col-12 p-0" style="width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
+                <Button @click="updateNeighborhood(store.location.neigborhood.name, `${user.user.address}`)"
+                    :label="`Guardar`"
+                    style="width: max-content; border: none; padding: 10px 20px; width: 100%; text-align: center; background-color: black;"
+                ></Button>
+                <Button 
+                    label="Recoger en el local"
+                  
+                    style="width: max-content; border: none; padding: 10px 20px; width: 100%; text-align: center;"
+                    severity="danger"
+                ></Button>
             </div>
-
-
-            <h6 v-if="currenNeigborhood.delivery_price" class="m-0 my-3 p-4  mx-0 px-0 text-white text-right"
-                style="background-color: #10b981; width: 100%;">
-                <div>
-                    El domicilio tienen un valor de <strong style="font-size:2rem;"> {{
-                        formatoPesosColombianos(currenNeigborhood.delivery_price)
-                        }}</strong>
-                </div>
-
-
-            </h6>
-
-
-            <div class="field col-12 p-0" style="width: 100%;display: flex;flex-direction: column;gap: .5rem  ;"
-                severity="sucess">
-
-
-                <Button :label="`Guardar `" @click="setNeigborhood" :disabled="!currenNeigborhood?.name"
-                    style="width: max-content;border: none; padding: 10px 20px;width: 100%; text-align: center;background-color: black;"
-                    b>
-
-                </Button>
-                <Button label="Recogere en el local" @click="recoger"
-                    style="width: max-content;border: none; padding: 10px 20px;width: 100%; text-align: center;"
-                    severity="danger" b>
-
-                </Button>
-
-            </div>
-
-
         </div>
 
-
-
-
-
+        </template>
+   
     </Dialog>
 </template>
 
 <script setup>
-
-
-
-
-
-
-
-// import { getProductsByCategory, getCategory, getMenu } from '@/service/productServices.js'
-import { onMounted, ref, watch } from 'vue';
-
-// import { showSiteDialog, setShowDialog } from '@/service/state';
-import { URI } from '@/service/conection'
-// import { cities } from '@/service/citiesService';
-import { useSitesStore } from '@/stores/site';
-// import { useSitesStore } from '../store/site'
-import { usecartStore } from '@/stores/shoping_cart';
-import Dialog from 'primevue/dialog';
-import Button from 'primevue/button';
-const store = useSitesStore()
-const cart = usecartStore()
-import ProgressSpinner from 'primevue/progressspinner';
-import Select from 'primevue/select';
-import { formatoPesosColombianos } from '@/service/utils/formatoPesos';
-
+import { onMounted, ref, watch,onBeforeMount,nextTick} from "vue";
+import axios from "axios";
 import { useUserStore } from '@/stores/user';
+import { useSitesStore } from "@/stores/site";
 
+
+onMounted(async () => {
+  await inicializarMapa();
+});
+
+const loadGoogleMaps = async() => {
+  return new Promise((resolve, reject) => {
+    if (typeof google !== "undefined") {
+      resolve(); // The API is already loaded
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=marker`;
+    script.async = true;
+    script.defer = true;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};
+
+
+const inicializarMapa = async () => {
+    try {
+        await loadGoogleMaps(); // Asegúrate de que la API esté cargada
+
+        if (!map.value) {
+            map.value = new google.maps.Map(mapContainer.value, {
+                
+                center: { lat: 6.2717264431772985, lng: -75.55841542945669 }, // Coordenadas iniciales
+                zoom: 14,
+                minZoom: 13, // Zoom mínimo permitido
+                maxZoom: 15,
+             
+            });
+        }
+
+        // Agregar el mapa KML desde el enlace público de Google My Maps
+        const kmlLayer = new google.maps.KmlLayer({
+            url: "https://www.google.com/maps/d/kml?mid=1fAENw6dNOT4jjL4tNdUtRX4Cqor1iVD5&ehbc=2E312F=en", // Enlace público del mapa
+            map: map.value,
+            preserveViewport: true, // Mantener la vista actual del mapa
+        });
+
+        // Manejar errores al cargar el archivo KML
+        kmlLayer.addListener("status_changed", () => {
+            if (kmlLayer.getStatus() !== google.maps.KmlLayerStatus.OK) {
+                console.error("Error al cargar el mapa desde KML:", kmlLayer.getStatus());
+            }
+        });
+
+    } catch (error) {
+        console.error("Error al inicializar el mapa:", error);
+    }
+};
+
+const store = useSitesStore()
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const direccion = ref("");
+const map = ref(null);
+const marker = ref(null);
+const mapContainer = ref(null);
+const barrio = ref()
 const user = useUserStore()
 
 
 
-const recoger = () => {
-    user.user.payment_method_option = {
-        "id": 7,
-        "name": "RECOGER EN LOCAL"
-    }
-
-    store.location.neigborhood = {
-        "neighborhood_id": 5846,
-        "name": "Recoger en local",
-        "delivery_price": 0,
-        "site_id": 31,
-        "city_id": 14
-    }
-    store.setVisible('currentSite', false)
-
-}
-
-
-watch(() => store.location.site.site_id, () => {
-
-
-
-    location.reload()
-
-})
-
-const spinnersView = ref({ ciudad: false, barrio: false })
-const cities = ref([
-    {
-        "city_id": 14,
-        "city_name": "Medellin",
-        "visible": true
-    }
-])
-const currentSite = ref({})
-const currenCity = ref({})
-const c_neigbor = ref(localStorage.getItem('currentNeigborhood'))
-const currenNeigborhood = ref({
-    site: {
-        name: 'default'
-    }
-})
-
-const possibleNeigborhoods = ref()
-const changePossiblesNeigborhoods = () => {
-    getNeighborhoodsByCityId(14).then(data => possibleNeigborhoods.value = data)
-}
-
-
-
-watch(currenCity, () => { changePossiblesNeigborhoods() })
-
-
-
-
-watch(currenNeigborhood, async () => {
-
-    currentSite.value = await sitesService.getSiteById(currenNeigborhood.value.site_id).then((data) => currentSite.value = data)
+watch(() => store.visibles.currentSite , async() => {
+    await inicializarMapa()
 })
 
 
 
-
-
-
-
-
-
-
-
-
-const setNeigborhood = async () => {
-
-    const newLocation = {
-        site: currentSite.value,
-        neigborhood: currenNeigborhood.value,
-        city: currenCity.value
-    }
-
-    store.setLocation(newLocation)
-    store.setVisible('currentSite', false)
-    // showSiteDialog.value = false
-
-}
-
-
-const getCities = async () => {
+const geocodeAddress = async (address) => {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+    )}&key=${GOOGLE_MAPS_API_KEY}`;
     try {
-        spinnersView.value.ciudad = true
-        const response = await fetch(`${URI}/cities`)
-        if (response.ok) {
-            const data = await response.json()
-            spinnersView.value.ciudad = false
-            // cities.value = data
-            return data
+        const response = await axios.get(url);
+        const results = response.data.results;
+        if (results.length === 0) {
+            throw new Error("No se pudo encontrar la dirección");
+        }
+        const { lat, lng } = results[0].geometry.location;
+        return { lat, lng };
+    } catch (error) {
+        console.error("Error al geocodificar la dirección:", error);
+        throw error;
+    }
+};
+
+const validarDireccion = async () => {
+    try {
+        if (!user.user.address || !store.location.neigborhood.name) {
+            alert("Por favor ingresa la dirección y el barrio.");
+            return;
         }
 
-    } catch (error) {
-        spinnersView.value.ciudad = false
+        const complete = `${user.user.address}, ${store.location.neigborhood.name}, Medellín, Colombia`;
+        const { lat, lng } = await geocodeAddress(complete);
 
-    }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-const getNeighborhoodsByCityId = async (city_Id) => {
-    try {
-        spinnersView.value.barrio = true
-        const response = await fetch(`${URI}/neighborhoods/by-city/${city_Id}`)
-        if (response.ok) {
-            const data = await response.json()
-            // cities.value = data
-            spinnersView.value.barrio = false
-
-            return data
+        // Crear un marcador en el mapa
+        if (marker.value) {
+            marker.value.setMap(null); // Elimina el marcador anterior, si existe
         }
 
+        marker.value = new google.maps.Marker({
+            position: { lat, lng }, // Posición del marcador
+            map: map.value, // Agrega el marcador al mapa actual
+            title: direccion.value, // Título del marcador
+            animation: google.maps.Animation.DROP, // Animación al aparecer
+        });
+
+
+        // Centrar el mapa en la dirección ingresada inicialmente
+        map.value.setCenter({ lat, lng });
+        map.value.setZoom(14);
+
+        // Consultar la zona en el backend
+        const response = await axios.post("http://localhost:8000/consultar_zona/", {
+            latitud: lat,
+            longitud: lng,
+        });
+
+        const result = response.data;
+        if (result.zona) {
+            // Mostrar información de la zona
+            alert(`Zona: ${result.zona}. Valor domicilio: ${result.valor_domicilio}`);
+
+            // Centrar el mapa en las coordenadas de la zona
+            if (result.latitud && result.longitud) {
+                map.value.setCenter({ lat: result.latitud, lng: result.longitud });
+                map.value.setZoom(15); // Ajusta el nivel de zoom según sea necesario
+            }
+
+        neigborhood.value = {
+            name:store.location.neigborhood.name,
+            delivery_price:result.valor_domicilio
+        }
+        } else {
+            alert("No se encontró cobertura.");
+        }
     } catch (error) {
-        spinnersView.value.barrio = false
-
-
+        alert(error.message || "Error al procesar la dirección.");
     }
-}
+};
 
-onMounted(async () => {
-    // getCities().then(data => cities.value = data)
-    changePossiblesNeigborhoods()
+
+const neigborhood = ref({
+    delivery_price:0,
+    name:''
 })
+
+
+watch(() => store.visibles.currentSite, () => {
+    inicializarMapa()
+},{deep:true})
+
+const updateNeighborhood = async(valor, direccion) => {
+
+    store.location.neigborhood.name = valor
+    store.location.neigborhood.delivery_price = neigborhood.value.delivery_price
+    store.visibles.currentSite = false
+
+    user.user.address = direccion
+    console.log(valor)
+}
 
 
 </script>
@@ -324,6 +276,8 @@ onMounted(async () => {
 .img-cart:hover {
     transform: scale(1.3);
 }
+
+
 
 .img-cart {
     transition: all .3s ease;

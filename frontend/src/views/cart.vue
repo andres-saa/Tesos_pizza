@@ -85,7 +85,73 @@
 
 
                     <div class="p-0 mt-1">
-                        <!-- Aquí va el contenido adicional del carrito -->
+                        <div class="col-12 p-0 mt-1">
+                    <div class="p-shadow p-3 mb-4 " v-for="(items, grupo) in agrupados" :key="grupo" style="position: relative;border-radius: 0.3rem;">
+                        
+                        <Button class="ml-2" @click="deleteGroup(items)" icon="pi pi-trash"
+                            severity="danger" rounded
+                            style="border:none;right: -.5rem;top: -.5rem; position: absolute; outline:none;width:2rem; height:2rem" />
+
+                        <div class="mb-2">
+                            <span class="mb-2 text-center">
+                                <b>{{ grupo }}</b>
+
+                            </span>
+                            
+                            <div class="mt-2">
+                                <div v-for="item in items" :key="item.aditional_item_instance_id"
+                                    style="display: flex; gap: 1rem; align-items: center;">
+                                    <Button text rounded @click="deleteAd(item)" class="p-0 m-0" severity="danger"
+                                        style="width: 2rem;  height: 2rem;border: none;" icon="pi pi-trash m-0"></Button>
+                                        
+
+                                    <div style="display: flex; width: 100%; gap: 1rem; justify-content: space-between;">
+                                        <span class="text adicion" style="text-transform: capitalize;">{{ item.name
+                                        }}</span>
+                                        <span style="display: flex; align-items: center;">
+
+
+
+
+
+
+
+                                            <span v-if="item.price > 0" class="pl-2 py-1 text-sm">
+                                                <b>{{ formatoPesosColombianos(item.price * item.quantity) }}</b>
+                                            </span>
+
+                                            <div v-if="grupo != 'SALSAS'" style="box-shadow: 0 0 5px rgba(0, 0, 0, 0.411);display: flex; border-radius: 0.3rem; " class="ml-2">
+
+                                           
+                                            <Button @click="decrement(item)"  severity="danger"
+                                                style="width: 2rem; height: 1.5rem;border: none; border-radius: 0.3rem 0 0 0.3rem;"
+                                                icon="pi pi-minus"></Button>
+                                            <InputText :modelValue="item.quantity" readonly
+                                                style="width: 2rem;border: none; height: 1.5rem;" class="p-0 text-center" />
+                                            <Button @click="increment(item)" severity="danger"
+                                                style="width: 2rem;height: 1.5rem; border: none;border-radius:0 0.3rem 0.3rem 0;"
+                                                icon="pi pi-plus"></Button>
+                                            </div>
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                               
+
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <div  @click="store.setVisible('addAdditionToCart',true)" class="col-12 p-0 m-0" style="display: flex; justify-content: end;">
+                        <Button style="width: 2rem;left: .3rem; height: 2rem;" rounded severity="danger" icon="pi pi-plus"></Button>
+
+                    </div>
+
+                </div>
+
                     </div>
                 </div>
                 <resumen class="md:col-6"></resumen>
@@ -240,7 +306,6 @@ img {
     color: var(--primary-color);
     transition: all ease .3s;
 }
-
 
 
 

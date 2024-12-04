@@ -379,6 +379,7 @@ const handleAdditionChange = (item, group) => {
       ...new_item,
       quantity: item.quantity || 1
     };
+
   } else {
     delete selectedAdditions.value[item.aditional_item_instance_id];
   }

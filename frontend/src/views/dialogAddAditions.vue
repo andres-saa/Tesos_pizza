@@ -141,7 +141,7 @@ watch(() => store.visibles.addAdditionToCart, async (new_val) => {
     } else {
         const ids = store.cart.products.map(product => product.product.id)
         if (ids.length > 0) {
-            adicionales.value = await adicionalesService.getAditionalGroup(ids, 5)
+            adicionales.value = await adicionalesService.getAditionalGroup(ids, 31)
         }
     }
 }, { deep: true })
@@ -173,7 +173,7 @@ onMounted(async () => {
 
     const ids = store.cart.products.map(product => product.product.id)
     if (ids.length > 0) {
-        adicionales.value = await adicionalesService.getAditionalGroup(ids, sitestore.location?.site?.site_id)
+        adicionales.value = await adicionalesService.getAditionalGroup(ids, 31)
     }
 })
 

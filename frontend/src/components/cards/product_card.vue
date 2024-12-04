@@ -125,7 +125,7 @@ const store = usecartStore()
 
 const addToCart = (productToAdd) => {
     if (!sitestore.location.neigborhood?.name) {
-        sitestore.visibles.currentSite = true;
+  
         return;
     }
 
@@ -220,7 +220,6 @@ const props = defineProps({
 onMounted(() => {
 
 
-    sitestore.visibles.currentSite = false
 
     highResLoaded.value = {};
     const observer = new IntersectionObserver((entries) => {

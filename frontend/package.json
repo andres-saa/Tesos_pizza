@@ -12,9 +12,12 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.1.0",
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "bootstrap": "^4.6.0",
+    "dotenv": "^16.4.5",
     "jquery": "^3.7.1",
+    "jszip": "^3.10.1",
+    "leaflet": "^1.9.4",
     "pinia": "^2.2.4",
     "pinia-plugin-persistedstate": "^4.1.2",
     "popper.js": "^1.16.1",
