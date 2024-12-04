@@ -25,6 +25,13 @@ const router = createRouter({
               component: () => import('@/views/pages/pedidos.vue'),
               
             },
+
+            {
+              path: '/validar',
+              name: 'validar',
+              component: () => import('@/views/pages/validar.vue'),
+              
+            },
             {
               path: '/cuadre',
               name: 'cuadre',

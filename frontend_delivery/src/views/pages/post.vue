@@ -73,7 +73,7 @@ watch(inputLink, (newLink) => {
 const sendToServer = async () => {
     try {
         // Enviar el nuevo enlace al servidor
-        const response = await fetchService.post(`${URI}/update-last-post`, { link: last_post.value });
+        const response = await fetchService.put(`${URI}/update-last-post`, { link: last_post.value });
         console.log('Enlace enviado al servidor:', response);
 
         // Actualizar currentPost con el nuevo enlace

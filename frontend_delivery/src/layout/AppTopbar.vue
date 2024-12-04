@@ -165,7 +165,9 @@ const menus = [
     { name: 'Atender', to: '/' },
     // { name: ' Pedido manual', to: '/pedido-manual' },
     // { name: 'Historial de pedidos', to: '/historial' },
+    { name: ' Validar direcciones', to: '/validar' },
     { name: ' Cuadre de caja', to: '/cuadre' },
+ 
     { name: ' Menu', to: '/tienda-menu/productos/PIZZA/25' },
     { name: ' Horarios', to: '/horarios' },
     { name: ' Admin', to: '/tienda-menu/productos/PROMOCIONES/31' },

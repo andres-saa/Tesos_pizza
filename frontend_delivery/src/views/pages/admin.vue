@@ -49,11 +49,7 @@ const categories = ref([
     to:'/admin/post'
   },
   
-  { 
-    category_id:3,
-    category_name:'Precios Domicilios',
-    to:'/admin/domicilios/31'
-  }
+
 ]);
 
 
