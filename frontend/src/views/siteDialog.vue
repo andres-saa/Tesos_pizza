@@ -6,7 +6,8 @@
         :style="{ width: '100vw' }"
         header="Seleccion del Barrio"
         :modal="true"
-        class="p-fluid m-2 p-2"
+        class="p-fluid m-3 p-2"
+        :open="chargue()"
         style="background-color: white; position: relative; border-radius: .5rem; padding-top: 2rem;max-width: 35rem;"
     >
         
@@ -21,25 +22,23 @@
 
                     <div >
                         <!-- <label for="direccion">Dirección:</label> -->
-                        <InputText style="width: 100%;" type="text" v-model="user.user.address" placeholder="Ingresa una dirección" />
+                        <InputText style="width: 100%;" type="text" v-model="temp_dir" placeholder="Ingresa una dirección" />
                     </div>
 
 
                     <div>
                         <!-- <label for="barrio">Barrio:</label> -->
-                        <InputText style="width: 100%;" type="text" v-model="store.location.neigborhood.name" placeholder="Ingresa un barrio" />
+                        <InputText style="width: 100%;" type="text" v-model="temp_barrio" placeholder="Ingresa un barrio" />
                     </div>
 
-                    <div style="display: flex;width: 100%;justify-content: end">
-                        <Button  size="small" @click="validarDireccion">Validar</Button>
-
-                    </div>
+                   
+                    <!-- <h6>Precione Validar y leugo guardar</h6> -->
                 </div>
            
         </div>
         </template>
 
-        <div class="my-4" id="map" ref="mapContainer" style="aspect-ratio: 4 / 2; width: 100%; "></div>
+        <div class="my-0" id="map" ref="mapContainer" style="aspect-ratio: 4 / 2; width: 100%; "></div>
 
         <template #footer >
             <div
@@ -48,11 +47,27 @@
 
 
             <div class="field col-12 p-0" style="width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
-                <Button @click="updateNeighborhood(store.location.neigborhood.name, `${user.user.address}`)"
+
+
+
+
+                <Tag>
+
+                    <h5 v-if="neigborhood?.delivery_price"> Domicilio: {{ formatoPesosColombianos(neigborhood?.delivery_price) }} </h5>
+                    <h6 class="m-0" v-else>Selecciona una direccion para ver el valor del domicilio o preciona recoger en el local </h6>
+
+                </Tag>
+                <Button size="small" v-if="validado" @click="updateNeighborhood(temp_barrio, `${temp_dir}`)"
                     :label="`Guardar`"
                     style="width: max-content; border: none; padding: 10px 20px; width: 100%; text-align: center; background-color: black;"
                 ></Button>
-                <Button 
+               
+                        <Button  v-else size="small" @click="validarDireccion">Validar</Button>
+           
+
+
+            
+                <Button size="small"  @click="recogerLocal"
                     label="Recoger en el local"
                   
                     style="width: max-content; border: none; padding: 10px 20px; width: 100%; text-align: center;"
@@ -62,6 +77,9 @@
         </div>
 
         </template>
+
+
+        <Button style="position: absolute;right:-1rem; top: -1rem;"  icon="pi pi-times" rounded severity="danger" @click="store.visibles.currentSite = false"></Button>
    
     </Dialog>
 </template>
@@ -71,11 +89,32 @@ import { onMounted, ref, watch,onBeforeMount,nextTick} from "vue";
 import axios from "axios";
 import { useUserStore } from '@/stores/user';
 import { useSitesStore } from "@/stores/site";
-
+import InputText from "primevue/inputtext";
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import { formatoPesosColombianos } from "@/service/utils/formatoPesos";
+import Tag from "primevue/tag";
 
 onMounted(async () => {
+    await loadGoogleMaps()
   await inicializarMapa();
 });
+
+
+
+const chargue = () => {
+    // temp_barrio.value = store.location.neigborhood.name
+    validado.value = false
+
+
+}
+
+
+const temp_barrio = ref('')
+const temp_dir = ref('')
+
+const visible = ref(true)
+
 
 const loadGoogleMaps = async() => {
   return new Promise((resolve, reject) => {
@@ -99,7 +138,7 @@ const inicializarMapa = async () => {
     try {
         await loadGoogleMaps(); // Asegúrate de que la API esté cargada
 
-        if (!map.value) {
+        
             map.value = new google.maps.Map(mapContainer.value, {
                 
                 center: { lat: 6.2717264431772985, lng: -75.55841542945669 }, // Coordenadas iniciales
@@ -108,7 +147,7 @@ const inicializarMapa = async () => {
                 maxZoom: 15,
              
             });
-        }
+        
 
         // Agregar el mapa KML desde el enlace público de Google My Maps
         const kmlLayer = new google.maps.KmlLayer({
@@ -166,12 +205,12 @@ const geocodeAddress = async (address) => {
 
 const validarDireccion = async () => {
     try {
-        if (!user.user.address || !store.location.neigborhood.name) {
+        if (!temp_dir.value || !temp_barrio.value) {
             alert("Por favor ingresa la dirección y el barrio.");
             return;
         }
 
-        const complete = `${user.user.address}, ${store.location.neigborhood.name}, Medellín, Colombia`;
+        const complete = `${temp_dir.value}, ${temp_barrio.value}, Medellín, Colombia`;
         const { lat, lng } = await geocodeAddress(complete);
 
         // Crear un marcador en el mapa
@@ -200,7 +239,7 @@ const validarDireccion = async () => {
         const result = response.data;
         if (result.zona) {
             // Mostrar información de la zona
-            alert(`Zona: ${result.zona}. Valor domicilio: ${result.valor_domicilio}`);
+            // alert(`Zona: ${result.zona}. Valor domicilio: ${result.valor_domicilio}`);
 
             // Centrar el mapa en las coordenadas de la zona
             if (result.latitud && result.longitud) {
@@ -208,10 +247,14 @@ const validarDireccion = async () => {
                 map.value.setZoom(15); // Ajusta el nivel de zoom según sea necesario
             }
 
-        neigborhood.value = {
-            name:store.location.neigborhood.name,
-            delivery_price:result.valor_domicilio
-        }
+            neigborhood.value = {
+                name:temp_barrio.value,
+                delivery_price:result.valor_domicilio
+            }
+            validado.value = true
+
+
+        
         } else {
             alert("No se encontró cobertura.");
         }
@@ -226,6 +269,8 @@ const neigborhood = ref({
     name:''
 })
 
+const validado = ref(false)
+
 
 watch(() => store.visibles.currentSite, () => {
     inicializarMapa()
@@ -239,7 +284,22 @@ const updateNeighborhood = async(valor, direccion) => {
 
     user.user.address = direccion
     console.log(valor)
+
+    store.location.neigborhood = neigborhood.value
 }
+
+
+const recogerLocal = async() => {
+
+store.location.neigborhood.name = 'Recoger en el local'
+
+store.location.neigborhood.delivery_price = 0
+store.visibles.currentSite = false
+
+user.user.address = ''
+// store.location.neigborhood = neigborhood.value
+}
+
 
 
 </script>

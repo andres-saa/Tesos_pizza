@@ -28,7 +28,7 @@ export const useSitesStore = defineStore('site', {
         },
         neigborhood: {
           name:'',
-          delivery_price:0
+          delivery_price:null
         },
         
       },

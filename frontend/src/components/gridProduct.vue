@@ -6,7 +6,7 @@
 
     <div class="container4 " style="margin-top: 3rem;">
 
-        <product_card v-for="(category, index) in products" :key="index" class="card" :product="category" />
+        <product_card v-for="(category) in products" :key="category.id" class="card" :product="category" />
 
 
     </div>

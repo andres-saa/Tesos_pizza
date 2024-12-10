@@ -47,13 +47,13 @@
                 </div>
 
 
-                <div style=" display: flex; gap: 1rem;align-items: center;">
+                <div v-if="siteStore.location.neigborhood.delivery_price > 0" style=" display: flex; gap: 1rem;align-items: center;">
                     <h6 class="m-0">DIRECCION</h6>
                     <Tag v-if="user.user.address" style="width: min-content;" severity="success">Listo</Tag>
 
                 </div>
 
-                <div class="flex flex-wrap align-items-center mb-2 gap-2" style="width: 100%;">
+                <div v-if="siteStore.location.neigborhood.delivery_price > 0"  class="flex flex-wrap align-items-center mb-2 gap-2" style="width: 100%;">
                     <!-- <label for="username" class="p-sr-only">Username</label> -->
                     <InputText @click="siteStore.setVisible('currentSite', true)"  v-model="user.user.address" style="width: 100%;" id="username"
                         placeholder="Escribe tu direccion" invalid />

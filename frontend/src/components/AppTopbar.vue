@@ -1,26 +1,32 @@
 <template>
+    
     <div class="app-topbar-container p-2" style="background-color: var(--primary-color);">
+            
+
         <div class="header" style="max-width: 1280px;margin: auto;">
 
 
+           
+
             <div class="header-container">
 
-                <router-link to="/" style="text-decoration: none;">
+                <router-link to="/" style="text-decoration: none;max-width: 17rem; overflow: hidden;text-overflow: ellipsis;">
                     <div class="logo-sesion">
                         <img src="/src/assets/images/logo.webp" alt="">
-                        <h1 class="title roboto-thin m-0 p-0">
+                        <div>
+                            <h1 class="title roboto-thin m-0 p-0">
                             <b>
                                 TEZO'S PIZZA
                             </b>
                         </h1>
+                        
+                        </div>
                     </div>
                 </router-link>
 
 
 
                 <div class="menus" v-if="true" style="">
-
-
 
                     <router-link to="/">
                         <Button :style="is_active_router('/') ? 'box-shadow:0 .3rem white' : ''"
@@ -100,9 +106,14 @@
 
 
 
+            <div style="color: white;align-items: center; justify-content:center ;display: flex; text-overflow: ellipsis; text-transform: capitalize;"> 
 
 
-
+                
+                <Button style="text-transform: capitalize;" @click="siteStore.visibles.currentSite = true" class="py-0 px-3" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
+                </Button>
+            </div>
+            
         </div>
 
 
@@ -134,11 +145,18 @@ import { useRoute, useRouter } from 'vue-router';
 import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
 import { usecartStore } from '@/stores/shoping_cart';
+import { useSitesStore } from '@/stores/site';
+import { formatoPesosColombianos } from '@/service/utils/formatoPesos';
+import { computed } from 'vue';
 
+
+const truncatedDescription =  (Description) => {
+    return `${Description?.slice(0,29)}...`
+}
 
 const cart = usecartStore()
 const route = useRoute()
-
+const siteStore = useSitesStore()
 
 const toggleSidebar = (event) => {
   event.stopPropagation(); // Evita que el clic se propague
@@ -253,7 +271,8 @@ i {
 
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .5rem;
+    /* align-items: center; */
     /* padding-bottom: .5rem; */
 
 }

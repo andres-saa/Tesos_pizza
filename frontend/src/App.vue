@@ -8,9 +8,10 @@ import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { useSitesStore } from './stores/site';
 import { onMounted, watch } from 'vue';
+import { usecartStore } from './stores/shoping_cart';
 
 const store  = useSitesStore()
-
+const cartStore = usecartStore()
 
 
 
@@ -75,7 +76,7 @@ const store  = useSitesStore()
 
     </Button>
   
-    <Badge style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">3</Badge>
+    <Badge v-if="cartStore.cart.products.length > 0" style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">{{ cartStore.cart.products.length }}</Badge>
 
   </div>
 

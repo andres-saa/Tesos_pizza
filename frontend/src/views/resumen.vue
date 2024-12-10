@@ -127,7 +127,7 @@
 
             </router-link>
 
-            <router-link to="/" v-else>
+            <router-link to="/cart" v-else>
                 <Button outlined icon="pi pi-arrow-left" label="Volver al carrito" class="mt-4" severity="danger"
                     style="outline: none;width: 100%;font-weight: bold; background-color: rgba(0, 0, 0, 0);"></Button>
 
@@ -212,7 +212,7 @@ onMounted(() => {
 
     }
 
-    if(!siteStore.location?.neigborhood.neighborhood_id){
+    if(siteStore.location?.neigborhood.delivery_price === null){
         siteStore.visibles.currentSite = true
     }
 
