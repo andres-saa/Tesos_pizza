@@ -231,7 +231,7 @@ const validarDireccion = async () => {
         map.value.setZoom(14);
 
         // Consultar la zona en el backend
-        const response = await axios.post("http://localhost:8000/consultar_zona/", {
+        const response = await axios.post("https://tezos-back.arhook.com/consultar_zona/", {
             latitud: lat,
             longitud: lng,
         });
