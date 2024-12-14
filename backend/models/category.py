@@ -92,7 +92,7 @@ class Category:
         # Definimos la consulta que verifica la existencia de instancias activas de productos por cada categoría
         select_query = f"""
         SELECT *
-        FROM inventory.product_categories  where resturant_id = {restaurant_id};
+        FROM inventory.product_categories  where resturant_id = {restaurant_id} and exist = true;
         """
         self.cursor.execute(select_query)
         columns = [desc[0] for desc in self.cursor.description]

@@ -87,36 +87,31 @@ export const productService = {
 
 
 
-
-    async updateProductInstance(product,additional_item_ids) {
-
-        const productStore = useProductStore()
-        const store = useReportesStore()
-        store.setLoading(true,'actualizando en todas las sedes')
-        productStore.visibles.dialogEditProduct = false
+    async updateProductInstance(product, additional_item_ids, flavor_ids) {
+        const productStore = useProductStore();
+        const store = useReportesStore();
+        store.setLoading(true, 'actualizando en todas las sedes');
+        productStore.visibles.dialogEditProduct = false;
+    
         try {
             const response = await axios.put(`${URI}/products/update/${product.product_id}`, {
                 product,
-                additional_item_ids // Asegurando que el valor enviado es booleano
+                additional_item_ids,
+                flavor_ids  // Agregar los IDs de sabores
             });
-
+    
             if (response.status === 200) {
-
-                store.setLoading(false,'actualizando en todas las sedes')
+                store.setLoading(false, 'actualizando en todas las sedes');
                 console.log('Product instance status updated successfully:', response.data);
                 return response.data;
-                
             } else {
                 console.error('Failed to update product instance status:', response.status);
-                store.setLoading(false,'actualizando en todas las sedes')
-
+                store.setLoading(false, 'actualizando en todas las sedes');
                 return null;
-
             }
         } catch (error) {
-            store.setLoading(false,'actualizando en todas las sedes')
-
             console.error('Error updating product instance status:', error);
+            store.setLoading(false, 'actualizando en todas las sedes');
             return null;
         }
     },

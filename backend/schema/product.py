@@ -18,6 +18,7 @@ class ProductSchemaPost(BaseModel):
     has_recipe: Optional[bool] = False
     gramos: Optional[int] = None
     size_id: Optional[int] = 7
+    max_flavor:int
     
 
 

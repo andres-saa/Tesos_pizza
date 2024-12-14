@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { URI } from '../service/conection'
 
-export const usecartStore = defineStore('cart', {
+export const usecartStore = defineStore('tezos-cart', {
   persist: {
-    key: 'cart',
+    key: 'tezos-cart',
     storage: localStorage,
     paths: ['cart', 'last_order'],
   },

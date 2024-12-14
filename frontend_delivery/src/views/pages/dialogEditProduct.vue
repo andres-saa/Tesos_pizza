@@ -2,10 +2,14 @@
     <Dialog closeOnEscape v-model:visible="store.visibles.dialogEditProduct" modal style="width: 40rem;">
 
         <!-- {{ seleccionados }} -->
-        <Button @click="store.visibles.dialogEditProduct = false" severity="danger"
-            style="position: absolute; right: 0;top: 0;right: -1rem; top: -1rem;" rounded icon="pi pi-times"></Button>
+        <!-- <Button @click="store.visibles.dialogEditProduct = false" severity="danger"
+            style="position: absolute; right: 0;top: 0;right: -1rem; top: -1rem;" rounded icon="pi pi-times"></Button> -->
 
         <!-- {{ store.currentProductToEdit }} -->
+
+        <Button @click="store.visibles.dialogEditProduct = false" severity="danger"
+            style="position: absolute; right: 0; top: 0; right: -1rem; top: -1rem; border-radius: 50%;" rounded icon="pi pi-times"></Button>
+
 
 
         <div class="image" style="display: flex; flex-direction: column;position: relative; justify-content: end; align-items: end;">
@@ -53,8 +57,38 @@
                 </InputNumber>
             </div>
 
+            <div>
+                <span>cuantos sabores puede combinar?:</span>
+                <InputNumber v-model="store.currentProductToEdit.max_flavor" suffix=" sabores" maxFractionDigits="0" rows="3" min="0" max="2"
+                    style="width: 100%;resize: none;">
+                </InputNumber>
+            </div>
+
            
         </div>
+
+
+
+
+        <div class="mt-4" style="display: flex;align-items: center;gap: 1rem;">
+
+<div style="width: 100%;background-color: var(--primary-color);height: 1rem;">
+
+</div>
+<h6 class="m-0 ">
+
+    <p class="text-center text-2xl py-0" style="font-weight: bold; text-transform: capitalize; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+    <span> ADICIONES</span>
+    <!-- <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo, $event)" /> -->
+    </p>     
+
+
+</h6>
+<div style="width: 100%;background-color: var(--primary-color);height: 1rem;">
+
+</div>
+</div>
+
 
 
 
@@ -87,6 +121,75 @@
             </DataTable>
         </div>
 
+
+
+
+
+        <div class="mt-4" style="display: flex;align-items: center;gap: 1rem;">
+
+<div style="width: 100%;background-color: var(--primary-color);height: 1rem;">
+
+</div>
+<h6 class="m-0 ">
+
+    <p class="text-center text-2xl py-0" style="font-weight: bold; text-transform: capitalize; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+    <span> SABORES</span>
+    <!-- <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo, $event)" /> -->
+    </p>     
+
+
+</h6>
+<div style="width: 100%;background-color: var(--primary-color);height: 1rem;">
+
+</div>
+</div>
+
+
+
+<div class="m-auto col-12 p-0" style="max-width: 600px;" v-for="(grupo) in sabores">
+            <p class="text-center text-2xl py-4" style="font-weight: bold; text-transform: capitalize; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                <span>{{ grupo.group_name }}</span>
+                <!-- <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo)" /> -->
+            </p>
+            <DataTable stripedRows :value="grupo.flavors" class="p-0">
+                <Column style="text-transform: capitalize;" class="p-0" field="aditional_item_name" header="Nombre">
+                    <template #body="adicion">
+                        <span style="text-transform: uppercase;">{{ adicion.data.flavor_name }}</span>
+                    </template>
+                </Column>
+                <Column class="p-0" field="aditional_item_price" header="Precio">
+                    <template #body="adicion">
+                        <span style="font-weight: bold;">{{ formatoPesosColombianos(adicion.data.flavor_price) }}</span>
+                    </template>
+                </Column>
+
+
+                <Column class="p-0" field="aditional_item_price" header="Premium">
+
+                    <template #body="adicion">
+                    <Tag v-if="adicion.data.is_premium" severity="success"> Premium</Tag>
+
+                    </template>
+                </Column>
+
+
+
+                <Column class="py-0 pl-4 p-0" header="Estado" headerStyle="width:1rem">
+                    <template #body="adicion">
+                        <InputSwitch v-model="adicion.data.has_flavor" @update:modelValue="handleSwitch(adicion.data.item_id, grupo, $event)" />
+                    </template>
+                </Column>
+            </DataTable>
+        </div>  
+
+
+
+
+
+
+
+
+
         <template #footer>
 
             <div class="col-12 px-0 pb-0">
@@ -107,9 +210,14 @@ import { formatoPesosColombianos } from '@/service/formatoPesos';
 import { onMounted } from 'vue';
 import { productService } from '@/service/ProductService';
 import { URI } from '@/service/conection';
-
+import { fetchService } from '../../service/utils/fetchService';
 
 import { useSitesStore } from '../../store/site';
+
+
+
+
+const sabores = ref([])
 
 
 const site_store = useSitesStore()
@@ -157,6 +265,8 @@ const handleFileUpload = async (event) => {
         subiendo_foto.value = false 
       
     }
+
+
    
 };
 
@@ -204,14 +314,17 @@ const handleSwitch = (itemId, grupo, value) => {
 };
 
 
-onMounted(() => {
+onMounted(async() => {
     img.value = store.currentProductToEdit.img_identifier
+
 })
 
 watch(() => store.currentProductToEdit.id, async () => {
     currentAditions.value = await adicionalesService.getAditional(store.currentProductToEdit.id); // Obtener las adiciones actuales
     adicionales.value = await adicionalesService.getAllAditionsRegistered(); // Obtener todos los adicionales registrados
     updateAdicionalesStatus();
+    sabores.value = await fetchService.get(`${URI}/get_flavors_by_product/${store?.currentProductToEdit?.product_id}`)
+
 })
 
 
@@ -219,12 +332,11 @@ const seleccionados = ref([])
 
 const prepareToSend = () => {
     let aditional_ids = [];
+    let flavor_ids = [];
 
-    // Iteramos sobre cada grupo en el objeto 'adicionales'
+    // Recolectar IDs de adicionales
     for (const group in adicionales.value) {
-        // Aseguramos que estamos accediendo a una propiedad propia del objeto
         if (adicionales.value.hasOwnProperty(group)) {
-            // Iteramos sobre cada item en el grupo
             adicionales.value[group].forEach(item => {
                 if (item.status) {
                     aditional_ids.push(item.item_id);
@@ -233,12 +345,21 @@ const prepareToSend = () => {
         }
     }
 
+    // Recolectar IDs de sabores
+    sabores.value.forEach(grupo => {
+        grupo.flavors.forEach(flavor => {
+            if (flavor.has_flavor) {  // Asegúrate que 'has_flavor' es el campo correcto
+                flavor_ids.push(flavor.flavor_id);  // Asumiendo que 'flavor_id' es el identificador de sabor
+            }
+        });
+    });
+
     seleccionados.value = aditional_ids;
-    send()
+    send(aditional_ids, flavor_ids);
 }
 
 
-const send = () => {
+const send = (additional_item_ids, flavor_ids) => {
     const product = {
         "product_id": store.currentProductToEdit.id,
         "name": store.currentProductToEdit.product_name,
@@ -248,14 +369,13 @@ const send = () => {
         "category_id": store.currentProductToEdit.category_id,
         "status": true,
         "img_identifier": img.value || store.currentProductToEdit.img_identifier,
-        "parent_id": store.currentProductToEdit.product_id // Incluir el nuevo identificador
+        "parent_id": store.currentProductToEdit.product_id,
+        "max_flavor":store.currentProductToEdit.max_flavor  // Incluir el nuevo identificador
     };
 
-    const additional_item_ids = seleccionados.value;
-
-    // Llamar al servicio para actualizar el producto
-    productService.updateProductInstance(product, additional_item_ids);
-    site_store.update += 1
-
+    // Llamar al servicio para actualizar el producto, adicionales y sabores
+    productService.updateProductInstance(product, additional_item_ids, flavor_ids);
+    site_store.update += 1;
 };
+
 </script>

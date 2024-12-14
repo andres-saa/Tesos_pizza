@@ -1,6 +1,6 @@
 <template>
     
-    <div class="app-topbar-container p-2" style="background-color: var(--primary-color);">
+    <div class="app-topbar-container p-2" style="background-color: var(--primary-color);box-shadow: 0 0rem 2rem black;">
             
 
         <div class="header" style="max-width: 1280px;margin: auto;">
@@ -115,16 +115,6 @@
             </div>
             
         </div>
-
-
-
-
-
-
-
-
-
-
 
     </div>
 

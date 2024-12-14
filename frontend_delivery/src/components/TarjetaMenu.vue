@@ -11,6 +11,9 @@
             <Button class="shadow-2" @click="prepareToEdit(props.product)" severity="warning" style="font-weight: bold;width: 2rem;height: 2rem;border-radius: 50%;  right: 0;top: 0;" rounded
                 icon="pi pi-pencil"></Button>
 
+                <Button class="shadow-2" @click="prepareToEdit(props.product)" severity="success" style="font-weight: bold;width: 2rem;height: 2rem;border-radius: 50%;  right: 0;top: 0;" rounded
+                icon="pi pi-home"></Button>
+
         </div>
 
 

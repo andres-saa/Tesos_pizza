@@ -182,108 +182,88 @@ class Product:
         columns = [desc[0] for desc in self.cursor.description]
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
 
-    
-    def update_product_and_its_instances(self, product_info, additional_item_ids):
+        
+    def update_product_and_its_instances(self, product_info, additional_item_ids, flavor_ids):
         try:
             # Inicia una transacción
             self.cursor.execute("BEGIN;")
 
-            # Actualiza la información del producto principal
             update_product_query = """
             UPDATE inventory.products
-            SET name = %s, description = %s , img_identifier = %s
+            SET name = %s, description = %s, img_identifier = %s, max_flavor = %s
             WHERE id = %s;
             """
             self.cursor.execute(update_product_query, (
                 product_info['name'],
                 product_info['description'],
                 product_info['img_identifier'],
+                product_info['max_flavor'],  # Asumiendo que max_flavor se pasa en product_info
                 product_info['product_id']
             ))
 
             # Recupera todos los site_id disponibles
-            self.cursor.execute("SELECT site_id FROM public.sites where show_on_web = true;")
+            self.cursor.execute("SELECT site_id FROM public.sites WHERE show_on_web = true;")
             all_sites = self.cursor.fetchall()
 
             # Actualiza o inserta las instancias del producto en todas las sedes
             for site in all_sites:
                 site_id = site[0]
-                update_or_insert_product_instance_query = f"""
-                update  inventory.product_instances set price = {product_info['price']}, last_price = {product_info['last_price']} where product_id = {product_info['product_id']}
-                
-                """
-                self.cursor.execute(update_or_insert_product_instance_query)
-                
+                self.cursor.execute("""
+                    UPDATE inventory.product_instances
+                    SET price = %s, last_price = %s
+                    WHERE product_id = %s AND site_id = %s;
+                """, (product_info['price'], product_info['last_price'], product_info['product_id'], site_id))
 
             # Elimina las asociaciones de productos con adicionales
-            delete_product_additional_associations_query = """
-            DELETE FROM orders.product_aditional_item_instances
-            WHERE product_instance_id IN (
-                SELECT id FROM inventory.product_instances WHERE product_id = %s
-            );
-            
-
-
-            """
-            self.cursor.execute(delete_product_additional_associations_query, (product_info['product_id'],))
-
-            
-            delete_additionals_query = """
-            DELETE FROM orders.aditional_item_instances
-            WHERE id IN (
-                SELECT aditional_item_instance_id FROM orders.product_aditional_item_instances WHERE product_instance_id IN (
+            self.cursor.execute("""
+                DELETE FROM orders.product_aditional_item_instances
+                WHERE product_instance_id IN (
                     SELECT id FROM inventory.product_instances WHERE product_id = %s
-                )
-            );
-            """
-            
-            self.cursor.execute(delete_additionals_query, (product_info['product_id'],))
+                );
+            """, (product_info['product_id'],))
 
             # Inserta nuevas instancias de adicionales y crea relaciones con el producto
             for additional_id in additional_item_ids:
-                print("este es ek aducuibak",additional_id)
                 for site in all_sites:
                     site_id = site[0]
-                    
-                    self.cursor.execute(f"SELECT price from orders.aditional_items where id = {additional_id}")
-                    aditiona_price = self.cursor.fetchone()[0]
-                    
-                    insert_additional_query = """
-                    INSERT INTO orders.aditional_item_instances (price, status, aditional_item_id, site_id, category_id)
-                    VALUES (%s, %s, %s, %s, %s) RETURNING id;
-                    """
-                    print("site",site_id)
-                    self.cursor.execute(insert_additional_query, (
-                        aditiona_price,
-                        True,# Aquí puedes ajustar si cada sitio podría tener un precio diferente
-                        additional_id,
-                        site_id,
-                        product_info['category_id']
-                    ))
+                    self.cursor.execute("SELECT price FROM orders.aditional_items WHERE id = %s;", (additional_id,))
+                    additional_price = self.cursor.fetchone()[0]
+
+                    self.cursor.execute("""
+                        INSERT INTO orders.aditional_item_instances (price, status, aditional_item_id, site_id, category_id)
+                        VALUES (%s, %s, %s, %s, %s) RETURNING id;
+                    """, (additional_price, True, additional_id, site_id, product_info['category_id']))
                     additional_instance_id = self.cursor.fetchone()[0]
 
-                    print("adicional", additional_instance_id)
-                    
-                    
-                    
-                    insert_product_additional_relation_query = """
+                    self.cursor.execute("""
                         INSERT INTO orders.product_aditional_item_instances (aditional_item_instance_id, product_instance_id)
                         SELECT %s, id FROM inventory.product_instances WHERE product_id = %s AND site_id = %s;
-                    """
-                    self.cursor.execute(insert_product_additional_relation_query, (
-                        additional_instance_id,
-                        product_info['product_id'],  # Usamos product_id para aplicarlo a todas las instancias de este producto
-                        site_id
-                    ))
+                    """, (additional_instance_id, product_info['product_id'], site_id))
+
+            # Elimina las asociaciones de productos con sabores existentes
+            self.cursor.execute("""
+                DELETE FROM inventory.sabor_product
+                WHERE product_id = %s;
+            """, (product_info['product_id'],))
+
+            # Inserta las nuevas asociaciones de sabores
+            for flavor_id in flavor_ids:
+                for site in all_sites:
+                    site_id = site[0]
+                    self.cursor.execute("""
+                        INSERT INTO inventory.sabor_product (sabor_id, product_id)
+                        VALUES (%s, %s);
+                    """, (flavor_id, product_info['product_id']))
 
             # Confirma los cambios
             self.cursor.execute("COMMIT;")
-            return "Producto y sus instancias actualizados con éxito en todas las sedes."
+            return "Producto, sus instancias, adicionales y sabores actualizados con éxito en todas las sedes."
 
         except Exception as e:
             # Si algo falla, revierte la transacción
             self.cursor.execute("ROLLBACK;")
             return f"Error al actualizar: {str(e)}"
+
 
 
     

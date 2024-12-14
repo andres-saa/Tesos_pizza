@@ -171,6 +171,21 @@ class Adicional:
             grouped_output.append(category_items)
 
         return grouped_output
+    
+    
+    
+    def select_all_aditional_registered_edit(self):
+        # Ejecutar la consulta
+        select_query = """
+        SELECT type_id, type_details from orders.vw_aditional_items_with_types3
+        """
+        self.cursor.execute(select_query)
+        result = self.cursor.fetchall()
+        
+        # Convertir el resultado en un diccionario de Python
+        grouped_items = [row[1] for row in result]
+        
+        return grouped_items
    
 
     def select_all_aditional_registered(self):

@@ -98,36 +98,34 @@ class aditionals(BaseModel):
 
 
 @product_router.put("/products/update/{product_instance_id}")
-def update_product_and_instances(product_instance_id: int, product: ProductSchemaPost, additional_item_ids:list[int]):
+def update_product_and_instances(product_instance_id: int, product: ProductSchemaPost, additional_item_ids: List[int], flavor_ids: List[int]):
     product_instance = Product()
     try:
         existing_product = product_instance.select_product_by_id(product_instance_id)
         if existing_product is None:
             raise HTTPException(status_code=404, detail="Product not found")
         
-        # print(existing_product)
-
-        # Convertir el esquema de entrada en un diccionario o manejarlo directamente si el método acepta un objeto del esquema
         product_info = {
-            
             "product_instance_id": product.product_id,
-            "product_id":existing_product[0]['product_id'],
+            "product_id": existing_product[0]['product_id'],
             "name": product.name,
             "price": product.price,
             "last_price": product.last_price,
             "description": product.description,
             "category_id": product.category_id,
             "status": True,
-            "parent_id":product.parent_id,
-            "img_identifier":product.img_identifier
+            "parent_id": product.parent_id,
+            "img_identifier": product.img_identifier,
+            "max_flavor": product.max_flavor
         }
         
-        
-        print(product_info)
-
-        # Llama al método de actualización que maneja tanto el producto como sus instancias y adicionales
-        update_result = product_instance.update_product_and_its_instances(product_info, additional_item_ids)
+        # Llama al método de actualización que maneja el producto, sus instancias, adicionales y sabores
+        update_result = product_instance.update_product_and_its_instances(product_info, additional_item_ids, flavor_ids)
         return {"message": update_result}
+
+    except Exception as e:
+        # Aquí se puede manejar diferentes tipos de excepciones si es necesario
+        raise HTTPException(status_code=500, detail=str(e))
 
     finally:
         product_instance.close_connection()

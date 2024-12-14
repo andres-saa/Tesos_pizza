@@ -3,15 +3,15 @@
     <div style="position: sticky;top: 4rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-5 p-0 md:p-0">
 
 
-        <div class="col-12  d-flex p lg:justify-content-center align-items-center  p-0 md:p-1"
+        <div class="col-12  d-flex p lg:justify-content-center align-items-center  p-0 md:p-0"
         style="overflow-x: auto;background-color: rgba(255, 255, 255, 0.913)">
 
         
 
-        <div v-for="section in categories?.filter(p => p.category_id != 1000)" :key="section.id" class="p-1">
+        <div v-for="section in categories" :key="section.id" class="p-1">
             <button @click="navigateToCategory(section.category_name,section.category_id)"
                 :class="checkSelected(section) ? 'selected menu-button' : 'menu-button'"
-                class="p-2 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
+                class="p-1 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
                 <span class="text-lg" style="min-width: max-content;">{{ section.category_name }}</span>
             </button>
         </div>
@@ -39,16 +39,33 @@ const categories = ref([]);
 
 
 const navigateToCategory = (categoryName,category_id) => {
-    if(category_id >= 1000){
-        router.push('/tienda-menu/productos/adicionales')
-    } else{
+    if(category_id == 1000){
+        router.push('/tienda-menu/productos/adiciones')
+    } else  if(category_id == 2000){
+        router.push('/tienda-menu/productos/sabores')
+    } else {
         router.push({ name: 'sesion', params: { menu_name: categoryName, category_id:category_id } });
     }
 };
 
 
 onMounted(async () => {
-    categories.value = await categoriesService.getCategories()});
+    categories.value = await categoriesService.getCategories()
+    categories.value.push({
+        category_name:'Adiciones',
+        category_id:1000
+    })
+
+    categories.value.push({
+        category_name:'Sabores',
+        category_id:2000
+    })
+}
+   
+
+
+);
+
 
 
 watch(() => store.restaurant_id, async() => {
@@ -57,7 +74,19 @@ watch(() => store.restaurant_id, async() => {
 
 const checkSelected = (section) => {
     const route = useRoute(); // Asegúrate de que tienes acceso a useRoute aquí
-    return route.params.category_id == section.category_id; // Verifica si el path actual contiene la cadena section
+    
+    // Verifica si el path actual incluye alguna de las palabras clave
+    const isAdiciones = route.path.includes('adiciones');
+    const isSabores = route.path.includes('sabores');
+
+    // Determina si la sección actual corresponde a 'adicionales' o 'Sabores'
+    if ((section.category_name === 'Adiciones' && isAdiciones) ||
+        (section.category_name === 'Sabores' && isSabores)) {
+        return true;
+    }
+
+    // Compara el category_id del path actual con el de la sección
+    return route.params.category_id == section.category_id;
 };
 
 

@@ -3,7 +3,7 @@
     <Toast></Toast>
     <Dialog closeOnEscape v-model:visible="store.visibles.dialogAddProduct" modal style="width: 40rem;">
         <Button @click="store.visibles.dialogAddProduct = false" severity="danger"
-            style="position: absolute; right: 0; top: 0; right: -1rem; top: -1rem;" rounded icon="pi pi-times"></Button>
+            style="position: absolute; right: 0; top: 0; right: -1rem; top: -1rem; border-radius: 50%;" rounded icon="pi pi-times"></Button>
 
         <div class="image" style="display: flex; flex-direction: column;position: relative; justify-content: end; align-items: end;">
             <img v-if="imagePreview" :src="imagePreview" alt="Preview"
@@ -42,31 +42,20 @@
                 <span>Precio Actual:</span>
                 <InputNumber v-model="newProduct.price" prefix="$" maxFractionDigits="0" style="width: 100%;"></InputNumber>
             </div>
+
+            <div>
+                <span>cuantos sabores puede combinar?:</span>
+                <InputNumber v-model="newProduct.max_flavor" suffix=" sabores" maxFractionDigits="0" rows="3" min="0" max="2"
+                    style="width: 100%;resize: none;">
+                </InputNumber>
+            </div>
         </div>
 
-        <div class="m-auto col-12 p-0" style="max-width: 600px;" v-for="(items, grupo) in adicionales" :key="grupo">
-            <p class="text-center text-2xl py-4" style="font-weight: bold; text-transform: capitalize; display: flex; align-items: center; justify-content: center; gap: 1rem;">
-                <span>{{ grupo }}</span>
-                <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo, $event)" />
-            </p>
-            <DataTable stripedRows :value="items" class="p-0">
-                <Column style="text-transform: capitalize;" class="p-0" field="aditional_item_name" header="Nombre">
-                    <template #body="adicion">
-                        <span style="text-transform: uppercase;">{{ adicion.data.item_name }}</span>
-                    </template>
-                </Column>
-                <Column class="p-0" field="aditional_item_price" header="Precio">
-                    <template #body="adicion">
-                        <span style="font-weight: bold;">{{ formatoPesosColombianos(adicion.data.item_price) }}</span>
-                    </template>
-                </Column>
-                <Column class="py-0 pl-4 p-0" header="Estado" headerStyle="width:1rem">
-                    <template #body="adicion">
-                        <InputSwitch v-model="adicion.data.status" @update:modelValue="handleSwitch(adicion.data.item_id, grupo, $event)" />
-                    </template>
-                </Column>
-            </DataTable>
-        </div>
+
+
+
+
+
 
         <template #footer>
             <div class="col-12 px-0 pb-0">
@@ -84,13 +73,16 @@ import { formatoPesosColombianos } from '@/service/formatoPesos';
 import { productService } from '@/service/ProductService';
 import { restaurantService } from '@/service/restaurant/restaurantService.js';
 import { categoriesService } from '@/service/restaurant/categoriesService';
-
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 
 import { useSitesStore } from '../../store/site';
+import {fetchService} from '../../service/utils/fetchService'
+import { URI } from '../../service/conection';
 
 
+
+const sabores = ref([])
 
 
 const site_store = useSitesStore()
@@ -108,7 +100,8 @@ const newProduct = ref({
     last_price: 0,
     category_id: null,
     restaurant_id: 5,
-    img_identifier: null
+    img_identifier: null,
+    max_flavor:0
 });
 const categories = ref([]);
 const restaurants = ref([]);
@@ -125,6 +118,9 @@ onMounted(async () => {
     } catch (error) {
         console.error('Error loading data:', error);
     }
+
+
+    sabores.value = await fetchService.get(`${URI}/get-flavor-grouped`)
 });
 
 
@@ -136,6 +132,8 @@ watch(restaurantId, async (newRestaurantId, oldRestaurantId) => {
         newProduct.value.category_id = null
     }
 }, { deep: true });
+
+
 
 
 
@@ -203,24 +201,64 @@ const prepareToSend = () => {
 };
 
 const send = async() => {
+    // Validaciones
+    if (!newProduct.value.product_name) {
+        alert('Por favor ingrese el nombre del producto.');
+        return;
+    }
+
+    // Verificar que el precio sea un número
+    if (newProduct.value.price === undefined || newProduct.value.price === null || newProduct.value.price === '') {
+        alert('Por favor ingrese el precio del producto.');
+        return;
+    } else if (isNaN(newProduct.value.price)) {
+        alert('El precio debe ser un número.');
+        return;
+    }
+
+    // Verificar que last_price sea un número (opcional, pero si se proporciona debe ser un número)
+    if (newProduct.value.last_price !== undefined && newProduct.value.last_price !== '' && isNaN(newProduct.value.last_price)) {
+        alert('El "last_price" debe ser un número si se proporciona.');
+        return;
+    }
+
+    if (!newProduct.value.product_description) {
+        alert('Por favor ingrese la descripción del producto.');
+        return;
+    }
+
+    if (!newProduct.value.category_id) {
+        alert('Por favor seleccione una categoría.');
+        return;
+    }
+
+    // max_flavor: Asegurar que se proporcione y sea numérico
+    if (newProduct.value.max_flavor === undefined || newProduct.value.max_flavor === null || newProduct.value.max_flavor === '') {
+        alert('Por favor ingrese el número máximo de sabores.');
+        return;
+    } else if (isNaN(newProduct.value.max_flavor)) {
+        alert('El número máximo de sabores debe ser un número.');
+        return;
+    }
+
     const product = {
         "name": newProduct.value.product_name,
-        "price": newProduct.value.price || 0,
-        "last_price": newProduct.value.last_price || 0,
+        "price": Number(newProduct.value.price) || 0,
+        "last_price": Number(newProduct.value.last_price) || 0,
         "description": newProduct.value.product_description,
         "category_id": newProduct.value.category_id,
-        "restaurant_id":5,
+        "restaurant_id": 5,
         "status": true,
-        "img_identifier": newProduct.value.img_identifier || '', // Establecer un valor predeterminado
-        "parent_id": null // Asegúrate de que este campo esté incluido si es necesario
+        "img_identifier": newProduct.value.img_identifier || '',
+        "parent_id": null,
+        "max_flavor": Number(newProduct.value.max_flavor)
     };
 
     const additional_item_ids = seleccionados.value;
     await productService.createProductInstance(product, additional_item_ids);
-    resetForm()
-   
-
+    resetForm();
 };
+
 
 // Resetear el formulario
 const resetForm = () => {

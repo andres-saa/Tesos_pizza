@@ -81,9 +81,17 @@ const router = createRouter({
                   },
 
                   {
-                    path: 'productos/adicionales',
+                    path: 'productos/adiciones',
                     name: 'adicionales',
                     component: () => import('@/views/pages/tienda/adicionales.vue')
+                    // meta: { requireMenu: true },
+                    // meta: { requiresAuth: true },
+                  },
+
+                  {
+                    path: 'productos/sabores',
+                    name: 'sabores',
+                    component: () => import('@/views/pages/tienda/sabores.vue')
                     // meta: { requireMenu: true },
                     // meta: { requiresAuth: true },
                   },

@@ -43,7 +43,7 @@ const props = defineProps({
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 .5rem #00000020; border: 1px solid #00000030;
+    box-shadow: 0 0 .5rem #00000050; border: 1px solid #00000030;
     border-radius: .5rem;
     background-color: white;
     cursor: pointer;

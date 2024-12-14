@@ -2,7 +2,7 @@
     <Toast />
 
     <div class="container2 p-shadow p-3" @click="open(props.product)"
-        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020;background-color: #fff; border: 1px solid #00000030;">
+        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020; border: 1px solid #00000030;">
 
         <div class="name-phone">
             
@@ -73,6 +73,10 @@
 
 
             </div>
+
+
+
+            <!-- <Button style="position: absolute;right: -1rem; top: -1rem;aspect-ratio: 1 / 1;" icon="pi pi-plus" rounded></Button> -->
 
     </div>
 
@@ -278,6 +282,18 @@ const sizes = ref([])
     padding: 1rem;
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     border-radius: 0.5rem 0.5rem 1.4rem 0.6rem;
+}
+
+.container2{
+    transition: all .2s ease;
+}
+
+.container2:hover{
+    background-color:var(--primary-color);
+    transform: translatey(-.5rem);
+    color: white;
+    cursor: pointer;
+
 }
 
 .character {

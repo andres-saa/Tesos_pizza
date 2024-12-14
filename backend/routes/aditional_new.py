@@ -36,6 +36,16 @@ def get_adicionales_new():
     adicional_instance.close_connection()
     return adicionales
 
+
+@adicional_new_router.get("/all-aditional-registered-edit" , tags=['products'])
+def get_adicionales_new():
+    adicional_instance = Adicional()
+    adicionales = adicional_instance.select_all_aditional_registered_edit()
+    adicional_instance.close_connection()
+    return adicionales
+
+
+
 @adicional_new_router.get("/adicionales-unique-site/{site_id}" , tags=['products'])
 def get_adicionales_new(site_id:int):
     adicional_instance = Adicional()
