@@ -200,6 +200,18 @@ def get_products_by_category_name(category_name: str):
 
 
 
+@product_router.put("/set-main-product/{product_id}")
+def update_product(product_id: int):
+    product_instance = Product()
+    result = product_instance.set_main_product(product_id)
+
+    # product_instance.set_main_product(product_id)
+    product_instance.close_connection()
+    return result
+
+
+
+
 @product_router.put("/products/{product_id}")
 def update_product(product_id: int, product: ProductSchemaPost):
     product_instance = Product()

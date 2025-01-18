@@ -136,6 +136,32 @@ def create_adition_category(type_id:int):
     return result
 
 
+
+@adition_router.delete('/delete_aditional/{aditional_id}',tags=['flavors and aditions'])
+def create_adition_category(aditional_id:int):
+    
+    aditional_instance = Aditions()
+    result = aditional_instance.delete_aditional(id=aditional_id)
+    return result
+
+@adition_router.delete('/delete_flavor/{flavor_id}',tags=['flavors and aditions'])
+def create_adition_category(flavor_id:int):
+    aditional_instance = Aditions()
+    result = aditional_instance.delete_flavor(flavor_id)
+    return result
+
+
+@adition_router.delete('/delete_flavor_group/{flavor_id}',tags=['flavors and aditions'])
+def create_adition_category(flavor_id:int):
+    aditional_instance = Aditions()
+    result = aditional_instance.delete_flavor_group(flavor_id)
+    return result
+
+
+
+
+
+
 @adition_router.get('/get_flavors_by_product/{product_id}', tags=['flavors and aditions'])
 def get_flavors_by_product(product_id: int):
     aditional_instance = Aditions()
@@ -195,7 +221,7 @@ class ProductCategorySchema(BaseModel):
     name: str
     index: int
     resturant_id: int
-    main: bool
+    # main: bool = False
 
 # Crear categoría de producto
 @adition_router.post('/product-categories/', tags=['product categories'])

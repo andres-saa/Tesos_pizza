@@ -181,6 +181,47 @@ class Product:
         self.cursor.execute(select_query, (category_id, site_id))
         columns = [desc[0] for desc in self.cursor.description]
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
+    
+
+    def set_main_product(self, product_id: int):
+        try:
+            # Inicia una transacción
+            self.cursor.execute("BEGIN;")
+            
+            # Obtener la categoría del producto
+            self.cursor.execute(
+                "SELECT category_id FROM inventory.products WHERE id = %s;",
+                (product_id,)
+            )
+            result = self.cursor.fetchone()
+            if not result:
+                self.cursor.execute("ROLLBACK;")
+                return "Producto no encontrado."
+            category_id = result[0]
+            
+            # Poner main = false para todos los productos de la misma categoría
+            self.cursor.execute(
+                "UPDATE inventory.products SET main = false WHERE category_id = %s;",
+                (category_id,)
+            )
+            
+            # Poner main = true para el producto especificado
+            self.cursor.execute(
+                "UPDATE inventory.products SET main = true WHERE id = %s;",
+                (product_id,)
+            )
+            
+            # Confirmar la transacción
+            self.cursor.execute("COMMIT;")
+            return "Producto principal actualizado con éxito."
+        
+        except Exception as e:
+            # Revertir la transacción en caso de error
+            self.cursor.execute("ROLLBACK;")
+            return f"Error al actualizar el producto principal: {str(e)}"
+
+
+
 
         
     def update_product_and_its_instances(self, product_info, additional_item_ids, flavor_ids):

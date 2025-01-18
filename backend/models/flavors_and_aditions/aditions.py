@@ -120,7 +120,7 @@ class Aditions:
 
     def get_additional_categories(self):
         
-        query = self.db.build_select_query('inventory.flavor_group',fields=["*"])
+        query = self.db.build_select_query('inventory.flavor_group',fields=["*"],condition='exist=true')
         result = self.db.fetch_all(query=query)
         
         return result
@@ -129,7 +129,7 @@ class Aditions:
 
     def get_additional_categories_categories(self):
         
-        query = self.db.build_select_query('orders.aditional_order_types',fields=["*"])
+        query = self.db.build_select_query('orders.aditional_order_types',fields=["*"],condition='exist=true')
         result = self.db.fetch_all(query=query)
         
         return result
@@ -225,6 +225,13 @@ class Aditions:
         
         return result
     
+    def delete_aditional(self, id:int):
+        
+        query  = self.db.build_soft_delete_query('orders.aditional_items',condition=f'id = {id}',returning='id')
+        result = self.db.execute_query(query=query,fetch=True)
+        
+        return result
+    
     
     def delete_aditional_group(self,type_id:int):
         
@@ -233,7 +240,21 @@ class Aditions:
         
         return result
     
+
+    def delete_flavor_group(self,id:int):
+        
+        query  = self.db.build_soft_delete_query('inventory.flavor_group',condition=f'id = {id}',returning='id')
+        result = self.db.execute_query(query=query,fetch=True)
+        
+        return result
     
+
+    def delete_flavor(self,id:int):
+        
+        query  = self.db.build_soft_delete_query('inventory.sabor',condition=f'id = {id}',returning='id')
+        result = self.db.execute_query(query=query,fetch=True)
+        
+        return result
 
 
     def create_product_category(self, data: ProductCategorySchema):
