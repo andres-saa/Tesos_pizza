@@ -145,7 +145,8 @@ class Aditions:
         JOIN inventory.flavor_group_flavor fgf ON fg.id = fgf.flavor_group_id
         JOIN inventory.sabor s ON s.id = fgf.flavor_id
         LEFT JOIN inventory.sabor_product sp ON s.id = sp.sabor_id AND sp.product_id = %s
-        ORDER BY s.premium desc;
+        WHERE fg.exist = TRUE AND s.exist = TRUE
+        ORDER BY s.premium DESC;
         """
         params = (product_id,)
         raw_result = self.db.fetch_all(query=query, params=params)
