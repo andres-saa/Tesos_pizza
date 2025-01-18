@@ -98,13 +98,13 @@ const { onMenuToggle } = useLayout();
             
         </div>
 
-        <div class="layout-main-container  pr-0 pl-0  " :class="route.path != '/pedido-manual'?'pt-7':'pt-0 pb-0'" style="">
+        <div class="layout-main-container  pr-0 pl-0  " :class="route.path != '/pedido-manual'?'pt-6':'pt-0 pb-0'" style="">
 
             <div class="layout-main  ">
                
 
        
-                    <router-view class="p-0"></router-view>
+                    <router-view style="" class="p-0"></router-view>
                
             </div>
             <!-- <app-footer></app-footer> -->

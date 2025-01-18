@@ -1,4 +1,47 @@
 <template>
+
+
+
+
+
+<!-- Diálogo de confirmación para eliminar adición individual -->
+<Dialog v-model:visible="visibleDialogDeleteAdition" header="Confirmar Eliminación" modal style="width: 30rem;">
+    <div class="py-3">
+        <p>¿Estás seguro de que deseas eliminar la adición <b>{{ aditionToDelete.name }}</b>?</p>
+    </div>
+    <template #footer>
+        <div style="display: flex; justify-content: end; gap: 1rem;">
+            <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="closeDeleteAdition"></Button>
+            <Button label="Eliminar" icon="pi pi-check" class="p-button-text p-button-danger" @click="deleteAdition"></Button>
+        </div>
+    </template>
+</Dialog>
+
+<!-- Diálogo de confirmación para eliminar grupo de adiciones -->
+<Dialog v-model:visible="visibleDialogDeleteAditionGroup" header="Confirmar Eliminación" modal style="width: 30rem;">
+    <div class="py-3">
+        <p>¿Estás seguro de que deseas eliminar el grupo de adiciones <b>{{ aditionGroupToDelete.name }}</b>?</p>
+    </div>
+    <template #footer>
+        <div style="display: flex; justify-content: end; gap: 1rem;">
+            <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="closeDeleteAditionGroup"></Button>
+            <Button label="Eliminar" icon="pi pi-check" class="p-button-text p-button-danger" @click="deleteAditionGroup"></Button>
+        </div>
+    </template>
+</Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="px-3" style="">
         <div class="p-2 mx-auto"
             style=" max-width: 540px;overflow: hidden;background-color: var(--primary-color);border-bottom: 2px solid #00000050; border-radius: .5rem .5rem 0 0;  box-shadow:  0 1rem 1rem #00000030;overflow: hidden; gap: 1rem; padding:  0 3rem;margin: auto;display: flex;justify-content: space-between;align-items: center;">
@@ -44,8 +87,14 @@
             <div style="display: flex;gap: .5rem;justify-content: end;">
                 <Button @click="openAdditionGroupEdit(items)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning" class="p-1 m-0"
                     rounded icon=" pi pi-pencil"></Button>
-                <Button style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
-                    icon=" pi pi-trash"></Button>
+                    <Button 
+    @click="openDeleteAditionGroup(items)" 
+    style="width: 2.5rem; height: 2.5rem; border-radius: .3rem;" 
+    severity="danger" 
+    class="p-1" 
+    rounded 
+    icon="pi pi-trash">
+</Button>
             </div>
 
         </div>
@@ -76,8 +125,14 @@
                     <div style="display: flex;gap: .5rem;justify-content: end;">
                         <Button @click="openAditionEdit(adicion.data)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning"
                             class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
-                        <Button style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1"
-                            rounded icon=" pi pi-trash"></Button>
+                            <Button 
+                                @click="openDeleteAdition(adicion.data)" 
+                                style="width: 2.5rem; height: 2.5rem; border-radius: .3rem;" 
+                                severity="danger" 
+                                class="p-1" 
+                                rounded 
+                                icon="pi pi-trash">
+                            </Button>
                     </div>
                 </template>
             </Column>
@@ -224,8 +279,15 @@ const visibleDialogAddAdition = ref(false)
 const visibleDialogAddAditionGroup = ref(false)
 const visibleDialogEditAdition = ref(false)
 const visibleDialogEditAditionGroup = ref(false)
+// Variables para eliminar adiciones individuales
+const visibleDialogDeleteAdition = ref(false);
+const aditionToDelete = ref({});
 
-const types_adition = ref({})
+// Variables para eliminar grupos de adiciones
+const visibleDialogDeleteAditionGroup = ref(false);
+const aditionGroupToDelete = ref({});
+
+const types_adition = ref([])
 
 const new_adition = ref({
   "name": '',
@@ -238,6 +300,88 @@ const new_adition_group = ref({
     name: '',
 
 })
+
+
+
+
+
+
+
+const openDeleteAdition = (adition) => {
+    aditionToDelete.value = adition;
+    visibleDialogDeleteAdition.value = true;
+}
+
+/**
+ * Cierra el diálogo de confirmación para eliminar una adición individual.
+ */
+const closeDeleteAdition = () => {
+    visibleDialogDeleteAdition.value = false;
+    aditionToDelete.value = {};
+}
+
+/**
+ * Elimina una adición individual utilizando el endpoint correspondiente.
+ */
+const deleteAdition = async () => {
+    if (!aditionToDelete.value.id) {
+        alert("ID de la adición no encontrado.");
+        return;
+    }
+
+    try {
+        await fetchService.delete(`${URI}/delete_aditional/${aditionToDelete.value.id}`);
+        // Actualizar la lista de adiciones después de la eliminación
+        closeDeleteAdition();
+
+        await update();
+        // Cerrar el diálogo de confirmación
+    } catch (error) {
+        console.error('Error al eliminar la adición:', error);
+        alert("Hubo un error al eliminar la adición.");
+    }
+}
+
+
+const openDeleteAditionGroup = (group) => {
+    aditionGroupToDelete.value = group;
+    visibleDialogDeleteAditionGroup.value = true;
+}
+
+/**
+ * Cierra el diálogo de confirmación para eliminar un grupo de adiciones.
+ */
+const closeDeleteAditionGroup = () => {
+    visibleDialogDeleteAditionGroup.value = false;
+    aditionGroupToDelete.value = {};
+}
+
+/**
+ * Elimina un grupo de adiciones utilizando el endpoint correspondiente.
+ */
+const deleteAditionGroup = async () => {
+    if (!aditionGroupToDelete.value.type_id) {
+        alert("ID del grupo no encontrado.");
+        return;
+    }
+
+    try {
+        await fetchService.delete(`${URI}/delete_aditional_category/${aditionGroupToDelete.value.type_id}`);
+        // Actualizar la lista de adiciones y grupos después de la eliminación
+        closeDeleteAditionGroup();
+
+        await update();
+        // Cerrar el diálogo de confirmación
+    } catch (error) {
+        console.error('Error al eliminar el grupo de adiciones:', error);
+        alert("Hubo un error al eliminar el grupo de adiciones.");
+    }
+}
+
+
+
+
+
 
 
 

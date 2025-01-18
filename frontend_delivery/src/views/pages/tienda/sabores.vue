@@ -45,7 +45,7 @@
             <div style="display: flex;gap: .5rem;justify-content: end;">
                 <Button @click="openFalvorGroupEdit(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;"
                     severity="warning" class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
-                <Button style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
+                <Button @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
                     icon=" pi pi-trash"></Button>
             </div>
 
@@ -97,7 +97,7 @@
 
 
 
-                        <Button style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1"
+                        <Button @click="openFlavorDeleteDialog(adicion.data)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1"
                             rounded icon=" pi pi-trash"></Button>
                     </div>
                 </template>
@@ -138,6 +138,27 @@
         </template>
 
     </Dialog>
+
+    <Dialog v-model:visible="visibleDialogDeleteFlavor" header="Eliminar sabor" modal style="width: 30rem;">
+    <p>¿Estás seguro de que deseas eliminar el sabor <b>{{ flavorToDelete.flavor_name }}</b>?</p>
+    <template #footer>
+        <div style="display: flex;justify-content: end;">
+            <Button @click="visibleDialogDeleteFlavor = false" label="Cancelar" class="p-button-text" />
+            <Button @click="deleteFlavor" label="Eliminar" severity="danger" style="margin-left: 1rem;" />
+        </div>
+    </template>
+</Dialog>
+
+
+<Dialog v-model:visible="visibleDialogDeleteFlavorGroup" header="Eliminar grupo" modal style="width: 30rem;">
+    <p>¿Estás seguro de que deseas eliminar el grupo <b>{{ groupToDelete.group_name }}</b>?</p>
+    <template #footer>
+        <div style="display: flex;justify-content: end;">
+            <Button @click="visibleDialogDeleteFlavorGroup = false" label="Cancelar" class="p-button-text" />
+            <Button @click="deleteFlavorGroup" label="Eliminar" severity="danger" style="margin-left: 1rem;" />
+        </div>
+    </template>
+</Dialog>
 
 
 
@@ -248,6 +269,49 @@ const visibleDialogAddFlavor = ref(false)
 const visibleDialogAddFlavorGroup = ref(false)
 const visibleDialogEditFlavor = ref(false)
 const visibleDialogEditFlavorGroup = ref(false)
+
+
+
+
+const visibleDialogDeleteFlavor = ref(false);
+const visibleDialogDeleteFlavorGroup = ref(false);
+
+const flavorToDelete = ref({});
+const groupToDelete = ref({});
+
+const openFlavorDeleteDialog = (flavor) => {
+    flavorToDelete.value = { ...flavor };
+    visibleDialogDeleteFlavor.value = true;
+};
+
+const openGroupDeleteDialog = (group) => {
+    groupToDelete.value = { ...group };
+    visibleDialogDeleteFlavorGroup.value = true;
+};
+
+const deleteFlavor = async () => {
+    try {
+        await fetchService.delete(`${URI}/delete_flavor/${flavorToDelete.value.flavor_id}`);
+        update();
+        visibleDialogDeleteFlavor.value = false;
+    } catch (error) {
+        console.error('Error eliminando el sabor:', error);
+        alert('Hubo un error eliminando el sabor.');
+    }
+};
+
+const deleteFlavorGroup = async () => {
+    try {
+        await fetchService.delete(`${URI}/delete_flavor_group/${groupToDelete.value.group_id}`);
+        update();
+        visibleDialogDeleteFlavorGroup.value = false;
+    } catch (error) {
+        console.error('Error eliminando el grupo:', error);
+        alert('Hubo un error eliminando el grupo.');
+    }
+};
+
+
 
 const types_flavor = ref({})
 

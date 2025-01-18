@@ -1,5 +1,57 @@
 <template>
     <div class="col-12  m-0 p-0" style="background-color: transparent;border: none; ">
+
+
+
+        <!-- Diálogo para confirmar eliminación de adicional -->
+<Dialog header="Confirmación" v-model:visible="displayConfirmationAdicional" :style="{ width: '350px' }" :modal="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>¿Seguro que desea eliminar <b>{{ adicionalParaBorrar.name }}</b>?</span>
+    </div>
+    <template #footer>
+        <Button label="No" icon="pi pi-times" @click="closeConfirmationAdicional" class="p-button-text" />
+        <Button label="Sí" icon="pi pi-check" @click="deleteAdicional(adicionalParaBorrar[ids[route.params.adicionales]])" class="p-button-text" autofocus />
+    </template>
+</Dialog>
+
+
+<!-- Diálogo existente para confirmar eliminación de grupo -->
+<Dialog header="Confirmación" v-model:visible="displayConfirmation" :style="{ width: '350px' }" :modal="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>¿Seguro que desea eliminar <b>{{ grupoParaBorrar.name }}</b>?</span>
+    </div>
+    <template #footer>
+        <Button label="No" icon="pi pi-times" @click="closeConfirmation" class="p-button-text" />
+        <Button label="Sí" icon="pi pi-check" @click="deleteGrupoAdicional(grupoParaBorrar[grupoIds[route.params.adicionales]])" class="p-button-text" autofocus />
+    </template>
+</Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class=" p-0 lg:p-6" style=" border: none;">
             <p class="text-2xl titulo my-3" style="text-transform: capitalize; font-weight: bold;">grupos de {{ route.params.adicionales }} 
                 
@@ -220,6 +272,102 @@ const openEditar = (adicional) => {
     adicionalEditar.value = adicional
 
 }
+
+
+
+
+
+
+
+
+
+
+// Referencias para manejar la eliminación de adicionales individuales
+const adicionalParaBorrar = ref(null);
+const displayConfirmationAdicional = ref(false);
+
+// Función para abrir el diálogo de confirmación de eliminación de adicional
+const openConfirmationAdicional = (adicional) => {
+    adicionalParaBorrar.value = adicional;
+    displayConfirmationAdicional.value = true;
+}
+
+// Función para cerrar el diálogo de confirmación de eliminación de adicional
+const closeConfirmationAdicional = () => {
+    displayConfirmationAdicional.value = false;
+    adicionalParaBorrar.value = null;
+}
+
+// Función para eliminar un adicional individual
+const deleteAdicional = async (adicional_id) => {
+    const url = `${URI}/delete_aditional/${adicional_id}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            closeConfirmationAdicional();
+            getAdicionaes();
+            getGrupoAdicionaes().then(data => data.map(dato => getGrupos(dato[grupoIds[route.params.adicionales]])));
+        } else {
+            throw new Error('Error al eliminar el adicional');
+        }
+    } catch (error) {
+        console.error('Error al eliminar el adicional:', error);
+    }
+}
+
+// Referencias para manejar la eliminación de grupos de adicionales (si no están ya)
+const grupoParaBorrar = ref(null);
+const displayConfirmation = ref(false);
+
+// Función para abrir el diálogo de confirmación de eliminación de grupo
+const openConfirmation = (grupo) => {
+    grupoParaBorrar.value = grupo;
+    displayConfirmation.value = true;
+}
+
+// Función para cerrar el diálogo de confirmación de eliminación de grupo
+const closeConfirmation = () => {
+    displayConfirmation.value = false;
+}
+
+// Función para eliminar un grupo de adicionales
+const deleteGrupoAdicional = async (grupoId) => {
+    const url = `${URI}/delete_aditional_category/${grupoId}`; // Utiliza el endpoint correcto
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            closeConfirmation();
+            getAdicionaes();
+            getGrupoAdicionaes().then(data => data.map(dato => getGrupos(dato[grupoIds[route.params.adicionales]])));
+        } else {
+            throw new Error('Error al eliminar el grupo de adicionales');
+        }
+    } catch (error) {
+        console.error('Error al eliminar el grupo de adicionales:', error);
+    }
+}
+
+
+
+
+
+
+
+
 
 
 const guardarAdicional = (adicional_id) => {

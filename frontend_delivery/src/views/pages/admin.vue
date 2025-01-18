@@ -1,6 +1,6 @@
 <template>
 
-  <div style="position: sticky;top: 4rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-1 p-0 md:p-0">
+  <div style="position: sticky;top: 3rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-1 p-0 md:p-0">
 
 
       <div class="col-12  d-flex p lg:justify-content-center align-items-center  p-0 md:p-1"
@@ -11,7 +11,7 @@
       <div v-for="section in categories" :key="section.category_id" class="p-1">
           <button @click="navigateToCategory(section.to)"
               :class="checkSelected(section.to) ? 'selected menu-button' : 'menu-button'"
-              class="p-2 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
+              class="p-0 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
               <span class="text-lg" style="min-width: max-content;">{{ section.category_name }}</span>
           </button>
       </div>

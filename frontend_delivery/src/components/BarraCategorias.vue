@@ -1,9 +1,9 @@
 <template>
 
-    <div style="position: sticky;top: 4rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-5 p-0 md:p-0">
+    <div style="position: sticky;top: 3rem; z-index: 999; background-color: white;" class="col-12 shadow-3 d-flex p lg:justify-content-center align-items-center mb-5 p-0 md:p-0">
 
 
-        <div class="col-12  d-flex p lg:justify-content-center align-items-center  p-0 md:p-0"
+        <div class="col-12  d-flex p  align-items-center  p-0 md:p-0"
         style="overflow-x: auto;background-color: rgba(255, 255, 255, 0.913)">
 
         

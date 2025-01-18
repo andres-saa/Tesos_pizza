@@ -1,9 +1,18 @@
 <template>
     <!-- {{ store.currentProduct }} -->
 
-    <div class="container shadow-4 col-12 shadow-2 p-3" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
+    <div @mouseover=" () => house = true" @mouseleave="() => house = false" class="container shadow-4 col-12 shadow-2 p-3" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
 
         <div style="display: flex; position: absolute; right: -1rem; top: -1rem; gap: 0.2rem;z-index: 9;">
+            <Button 
+                v-if="house || props.product.main" 
+                class="shadow-2" 
+                @click="setMainProduct(props.product.product_id)" 
+                severity="success" 
+                style="font-weight: bold; width: 2rem; height: 2rem; border-radius: 50%; right: 0; top: 0;" 
+                rounded
+                icon="pi pi-home">
+            </Button>
             <Button class="shadow-2" @click="prepareToDelete(props.product)" severity="danger" style=" width: 2rem;height: 2rem; right: 0;top: 0;border-radius: 50%;" rounded
                 icon="pi pi-times"></Button>
 
@@ -11,8 +20,7 @@
             <Button class="shadow-2" @click="prepareToEdit(props.product)" severity="warning" style="font-weight: bold;width: 2rem;height: 2rem;border-radius: 50%;  right: 0;top: 0;" rounded
                 icon="pi pi-pencil"></Button>
 
-                <Button class="shadow-2" @click="prepareToEdit(props.product)" severity="success" style="font-weight: bold;width: 2rem;height: 2rem;border-radius: 50%;  right: 0;top: 0;" rounded
-                icon="pi pi-home"></Button>
+      
 
         </div>
 
@@ -85,10 +93,13 @@ import { useProductStore } from '../store/productStore';
 import { URI } from '../service/conection';
 import { useSitesStore } from '../store/site';
 
+const emit = defineEmits(['update'])
+
+
 const store = useProductStore()
 
 
-
+const house = ref(false)
 
 const props = defineProps({
     product: {
@@ -115,7 +126,38 @@ const prepareToEdit = (product) => {
 }
 
 
+const setMainProduct = async (productId) => {
 
+    props.product.main = true
+    try {
+        const response = await fetch(`${URI}/set-main-product/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log('Producto principal actualizado:', result);
+
+        // Opcional: Actualizar el estado local o la tienda para reflejar el cambio
+        // Por ejemplo, puedes emitir un evento, recargar los productos o actualizar el estado del producto actual
+        // store.fetchProducts(); // Si tienes una función para recargar productos
+        // store.currentProduct = result; // Actualizar el producto actual si corresponde
+        // location.reload()
+
+        emit('update')
+
+
+    } catch (error) {
+        console.error('Error al establecer el producto principal:', error);
+        // Opcional: Mostrar una notificación de error al usuario
+    }
+};
 
 
 const siteStore = useSitesStore()

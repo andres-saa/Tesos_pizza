@@ -93,13 +93,17 @@
 
 
         <div class="m-auto col-12 p-0" style="max-width: 600px;" v-for="(items, grupo) in adicionales" :key="grupo">
-            <p class="text-center text-2xl py-4"
-                style="font-weight: bold;text-transform: capitalize;display: flex; align-items: center;justify-content: center;gap: 1rem;">
+            <p class="text-center text-2xl py-0 px-2 shadow"
+                style="font-weight: bold; text-transform: capitalize;border-bottom: 3px solid #00000030;  display: flex; align-items: center;justify-content: space-between;gap: 1rem;">
+                <Button @click="() => visible_group_items[grupo] = !visible_group_items[grupo]" class="p-2" text  style=" aspect-ratio: 1 / 1;border: none;color: var(--primary-color); font-weight: bold;">
+                    <i class="pi pi-angle-down text-3xl" ></i>
+                </Button>
                 <span>{{ grupo }}</span>
                 <!-- {{ currentAditions }} -->
-                <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo, $event)" />
+                <InputSwitch style="min-width: 3rem;" :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo, $event)" />
             </p>
-            <DataTable stripedRows :value="items" class="p-0">
+
+            <DataTable v-if="visible_group_items[grupo]" stripedRows :value="items" class="p-0">
                 <Column style="text-transform: capitalize;" class="p-0" field="aditional_item_name" header="Nombre">
                     <template #body="adicion">
                         <span style="text-transform: uppercase;"> {{ adicion.data.item_name }} </span>
@@ -119,6 +123,7 @@
                     </template>
                 </Column>
             </DataTable>
+
         </div>
 
 
@@ -146,12 +151,18 @@
 
 
 
-<div class="m-auto col-12 p-0" style="max-width: 600px;" v-for="(grupo) in sabores">
-            <p class="text-center text-2xl py-4" style="font-weight: bold; text-transform: capitalize; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+<div class="m-auto col-12 p-0" style="max-width: 600px;" v-for="grupo in sabores">
+            <p class="text-center text-2xl py-1 shadow px-2" style="font-weight: bold;border-bottom: 3px solid #00000030;  text-transform: capitalize; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+                
+                <Button @click="() => visible_group_items[grupo.group_name] = !visible_group_items[grupo.group_name]" class="p-2" text  style=" aspect-ratio: 1 / 1;border: none;color: var(--primary-color); font-weight: bold;">
+                    <i class="pi pi-angle-down text-3xl" ></i>
+                </Button>
                 <span>{{ grupo.group_name }}</span>
                 <!-- <InputSwitch :modelValue="allSelected(grupo)" @update:modelValue="toggleGroup(grupo)" /> -->
+                <InputSwitch style="min-width: 3rem;" :modelValue="allFlavorsSelected(grupo)" @update:modelValue="toggleFlavorGroup(grupo, $event)" />
+
             </p>
-            <DataTable stripedRows :value="grupo.flavors" class="p-0">
+            <DataTable v-if="visible_group_items[grupo.group_name]" stripedRows :value="grupo.flavors" class="p-0">
                 <Column style="text-transform: capitalize;" class="p-0" field="aditional_item_name" header="Nombre">
                     <template #body="adicion">
                         <span style="text-transform: uppercase;">{{ adicion.data.flavor_name }}</span>
@@ -216,6 +227,32 @@ import { useSitesStore } from '../../store/site';
 
 
 
+
+// Verifica si todos los sabores en un grupo están seleccionados
+const allFlavorsSelected = (grupo) => {
+    return grupo.flavors.every(flavor => flavor.has_flavor);
+};
+
+// Cambiar el estado de todos los sabores en un grupo
+const toggleFlavorGroup = (grupo, value) => {
+    grupo.flavors.forEach(flavor => {
+        flavor.has_flavor = value;
+        handleFlavorSwitch(flavor.flavor_id, value);
+    });
+};
+
+// Manejar conmutadores individuales de sabores
+const handleFlavorSwitch = (flavorId, value) => {
+    sabores.value.forEach(grupo => {
+        const flavor = grupo.flavors.find(f => f.flavor_id === flavorId);
+        if (flavor) {
+            flavor.has_flavor = value;
+        }
+    });
+};
+
+
+const visible_group_items = ref([])
 
 const sabores = ref([])
 
