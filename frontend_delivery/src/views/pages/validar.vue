@@ -47,6 +47,7 @@ import { onMounted, ref, watch,onBeforeMount,nextTick} from "vue";
 import axios from "axios";
 
 import { useSitesStore } from "../../store/site";
+import { URI } from "../../service/conection";
 // import InputText from "primevue/inputtext";
 
 const domicilio = ref('')
@@ -168,7 +169,7 @@ const validarDireccion = async () => {
         map.value.setZoom(14);
 
         // Consultar la zona en el backend
-        const response = await axios.post("http://localhost:8000/consultar_zona/", {
+        const response = await axios.post(`${URI}/consultar_zona/`, {
             latitud: lat,
             longitud: lng,
         });

@@ -163,7 +163,7 @@
 
 
                 <h6 class="m-0 pl-4"><b> {{ product.sabores.length > 1? 'sabores'   : '' }}</b> </h6>
-                <div class="pl-4" v-for="(flavor, index) in product.sabores" :key="index" style="padding: 0;gap: 1rem; display: flex; justify-content: space-between;">
+                <div class="pl-4" v-for="(flavor, index) in product.sabores.filter(p => !p.is_gaseosa)" :key="index" style="padding: 0;gap: 1rem; display: flex; justify-content: space-between;">
 
 
                   <span style="color: black;">
@@ -177,9 +177,24 @@
                   
                  
                 </div>
-                <div style="width: 100%;border-top: .1rem solid;">
+
+
+                <div class="pl-4" v-for="(flavor, index) in product.sabores.filter(p => p.is_gaseosa)" :key="index" style="padding: 0;gap: 1rem; display: flex; justify-content: space-between;">
+
+
+<span style="color: black;">
+  <b>
+    SABOR DE LA GASEOSA
+</b>
+
+</span>
+
+<span style="text-align: end;min-width: max-content;"> {{ flavor.sabor }} {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price ) : '' }}</span>
+
 
 </div>
+                <div style="width: 100%;border-top: .1rem solid;"></div>
+                
 
             
 

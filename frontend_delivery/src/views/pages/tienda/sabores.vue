@@ -38,6 +38,7 @@
             </b>  </Button>
 
 
+            <Tag style="width: 1rem;height: 1rem; border-radius:50%;" severity="success" v-if="grupo.gaseosa"></Tag>
             <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;">{{
                 grupo.group_name }}</h6>
 
@@ -45,7 +46,7 @@
             <div style="display: flex;gap: .5rem;justify-content: end;">
                 <Button @click="openFalvorGroupEdit(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;"
                     severity="warning" class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
-                <Button @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
+                <Button v-if="!grupo.gaseosa" @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
                     icon=" pi pi-trash"></Button>
             </div>
 
