@@ -99,15 +99,72 @@ class Product:
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
     
     
-    
-    def select_all_sabores_by_product_id(self,product_id:int):
-        select_query = f"SELECT * FROM inventory.sabor_product_view where product_id = {product_id};"
-        self.cursor.execute(select_query)
-        columns = [desc[0] for desc in self.cursor.description]
-        return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
-    
-    
-    
+                
+    def select_all_sabores_by_product_id(self, product_id: int):
+        """
+        Obtiene todos los sabores asociados a un producto específico y los separa en dos listas:
+        - 'normal': Sabores cuyo grupo no tiene la cualidad 'gaseosa'.
+        - 'gaseosa': Sabores cuyo grupo tiene la cualidad 'gaseosa'.
+
+        Args:
+            product_id (int): El ID del producto.
+
+        Returns:
+            dict: Un diccionario con dos listas de sabores: 'normal' y 'gaseosa'.
+        """
+        # Consulta para obtener los sabores asociados al producto, incluyendo la cualidad 'gaseosa' del grupo
+        select_query = """
+            SELECT 
+                spv.id AS flavor_id,
+                spv.name AS flavor_name,
+                spv.price AS flavor_price,
+                spv.premium AS is_premium,
+                TRUE AS has_flavor,  -- Dado que estamos filtrando por product_id, siempre tendrá sabor
+                spv.gaseosa AS is_gaseosa
+            FROM 
+                inventory.sabor_product_view spv
+            WHERE 
+                spv.product_id = %s;
+        """
+        params = (product_id,)
+
+        try:
+            self.cursor.execute(select_query, params)
+            columns = [desc[0] for desc in self.cursor.description]
+            raw_result = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
+
+            # Inicializar listas para almacenar los sabores
+            normal_flavors = []
+            gaseosa_flavors = []
+
+            for row in raw_result:
+                flavor = {
+                    'id': row['flavor_id'],
+                    'name': row['flavor_name'],
+                    'price': row['flavor_price'],
+                    'premium': row['is_premium'],
+                    'has_flavor': row['has_flavor']
+                }
+
+                if row['is_gaseosa']:
+                    gaseosa_flavors.append(flavor)
+                else:
+                    normal_flavors.append(flavor)
+
+            # Retornar un diccionario con ambas listas
+            return {
+                'normal': normal_flavors,
+                'gaseosa': gaseosa_flavors
+            }
+
+        except Exception as e:
+            # Manejo de excepciones: puedes personalizar esto según tus necesidades
+            print(f"Error al obtener los sabores: {e}")
+            return {
+                'normal': [],
+                'gaseosa': []
+            }
+
     def select_all_sabores(self):
         select_query = "SELECT * FROM inventory.sabor;"
         self.cursor.execute(select_query)

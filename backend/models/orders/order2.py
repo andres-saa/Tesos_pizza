@@ -124,7 +124,7 @@ class Order2:
             order_id = result[0]
 
            
-            # self.create_or_update_event(1, order_data.site_id, 1132, '3 minutes', False)
+            self.create_or_update_event(1, order_data.site_id,1249, '3 minutes', False)
 
         return order_id
 
