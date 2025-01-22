@@ -16,13 +16,14 @@ const user = useUserStore()
 const preparar_orden = () => {
   cart.sending_order = true
 
-  const order_products = cart.cart.products.map(p => {
-    return {
-      product_instance_id: p.product.id,
-      quantity: p.quantity,
-      sabors: p.flavors ? p.flavors.map(flavor => flavor.id) : [],
-    }
-  })
+  const order_products = cart.cart.products.map(p => ({
+    product_instance_id: p.product.id,
+    quantity: p.quantity,
+    sabors: [
+      ...(p.flavors ? p.flavors.map(flavor => flavor.id) : []),
+      ...(p.gaseosa && p.gaseosa.id ? [p.gaseosa.id] : [])
+    ],
+  }));
 
   const order_aditionals = cart.cart.additions.map(a => {
     return {

@@ -72,6 +72,18 @@
                             </div>
 
                         </div>
+
+                        <div
+                            style="display: flex;gap:1rem;align-items: center;width: 100%;margin-top: 1rem; flex-wrap: wrap;">
+
+                            <h6 v-if="product.gaseosa?.name" style="margin: 0;"> <b>Sabor de la gaseosa</b> </h6>
+                            <div style="display: flex;gap: 1rem;flex-direction: row;">
+                                <Tag severity="info" style="text-transform: uppercase;"> {{ product.gaseosa?.name}}</Tag>
+                            </div>
+
+                        </div>
+
+
                         <h5 class="p-0 m-0" style="text-align: end;"> <b>{{ formatoPesosColombianos(product.total_cost)
                                 }}</b> </h5>
 

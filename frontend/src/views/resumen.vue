@@ -22,10 +22,10 @@
                 </div>
 
                 <div
-                    style="display: flex;gap:1rem;align-items: center;justify-content: end;padding: 0; width: 100%;flex-wrap: wrap;">
+                    style="display: flex;gap: 0.3em;rem;align-items: center;justify-content: end;padding: 0; width: 100%;flex-wrap: wrap;">
 
                     <div style="display: flex; gap: 0.2rem; align-items: end; flex-direction: column;">
-                        <Tag v-for="(flavor, index) in product.flavors" :key="index" style="padding: 0;">
+                        <Tag v-for="(flavor, index) in product.flavors" :key="index" style="padding: .3rem;">
                             <span style="color: black;">
                                 {{ product.flavors.length > 1 ? `1/2` : 'sabor' }}
                             </span>
@@ -33,6 +33,14 @@
                         </Tag>
                     </div>
 
+                    <div style="display: flex; gap: 0.2rem; align-items: end; flex-direction: column;">
+                        <Tag style="padding: .3rem;" severity="info">
+                            <span style="color: black;">
+                                SABOR DE LA GASEOSA {{ product.gaseosa?.name }}
+                            </span>
+                            <!-- {{ flavor.name }} {{ product?.quantity > 1 && flavor.price > 0? `x ${product.quantity} =` : '' }} {{ flavor.price * product.quantity > 0 ? formatoPesosColombianos(flavor.price / 2 * product.quantity) : '' }} -->
+                        </Tag>
+                    </div>
                 </div>
             </div>
 

@@ -1,8 +1,8 @@
 <template>
     <Toast />
 
-    <div class="container2 p-shadow p-3" @click="open(props.product)"
-        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020; border: 1px solid #00000030;">
+    <div class="container2 p-shadow p-0" @click="open(props.product)"
+        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020;">
 
         <div class="name-phone">
             
@@ -13,16 +13,17 @@
                     </span>
                   
         </div>
-        <div class="container p-0 pt-2">
+        <div class="container p-0 ">
             
         <div class="imagen" style="display: flex;align-items: center; " >
-            <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem;"
+            <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem .3rem 0 0;"
                 :src="currentImage(props.product.img_identifier)" @load="loadHighResImage(props.product.img_identifier)"
                 alt="">
         </div>
 
+        
 
-        <div class="texto" style="display: flex;justify-content: space-between; flex-direction: column;">
+        <div class="texto p-3" style="display: flex;justify-content: space-between; flex-direction: column;">
             <div style="display: flex;gap: 0rem; height: 100%; flex-direction: column;justify-content: space-between;">
 
              
@@ -56,7 +57,7 @@
         </div>
   
 
-        <div class="select-price-containe pt-3" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
+        <div class="select-price-containe p-3" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
                 <div>
                     <div style="display: flex;justify-content: end; align-items: center; gap: 1rem;justify-content:end;">
                         
@@ -306,30 +307,7 @@ const sizes = ref([])
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
-    .container {
-        grid-template-columns: 1fr 2fr;
-        width: 100%;
-        /* Stack elements vertically on smaller screens */
-    }
-
-    .name-phone{
-        display: inline;
-    }
-    .name-pc{
-        display: none;
-    }
-
-    .imagen,
-    .texto {
-        width: 100%;
-        /* Ensure full width on smaller screens */
-    }
-
-    .character {
-        display: inline;
-    }
-}
+/*  */
 
 
 /* Responsive adjustments */

@@ -33,7 +33,7 @@ onMounted(async () => {
 .container {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     margin-top: 1rem;
     padding: 0 1rem;
 }
@@ -71,7 +71,7 @@ h2:hover {
 @media (width < 1100px) {
     .container {
 
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
 }
@@ -80,9 +80,9 @@ h2:hover {
 @media (width < 600px) {
     .container {
 
-        grid-template-columns: repeat(2, 1fr);
-        gap: .7rem;
-        padding: 0 .7rem;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+        padding: 0 1rem;
     }
 
     .name {

@@ -77,33 +77,37 @@ export const usecartStore = defineStore('tezos-cart', {
       this.visibles[item] = status
     },
 
-    addProductToCart(product, quantity = 1, additionalItems = [], flavors = []) {
-      // Busca el producto en el carrito, pero también revisa que los sabores coincidan
+    addProductToCart(product, quantity = 1, additionalItems = [], flavors = [], gaseosa = null) {
+      // Busca el producto en el carrito, incluyendo sabores y gaseosa
       const cartProduct = this.cart.products.find(
-        p => p.product.id === product.id && JSON.stringify(p.flavors) === JSON.stringify(this.groupFlavors(flavors))
+        p => 
+          p.product.id === product.id && 
+          JSON.stringify(p.flavors) === JSON.stringify(this.groupFlavors(flavors)) &&
+          JSON.stringify(p.gaseosa) === JSON.stringify(gaseosa)
       );
-    
+  
       if (cartProduct) {
-        // Si el producto y los sabores coinciden, incrementa la cantidad y el costo total
+        // Si el producto, sabores y gaseosa coinciden, incrementa la cantidad y el costo total
         cartProduct.quantity += quantity;
         cartProduct.total_cost += this.calculateProductTotal(
           product,
           quantity,
           additionalItems,
-          flavors,
+          flavors
         );
       } else {
-        // Si el producto o sabores son diferentes, agrega una nueva entrada en el carrito
+        // Si el producto, sabores o gaseosa son diferentes, agrega una nueva entrada en el carrito
         this.cart.products.push({
           product,
           quantity,
           additionalItems: this.groupAdditionalItems(additionalItems),
           flavors: this.groupFlavors(flavors),
+          gaseosa: gaseosa, // Almacena la gaseosa seleccionada
           total_cost: this.calculateProductTotal(
             product,
             quantity,
             additionalItems,
-            flavors,
+            flavors
           ),
         });
       }
@@ -174,11 +178,11 @@ export const usecartStore = defineStore('tezos-cart', {
       const additionalCost = additionalItems.reduce(
         (total, item) => total + item.price * item.quantity,
         0,
-      )
+      );
       const flavorCost = flavors.reduce((total, flavor) => {
-        return total + (flavors.length === 2 ? flavor.price / 2 : flavor.price)
-      }, 0)
-      return (product.price + additionalCost + flavorCost) * quantity
+        return total + (flavors.length === 2 ? flavor.price / 2 : flavor.price);
+      }, 0);
+      return (product.price + additionalCost + flavorCost) * quantity;
     },
 
     removeProductInstance(productId, flavors = []) {

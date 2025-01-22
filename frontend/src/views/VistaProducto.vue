@@ -217,6 +217,40 @@
       </div>
 
 
+      <div v-if="gaseosas.length>0">
+        <h6 class="py-0 m-0 my-3"> <b > Elija el sabor de la gaseosa </b> 
+        </h6>
+
+
+<Select placeholder="sabor de la gaseosa"  filterPlaceholder="Buscar sabor..." filter :options="gaseosas"
+    style="width: 100%;max-width: 100%; min-width: 100%;" v-model="gaseosa">
+
+    <template #option="option">
+
+      <div style="display: flex;text-transform: uppercase; align-items: center; gap: .5rem;">
+        
+        <h6 style="margin: 0;">{{ option.option.name }}</h6>
+        
+      </div>
+
+    </template>
+
+
+    <template #value="value">
+
+    
+        <h6 style="margin: 0;text-transform: uppercase;">{{ value.value.name }}</h6>
+   
+  
+        <span style="opacity: .8;" v-if="!value.value?.name"> Selecciona el sabor de la gaseosa</span>
+
+
+    </template>
+
+  </Select>
+      </div>
+ 
+
     </div>
     <template #footer>
       <div style="display: flex; justify-content: center;">
@@ -263,7 +297,7 @@ const selectedSaborOption = ref({
 const saboresmultiples = ref(false)
 const sabor1 = ref({})
 const sabor2 = ref({})
-
+const gaseosa = ref({})
 const toast = useToast()
 // import { PrimeIcons } from 'primevue/api';
 // import { changeProduct } from '@/service/productServices';
@@ -410,58 +444,44 @@ const decrement = (item) => {
 
 
 const addToCart = (product) => {
-  // Verificar que el producto es de la categoría 5 y que los sabores se seleccionen según la opción de múltiples sabores
+    // Verificaciones de selección de sabores existentes...
 
-    if (saboresmultiples.value && product.max_flavor > 1) {
-      // Si se selecciona múltiples sabores, verificar que ambos sabores estén seleccionados
-      if (!sabor1.value.id || !sabor2.value.id) {
-        alert('Por favor, selecciona dos sabores para la combinación.');
-        return; // No continuar si no se seleccionan ambos sabores
-      }
-    } else {
-      // Si no es múltiple, verificar que al menos un sabor esté seleccionado
-      if (!sabor1.value.id && product.max_flavor > 0) {
-        alert('Por favor, selecciona un sabor para el producto.');
-        return; // No continuar si no se selecciona al menos un sabor
-      }
-    }
-  
+    // Convertir las adiciones seleccionadas de un objeto a un array
+    const additionsArray = Object.values(selectedAdditions.value);
 
-  // Convertir las adiciones seleccionadas de un objeto a un array
-  const additionsArray = Object.values(selectedAdditions.value);
+    // Recolectar los sabores seleccionados
+    const flavors = saboresmultiples.value
+      ? [sabor1.value, sabor2.value]
+      : sabor1.value.id ? [sabor1.value] : []; // Si hay sabores múltiples seleccionados, usa ambos; si no, usa solo el primer sabor si está seleccionado
 
-  // Recolectar los sabores seleccionados
-  const flavors = saboresmultiples.value
-    ? [sabor1.value, sabor2.value]
-    : sabor1.value.id ? [sabor1.value] : []; // Si hay sabores múltiples seleccionados, usa ambos; si no, usa solo el primer sabor si está seleccionado
+    // Llamar a la función de la tienda con el producto, las adiciones, los sabores y la gaseosa
+    store.addProductToCart(product, 1, additionsArray, flavors, gaseosa.value);
 
-  // Llamar a la función de la tienda con el producto, las adiciones y los sabores
-  store.addProductToCart(product, 1, additionsArray, flavors);
+    // Resetear las selecciones después de agregar al carrito
+    selectedAdditions.value = {};
+    saboresmultiples.value = false;
+    sabor1.value = {};
+    sabor2.value = {};
+    gaseosa.value = {}; // Resetear la gaseosa
 
-  // Resetear las selecciones después de agregar al carrito
-  selectedAdditions.value = {};
-  saboresmultiples.value = false;
-  sabor1.value = {};
-  sabor2.value = {};
+    // Cerrar el diálogo del producto actual
+    store.setVisible('currentProduct', false);
 
-  // Cerrar el diálogo del producto actual
-  store.setVisible('currentProduct', false);
+    // Mostrar mensaje de confirmación
+    toast.add({
+      severity: 'success',
+      summary: 'Producto agregado',
+      detail: `${product.product_name} se ha agregado al carrito.`,
+      life: 3000 // Duración del toast en milisegundos (3 segundos)
+    });
 
-  // Mostrar mensaje de confirmación
-  toast.add({
-    severity: 'success',
-    summary: 'Producto agregado',
-    detail: `${product.product_name} se ha agregado al carrito.`,
-    life: 3000 // Duración del toast en milisegundos (3 segundos)
-  });
-
-  console.log(store.cart.products);
-};
+    console.log(store.cart.products);
+  };
 
 
 
 const adicionales = ref([])
-
+const gaseosas = ref([{}])
 
 const checkedAdition = ref({})
 
@@ -491,7 +511,9 @@ watch(() => store.currentProduct, async () => {
 
   if (product_id) {
     adicionales.value = await adicionalesService.getAditional(product_id)
-    sizes.value = await fetchService.get(`${URI}/sabores/product_id/${store.currentProduct?.product_id}`);
+    const sabores = await fetchService.get(`${URI}/sabores/product_id/${store.currentProduct?.product_id}`);
+    sizes.value = sabores?.normal
+    gaseosas.value = sabores?.gaseosa
     sabor1.value = {}
     sabor2.value = {}
 

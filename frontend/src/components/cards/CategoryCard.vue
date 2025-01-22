@@ -1,9 +1,9 @@
 <template>
     <div class="container" @click="navigate_to_category(category.category_name, category.category_id)"
-        style="padding: 1rem;">
+        style="padding: 0rem;">
         <img class="imagen" :src="`${URI}/read-photo-product/${category.image_identifier}/600`">
 
-        <h4 class="name" style="text-transform: capitalize;">{{ category.category_name?.toLowerCase() }} </h4>
+        <h3 class="name " style="text-transform: capitalize;">{{ category.category_name?.toLowerCase() }} </h3>
     </div>
 </template>
 
@@ -38,12 +38,12 @@ const props = defineProps({
     height: 100%;
     transition: all ease 0.2s;
     overflow: hidden;
-    padding: 2rem;
+    padding: 1rem;
     display: flex !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 .5rem #00000050; border: 1px solid #00000030;
+    box-shadow: 0 0 .5rem #00000030; 
     border-radius: .5rem;
     background-color: white;
     cursor: pointer;
@@ -84,6 +84,9 @@ p {
 }
 
 
+.name{
+    padding:0 1rem;
+}
 
 
 @media (width < 740px) {
@@ -96,7 +99,7 @@ p {
 
     .name {
         font-size: 1.2rem;
-        padding: .8rem;
+        padding: 1rem;
     }
 }
 
