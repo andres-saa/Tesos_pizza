@@ -256,6 +256,7 @@ def update_product_category(category_id: int, data: ProductCategorySchema):
     result = aditional_instance.update_product_category(data, category_id)
     return result
 
+
 # Eliminar categoría de producto
 @adition_router.delete('/product-categories/{category_id}', tags=['product categories'])
 def delete_product_category(category_id: int):

@@ -56,6 +56,7 @@ from routes.app.salchigest import salchigest_router
 from routes.requisitions.requisition import requisition_router
 from routes.flavors_and_aditions.aditions import adition_router
 from routes.flavors_and_aditions.bebidas import bebidas_router
+from routes.flavors_and_aditions.carta import carta_router
 app = FastAPI()
 # from routes.area import area_router
 app.add_middleware(
@@ -66,6 +67,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(carta_router)
 app.include_router(bebidas_router)
 app.include_router(adition_router)
 app.include_router(requisition_router)
