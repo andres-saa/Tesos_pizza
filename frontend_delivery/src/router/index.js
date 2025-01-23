@@ -53,6 +53,18 @@ const router = createRouter({
                   
                 },
                 {
+                  path: '/admin/banners',
+                  name: 'admin-banners',
+                  component: () => import('@/views/pages/Banners.vue'),
+                  
+                },
+                {
+                  path: '/admin/carta',
+                  name: 'admin-carta',
+                  component: () => import('@/views/pages/Carta.vue'),
+                  
+                },
+                {
                   path: '/admin/domicilios/',
                   name: 'domicilios',
                   component: () => import('@/views/pages/domicilios.vue'),

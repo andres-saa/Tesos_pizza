@@ -48,6 +48,22 @@ const categories = ref([
     category_name:'Ultimo post',
     to:'/admin/post'
   },
+  { 
+    category_id:2,
+    category_name:'Banners',
+    to:'/admin/banners'
+  },
+
+  { 
+    category_id:2,
+    category_name:'Organizar Categorias',
+    to:'/admin/post'
+  },
+  { 
+    category_id:2,
+    category_name:'Carta',
+    to:'/admin/carta'
+  },
   
 
 ]);
