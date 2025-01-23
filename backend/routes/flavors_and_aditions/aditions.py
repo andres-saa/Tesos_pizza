@@ -1,11 +1,22 @@
-from fastapi import APIRouter
+from fastapi import FastAPI, HTTPException, Depends ,APIRouter
 from models.flavors_and_aditions.aditions import Aditions
 from pydantic import BaseModel
-from typing import List
+from typing import List,Optional
 
 adition_router = APIRouter()
 
 
+class BannerAppSchema(BaseModel):
+    index: int
+    img_identifier: str
+
+class BannerAppSchema2(BaseModel):
+    id:int
+    index: int
+    img_identifier: str
+
+class BannerReorderSchema(BaseModel):
+    banners: List[BannerAppSchema]
 
 
 class aditional_type_schema(BaseModel):
@@ -29,6 +40,7 @@ class FlavorEditSchema(BaseModel):
 
 class FlavorDeleteSchema(BaseModel):
     soft_delete: bool
+additions = Aditions()
 
 
 #crea grupos de adiciones
@@ -250,3 +262,55 @@ def delete_product_category(category_id: int):
     aditional_instance = Aditions()
     result = aditional_instance.delete_product_category(category_id)
     return result
+
+
+
+
+
+@adition_router.post("/banners/reorder")
+def reorder_banners(banners: List[BannerAppSchema2]):
+    if not banners:
+        raise HTTPException(status_code=400, detail="No banners provided for reordering.")
+    
+    result = additions.reorder_banners(banners)
+    
+    if result.get("status") == "success":
+        return result
+    else:
+        raise HTTPException(status_code=500, detail=result.get("message"))
+    
+
+
+@adition_router.post("/banners/")
+def create_banner(banner: BannerAppSchema):
+    result = additions.create_banner(banner)
+    return result
+
+@adition_router.get("/banners/")
+def read_banners():
+    banners = additions.get_banners()
+    return banners
+
+@adition_router.get("/banners/{banner_id}", response_model=BannerAppSchema)
+def read_banner(banner_id: int):
+    banner = additions.get_banner_by_id(banner_id)
+    if banner:
+        return BannerAppSchema(**banner)
+    else:
+        raise HTTPException(status_code=404, detail="Banner not found")
+
+@adition_router.put("/banners/{banner_id}", response_model=BannerAppSchema)
+def update_banner(banner_id: int, banner: BannerAppSchema):
+    result = additions.update_banner(banner_id, banner)
+    if result:
+        return BannerAppSchema(id=result[0]['id'], **banner.dict())
+    else:
+        raise HTTPException(status_code=404, detail="Banner not found")
+
+@adition_router.delete("/banners/{banner_id}", response_model=dict)
+def delete_banner(banner_id: int):
+    result = additions.delete_banner(banner_id)
+    if result:
+        return {"status": "success", "message": "Banner deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Banner not found")
