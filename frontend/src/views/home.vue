@@ -1,5 +1,5 @@
 <template>
-    <banner></banner>
+    <banner style="width: 100%;"></banner>
     <h2 style="">Explora nuestro maravilloso menu!</h2>
     <gridCategorias></gridCategorias>
 

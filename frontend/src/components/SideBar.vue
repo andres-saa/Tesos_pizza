@@ -4,11 +4,6 @@
             <!-- <Button icon="pi pi-bars" @click="store.toggle_visible_categories" label="CATEGORIAS"
 
 
-
-
-
-
-
                 class="category-toggle"></Button> -->
 
 
@@ -107,12 +102,9 @@
 
 
 
-                    <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: calc(100vh - 9rem) ;"
+                    <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: max-content ;min-height:600px"
                         frameborder="0" scrolling="no" allowtransparency="true">
                 </iframe>
-
-
-
 
                 </div>
 

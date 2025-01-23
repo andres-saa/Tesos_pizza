@@ -9,7 +9,7 @@ import Badge from 'primevue/badge';
 import { useSitesStore } from './stores/site';
 import { onMounted, watch } from 'vue';
 import { usecartStore } from './stores/shoping_cart';
-
+import Banner from './components/Banner.vue';
 const store  = useSitesStore()
 const cartStore = usecartStore()
 
