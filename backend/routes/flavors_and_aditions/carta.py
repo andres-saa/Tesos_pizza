@@ -37,8 +37,8 @@ def reorder_carta(cartas: List[CartaSchema2]):
 
 
 @carta_router.post("/carta/")
-def create_carta(carta:CartaSchema):
-    result = carta.create_carta(carta)
+def create_carta(cartas:CartaSchema):
+    result = carta.create_carta(cartas)
     return result
 
 
