@@ -65,6 +65,12 @@ const router = createRouter({
                   
                 },
                 {
+                  path: '/admin/reorder_categories',
+                  name: 'reorder_categories',
+                  component: () => import('@/views/pages/reorder_categories.vue'),
+                  
+                },
+                {
                   path: '/admin/domicilios/',
                   name: 'domicilios',
                   component: () => import('@/views/pages/domicilios.vue'),

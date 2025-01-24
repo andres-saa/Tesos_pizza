@@ -1,8 +1,11 @@
 <template>
-  <Banner></Banner>
+
+
+
+
 
   <div style="padding: 3rem;">
-    <h2><b>Arrastra y Reordena las Imágenes</b></h2>
+    <h2><b>Arrastra y Reordena las Imágenes de la carta</b></h2>
 
     <Button
       style="margin:1rem 0;background-color: var(--primary-color);border: none;"
@@ -18,23 +21,64 @@
       modal
       style="width: 40rem;"
     >
-      <div class="image" style="display: flex; flex-direction: column; position: relative; justify-content: end; align-items: end;">
-        <img v-if="imagePreview" :src="imagePreview" alt="Preview"
-             style="width: 100%; aspect-ratio: 19 / 9; background-color: rgb(255, 255, 255); object-fit: cover; border-radius: 0.2rem;" />
+      <div
+        class="image"
+        style="
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          justify-content: end;
+          align-items: end;
+        "
+      >
+        <!-- Vista previa de la primera imagen seleccionada -->
+        <img
+          v-if="imagePreview"
+          :src="imagePreview"
+          alt="Preview"
+          style="
+            width: 100%;
+            aspect-ratio: 19 / 9;
+            background-color: rgb(255, 255, 255);
+            object-fit: cover;
+            border-radius: 0.2rem;
+          "
+        />
 
-        <div v-if="uploading" style="position: absolute; left: 0; top: 0; width: 100%; display: flex; justify-content: center; align-items: center; height: 100%; background-color: #ffffff80;">
-          <ProgressSpinner strokeWidth="8" style="color: white;"></ProgressSpinner>
+        <!-- Spinner de carga mientras sube -->
+        <div
+          v-if="uploading"
+          style="
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: #ffffff80;
+          "
+        >
+          <ProgressSpinner strokeWidth="8" style="color: white" />
         </div>
 
-        <Button class="my-3" severity="help" @click="triggerFileSelect">Agregar foto</Button>
-        <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" multiple accept="image/*" />
+        <Button class="my-3" severity="help" @click="triggerFileSelect"
+          >Agregar foto</Button
+        >
+        <input
+          type="file"
+          ref="fileInput"
+          @change="handleFileUpload"
+          style="display: none;"
+          multiple
+          accept="image/*"
+        />
       </div>
-
-      <!-- Puedes agregar más campos si es necesario -->
 
       <template #footer>
         <div class="col-12 px-0 pb-0">
-          <Button @click="confirmAddImages" severity="success" label="Guardar"></Button>
+          <Button @click="confirmAddImages" severity="success" label="Guardar" />
         </div>
       </template>
     </Dialog>
@@ -42,7 +86,6 @@
     <!-- Lista de imágenes arrastrables -->
     <div class="draggable-container">
       <div
-        style="position:relative"
         v-for="(img, index) in sortedImages"
         :key="img.id"
         class="draggable-item"
@@ -53,12 +96,24 @@
         @dragover.prevent
         @dragleave="onDragLeave"
         @drop="onDrop(index)"
-        :data-index="img.index"
       >
-        <img :src="`${URI}/read-photo-product/${img.src}`" :alt="img.title" />
-        
+        <!-- Muestra la imagen usando tu URI base -->
+        <img
+          :src="`${URI}/read-photo-product/${img.src}`"
+          :alt="img.title"
+        />
+
+        <!-- Botón de eliminar -->
         <Button
-          style="border-radius:50%; position:absolute;background-color:var(--primary-color);border:3px solid;aspect-ratio:1 / 1; right:-1.5rem;top:-1.5rem"
+          style="
+            border-radius: 50%;
+            position: absolute;
+            background-color: var(--primary-color);
+            border: 3px solid;
+            aspect-ratio: 1 / 1;
+            right: -1.5rem;
+            top: -1.5rem;
+          "
           icon="pi pi-times"
           severity="info"
           class="delete-button"
@@ -75,53 +130,109 @@
         style="width: 350px"
       >
         <div class="confirmation-content">
-          <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #ff9800;"></i>
-          <span class="message">¿Estás seguro de que deseas eliminar "{{ imageToDelete?.title }}"?</span>
+          <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #ff9800"></i>
+          <span class="message">¿Estás seguro de que deseas eliminar esta imagen?</span>
         </div>
         <div class="dialog-footer">
-          <Button label="Sí, eliminar" icon="pi pi-check" class="p-button-danger" @click="confirmDelete" />
-          <Button label="Cancelar" icon="pi pi-times" class="p-button-secondary" @click="closeDeleteDialog" />
+          <Button
+            label="Sí, eliminar"
+            icon="pi pi-check"
+            class="p-button-danger"
+            @click="confirmDelete"
+          />
+          <Button
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            @click="closeDeleteDialog"
+          />
         </div>
       </Dialog>
     </div>
   </div>
 </template>
 
-
-
 <script setup>
-import { ref, computed } from 'vue'
-import Banner from './Banner.vue'
-// import { ProgressSpinner } from 'primevue/progressspinner'
-import { productService } from '@/service/ProductService';
-import { URI } from '../../service/conection';
-// Lista inicial de imágenes (id, src, title, index)
-const images = ref([])
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
 
-// Computed para ordenar las imágenes basado en el índice
-const sortedImages = computed(() =>
-  images.value.slice().sort((a, b) => a.index - b.index)
-)
+// Componente opcional
+// import carta from './carta.vue'
 
-// Indica qué elemento estamos arrastrando
+// Importa tu servicio y tu URI base
+import { productService } from '@/service/ProductService'
+import { URI } from '../../service/conection'
+
+// -------------------- ESTADOS --------------------
+const images = ref([])       // Lista de cartas en local
 const draggedItemIndex = ref(-1)
-// Para resaltar sobre qué elemento estamos “sobrevolando”
 const dragOverIndex = ref(-1)
 
-// Estado del diálogo de eliminación
+// Diálogo de eliminación
 const isDeleteDialogOpen = ref(false)
 const imageToDelete = ref(null)
 
-// Estado del diálogo de agregar imágenes
+// Diálogo para agregar imágenes
 const isAddImageDialogOpen = ref(false)
 const uploading = ref(false)
 const selectedFiles = ref([])
 const imagePreview = ref(null)
-
-// Referencia al input de archivo
 const fileInput = ref(null)
 
-// Funciones de arrastrar y soltar
+// Ordenamos localmente las imágenes según index
+const sortedImages = computed(() => {
+  return images.value.slice().sort((a, b) => a.index - b.index)
+})
+
+// -------------------- CICLO DE VIDA --------------------
+onMounted(async () => {
+  await fetchcartas()
+})
+
+// -------------------- FUNCIONES A BACKEND --------------------
+/** GET /cartas/ */
+async function fetchcartas() {
+  try {
+    const response = await axios.get(`${URI}/carta/`)
+    // Suponiendo que el backend retorna un array de objetos con al menos: id, index, img_identifier, etc.
+    // Mapeas si necesitas adaptarlo a tu uso en `images`:
+    images.value = response.data.map((carta, idx) => ({
+      ...carta,
+      // Asegúrate de que existan: "id", "index", "src" o "img_identifier", etc.
+      // Si tu backend devuelve "img_identifier" en vez de "src", cambia la propiedad
+      // o adáptalo para tu <img :src="...">
+      // Ejemplo:
+      id: carta.id ?? (Date.now() + Math.random()),
+      index: carta.index ?? idx,
+      src: carta.img_identifier, // para poder usar 'img.src' en el template
+      title: carta.title ?? 'Sin título'
+    }))
+  } catch (error) {
+    console.error('Error al obtener cartas:', error)
+  }
+}
+
+/** POST /cartas/ con { index, img_identifier } */
+async function createcarta(cartaData) {
+  // cartaData = { index, img_identifier }
+  const response = await axios.post(`${URI}/carta/`, cartaData)
+  return response.data
+}
+
+/** POST /cartas/reorder con { cartas: [ { index, img_identifier }, ... ] } */
+async function reordercartas(cartasArray) {
+  // cartasArray = [ { index, img_identifier }, ... ]
+  const response = await axios.post(`${URI}/carta/reorder`, cartasArray )
+  return response.data
+}
+
+/** DELETE /cartas/{carta_id} */
+async function deletecarta(cartaId) {
+  const response = await axios.delete(`${URI}/carta/${cartaId}`)
+  return response.data
+}
+
+// -------------------- DRAG & DROP --------------------
 function onDragStart(index) {
   draggedItemIndex.value = index
 }
@@ -134,24 +245,41 @@ function onDragLeave() {
   dragOverIndex.value = -1
 }
 
-function onDrop(index) {
+async function onDrop(index) {
   if (index === draggedItemIndex.value) return
 
+  // Hallamos el item arrastrado
   const draggedItem = sortedImages.value[draggedItemIndex.value]
-  const originalIndex = images.value.findIndex(img => img.id === draggedItem.id)
+  const originalIndex = images.value.findIndex((img) => img.id === draggedItem.id)
 
+  // Lo quitamos y lo insertamos en la nueva posición
   images.value.splice(originalIndex, 1)
   images.value.splice(index, 0, draggedItem)
 
+  // Reasignamos los índices
   images.value.forEach((img, idx) => {
     img.index = idx
   })
 
+  // Limpiamos estados de drag
   draggedItemIndex.value = -1
   dragOverIndex.value = -1
+
+  // Envía el nuevo orden al backend
+  try {
+    // Prepara el array que tu endpoint necesita
+    const reorderData = images.value.map((img) => ({
+      id:img.id,
+      index: img.index,
+      img_identifier: img.src  // Si tu backend espera "img_identifier", se lo pasamos así
+    }))
+    await reordercartas(reorderData)
+  } catch (error) {
+    console.error('Error al reordenar cartas:', error)
+  }
 }
 
-// Funciones para el diálogo de eliminación
+// -------------------- ELIMINAR --------------------
 function openDeleteDialog(img) {
   imageToDelete.value = img
   isDeleteDialogOpen.value = true
@@ -162,39 +290,48 @@ function closeDeleteDialog() {
   imageToDelete.value = null
 }
 
-function confirmDelete() {
-  if (imageToDelete.value) {
-    const indexToRemove = images.value.findIndex(img => img.id === imageToDelete.value.id)
+async function confirmDelete() {
+  if (!imageToDelete.value) return
+  try {
+    await deletecarta(imageToDelete.value.id)
+
+    // Removemos local
+    const indexToRemove = images.value.findIndex((img) => img.id === imageToDelete.value.id)
     if (indexToRemove !== -1) {
       images.value.splice(indexToRemove, 1)
+      // Reasignamos índices
       images.value.forEach((img, idx) => {
         img.index = idx
       })
     }
+  } catch (error) {
+    console.error('Error al eliminar carta:', error)
   }
   closeDeleteDialog()
 }
 
-// Funciones para el diálogo de agregar imágenes
+// -------------------- AGREGAR NUEVOS cartaS --------------------
 function openAddImageDialog() {
   isAddImageDialogOpen.value = true
 }
 
+// Dispara la selección de archivos en el input
 function triggerFileSelect() {
   fileInput.value.click()
 }
 
+// Maneja los archivos seleccionados
 function handleFileUpload(event) {
   const files = event.target.files
-  if (files.length === 0) return
+  if (!files || files.length === 0) return
 
   selectedFiles.value = Array.from(files)
-  // Generar vista previa para la primera imagen seleccionada (puedes personalizar esto)
+  // Muestra preview sólo de la primera
   if (selectedFiles.value.length > 0) {
     imagePreview.value = URL.createObjectURL(selectedFiles.value[0])
   }
 
-  // Resetear el input para permitir subir la misma imagen nuevamente si se desea
+  // Para poder volver a seleccionar la misma imagen
   event.target.value = ''
 }
 
@@ -205,39 +342,47 @@ async function confirmAddImages() {
   }
 
   uploading.value = true
-
   try {
+    // Sube cada archivo y crea un carta en el backend
     for (const file of selectedFiles.value) {
+      // 1) Subir la imagen al backend usando productService
+      //    Asumiendo que `uploadPhoto` devuelve un objeto con { image_identifier: '...' }
       const formData = new FormData()
       formData.append('file', file)
 
-      // Aquí debes reemplazar `productService.uploadPhoto` por el servicio adecuado para tu caso
       const response = await productService.uploadPhoto(formData)
+      // Asegúrate de que `response.image_identifier` exista
+      const { image_identifier } = response
 
-      const newImage = {
-        id: Date.now() + Math.random(),
-        src: response.image_identifier, // Asegúrate de que el backend devuelva la URL de la imagen
-        title: file.name,
-        index: images.value.length
+      // 2) Crear el carta con ese identificador
+      //    El backend espera cartaAppSchema: { index: number, img_identifier: string }
+      const cartaData = {
+        index: images.value.length,
+        img_identifier: image_identifier
       }
+      const created = await createcarta(cartaData)
 
-      images.value.push(newImage)
+      // 3) Agregar a la lista local
+      images.value.push({
+        id: created.id ?? Date.now() + Math.random(),
+        index: created.index ?? images.value.length - 1,
+        src: created.img_identifier, // usar 'src' local para tu <img>
+        title: file.name
+      })
     }
 
-    // Limpiar el estado
+    // Limpieza de estado
     selectedFiles.value = []
     imagePreview.value = null
     isAddImageDialogOpen.value = false
-    // alert('Imágenes cargadas exitosamente!')
   } catch (error) {
-    console.error('Error al subir las imágenes:', error)
+    console.error('Error al subir las imágenes o crear cartas:', error)
     alert('Hubo un error al subir las imágenes.')
   } finally {
     uploading.value = false
   }
 }
 </script>
-
 
 <style scoped>
 .draggable-container {
@@ -250,24 +395,16 @@ async function confirmAddImages() {
   justify-content: start;
 }
 
-.upload-section {
-  margin-bottom: 1rem;
-}
-
-.upload-section button {
-  /* Los estilos del botón son manejados por PrimeVue */
-}
-
 .draggable-item {
-  position: relative; /* Para posicionar el botón de eliminación */
+  position: relative;
   width: 100%;
   max-width: 15rem;
   border-radius: 4px;
-  height: min-content;
-  cursor: move; /* Indicador de arrastre */
+  cursor: move;
   text-align: center;
   background-color: #fff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  margin-bottom: 1rem;
 }
 
 .draggable-item img {
@@ -283,14 +420,14 @@ async function confirmAddImages() {
   border-color: #aaa;
 }
 
-/* Estilos para el botón de eliminación */
+/* Botón de eliminar en la esquina superior derecha */
 .delete-button {
   position: absolute;
   top: 8px;
   right: 8px;
 }
 
-/* Estilos para el contenido de confirmación */
+/* Diálogo de confirmación */
 .confirmation-content {
   display: flex;
   align-items: center;

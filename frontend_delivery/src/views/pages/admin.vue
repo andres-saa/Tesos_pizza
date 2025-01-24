@@ -57,7 +57,7 @@ const categories = ref([
   { 
     category_id:2,
     category_name:'Organizar Categorias',
-    to:'/admin/post'
+    to:'/admin/reorder_categories'
   },
   { 
     category_id:2,
