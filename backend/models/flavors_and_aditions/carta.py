@@ -12,9 +12,6 @@ class CartaSchema(BaseModel):
 class CartaReorderSchema(BaseModel):
     cartas: List[CartaSchema]
 
-    
-
-    
 
 class Carta:
     
