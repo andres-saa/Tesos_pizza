@@ -31,7 +31,7 @@ const cartStore = usecartStore()
 
   <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: end;">
     <div class="social-media2 "
-      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;">
+      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;padding: .5rem;">
 
 <RouterLink to="/rastrear"> 
   <Button label="Rastrear mi pedido" style="min-width: max-content;padding: 0 1rem; height: 2rem;" rounded ></Button>
@@ -76,9 +76,8 @@ const cartStore = usecartStore()
 
     </Button>
   
-    <Badge v-if="cartStore.cart.products.length > 0" style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">
-      {{ cartStore.cart.products.length }}
-    </Badge>
+    <Badge v-if="cartStore.cart.products.length > 0" style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">{{ cartStore.cart.products.length }}</Badge>
+
   </div>
 
 </template>
@@ -147,8 +146,7 @@ i {
 
 .menu-button2{
   display: flex;
-  padding: .2rem 0;
-  align-items: center;
+  padding: .4rem 0;
 }
 
 .header-container {
@@ -181,7 +179,6 @@ i {
   display: flex;
   /* flex-direction: column;   */
   gap: .5rem;
-  align-items: center;
 }
 
 
@@ -241,6 +238,10 @@ h1 {
   font-size: 1.5rem;
   color: white;
   text-decoration: none;
+
+
+
+
 }
 
 
