@@ -1,9 +1,6 @@
 <template>
   <div class="container" style="background-color: red; min-width: 100%;">
     <!-- Botón para ir al banner anterior (sólo se muestra si hay más de un banner) -->
-    <Button class="button-left" v-if="banners.length > 1" @click="prevBanner">
-      <i class="pi pi-angle-left"></i>
-    </Button>
 
     <!-- Contenedor (slider) con las imágenes -->
     <div class="slider" :style="sliderStyle">
@@ -14,6 +11,10 @@
         :alt="banner.title ?? `Banner ${idx}`"
       />
     </div>
+        <Button class="button-left" v-if="banners.length > 1" @click="prevBanner">
+      <i class="pi pi-angle-left"></i>
+    </Button>
+
 
     <!-- Botón para ir al banner siguiente (sólo se muestra si hay más de un banner) -->
     <Button class="button-right" v-if="banners.length > 1" @click="nextBanner">

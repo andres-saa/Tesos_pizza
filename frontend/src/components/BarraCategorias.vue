@@ -1,5 +1,5 @@
 <template>
-    <div class="banner-container" style="margin: auto; position: relative; margin: auto;max-width: max-content;">
+    <div class="banner-container" style="margin:2rem auto; position: relative;max-width: max-content;">
         <div class="title" style="max-width: 100%; margin: auto;">
             <div class="categories">
                 <div @click="navigate_to_category(i.category_name, i.category_id)"

@@ -41,7 +41,7 @@ export const fetchService = {
     } catch (error) {
       // Desactivar el estado de carga
       //   store.setLoading(false)
-      this.store.setVisible('loading',false)
+      store.setVisible('loading',false)
       console.error('An error occurred while fetching data:', error)
       return null
     }

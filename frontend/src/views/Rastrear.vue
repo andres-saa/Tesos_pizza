@@ -1,11 +1,11 @@
 <template>
     <div class="container" style="height: 100%;display: flex;flex-direction: column; min-height: 80vh;">
-        <div style="width: 100%;height: 100%;padding: 1rem;">
-            <div style="max-width: 100%;width: 100%;box-shadow: 0 0 1rem #00000030;border-radius: 1rem; padding: 1rem;">
+        <div style="width: 100%;height: 100%;padding: 4rem 0;">
+            <div style="max-width: 100%;width: 100%;padding: 1rem;">
 
                 <div style="width: 100%;display: flex;gap: 1rem;margin: auto;max-width: 30rem;">
                     <InputText v-model="order_id" class="search" filter="" style="border-radius: 10rem;"
-                        placeholder="Escribe el id del pedido...">
+                        placeholder="id del pedido ejemplo TEZ-0054...">
                     </InputText>
                     <Button rounded @click="get_status_history(order_id)"
                         style="aspect-ratio: 1 / 1;background-color: var(--primary-color);border: none;color: white;">
@@ -27,16 +27,21 @@
                     <!-- <p>Hora estimada de entrega: 9:22 pm</p> -->
                 </section>
 
-                <section>
-                    <h3 v-if="currentStatus">Historial de Estado</h3>
+                <section v-if="currentStatus">
+                    <h3 >Historial de Estado</h3>
                     <ul>
                         <li v-for="stat in status[0].status_history" :key="stat.timestamp">
                             🔴 {{ stat.status }} - {{ stat.timestamp }}
                         </li>
                     </ul>
                 </section>
+
+
+
+                
             </div>
         </div>
+        <banner></banner>
 
         <h2 class="invitacion">¡Antójate de algo bien rico!</h2>
         <gridCategorias></gridCategorias>
@@ -48,6 +53,7 @@ import Select from 'primevue/select';
 import gridCategorias from '@/components/gridCategorias.vue';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
+import Banner from '@/components/Banner.vue';
 
 import { URI } from '@/service/conection';
 import { fetchService } from '@/service/utils/fetchService';
@@ -102,8 +108,8 @@ h2 {
 }
 
 .invitacion {
-    margin: 0;
-    padding: 0;
+    margin: 3rem;
+    padding-top: 3rem;
     width: 100%;
     text-align: center;
     margin: 0rem 0;

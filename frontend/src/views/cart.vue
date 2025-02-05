@@ -14,17 +14,18 @@
                         style=" align-items:end; position: relative;box-shadow: 0 .5rem 2rem #00000010;border: 1px solid #00000030; gap:1rem; border-radius: 0.3rem;">
 
 
-                        <div style="display: flex;gap: 1rem; justify-content: end;">
+                        <div style="display: flex;gap: 1rem; justify-content: space-between;">
                             <img style="width:5rem; object-fit:cover; height:5rem ;background-color: ;"
                                 :src="`${URI}/read-photo-product/${product.product.img_identifier}/600`" alt="">
                             <div style="display: flex; flex-direction:column; gap:0.4rem">
                                 <div style="display: flex; flex-direction:column;align-items: end; gap:0.3rem; width:100%">
                                     <div
-                                        style="display:flex; justify-content:space-between; align-items: center; width:100%; gap:1rem">
+                                        style="display:flex;flex-direction: column; justify-content:end; align-items: end; width:100%; gap:0rem">
                                         <span class="p-0 m-0"> {{ product.product.product_name }} </span>
-                                    </div>
-                                    <span style="text-transform: uppercase; font-weight: bold;width: 100%;">{{
+                                        <span style="text-transform: uppercase; font-weight: bold;">{{
                                         product.product.category_name }}</span>
+                                    </div>
+                                   
 
                                     <div style="display:flex">
                                         <div class="p-0"
@@ -62,8 +63,8 @@
 
 
                         <div
-                            style="display: flex;gap:1rem;align-items: center;width: 100%;margin-top: 1rem; flex-wrap: wrap;">
-                            <h6 v-if="product?.flavors?.length > 1" style="margin: 0;"> <b
+                            style="display: flex; gap:1rem;align-items: center;text-transform: uppercase; width: 100%;margin-top: 1rem; flex-wrap: wrap;">
+                            <h6 v-if="product?.flavors?.length > 1" style="margin: 0;text-transform: uppercase;"> <b
                                     style="padding: .5rem;">Sabores</b> </h6>
                             <h6 v-else-if="product?.flavors?.length > 0" style="margin: 0;"> <b>Sabor</b> </h6>
                             <div style="display: flex;gap: 1rem;flex-direction: row;">
@@ -74,9 +75,9 @@
                         </div>
 
                         <div
-                            style="display: flex;gap:1rem;align-items: center;width: 100%;margin-top: 1rem; flex-wrap: wrap;">
+                            style="display: flex;gap:1rem;align-items: center;width: 100%;flex-wrap: wrap;" v-if="product.gaseosa?.name">
 
-                            <h6 v-if="product.gaseosa?.name" style="margin: 0;"> <b>Sabor de la gaseosa</b> </h6>
+                            <h6  style="margin: 0;"> <b>Sabor de la gaseosa</b> </h6>
                             <div style="display: flex;gap: 1rem;flex-direction: row;">
                                 <Tag severity="info" style="text-transform: uppercase;"> {{ product.gaseosa?.name}}</Tag>
                             </div>
@@ -547,4 +548,5 @@ button:hover {
 
 
 }
+
 </style>

@@ -8,7 +8,6 @@
 
         <product_card v-for="(category) in products" :key="category.id" class="card" :product="category" />
 
-
     </div>
 </template>
 

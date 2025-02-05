@@ -1,6 +1,6 @@
 <template>
     
-    <div class="app-topbar-container p-2" style="background-color: var(--primary-color);box-shadow: 0 0rem 2rem black;">
+    <div class="app-topbar-container " style="background-color: var(--primary-color);box-shadow: 0 0rem 2rem black;">
             
 
         <div class="header" style="max-width: 1280px;margin: auto;">
@@ -12,13 +12,19 @@
 
                 <router-link to="/" style="text-decoration: none;max-width: 17rem; overflow: hidden;text-overflow: ellipsis;">
                     <div class="logo-sesion">
-                        <img src="/src/assets/images/logo.webp" alt="">
-                        <div>
-                            <h1 class="title roboto-thin m-0 p-0">
-                            <b>
+                        <img src="/src/assets/images/logo.webp"  alt="">
+                        <div style="display: flex;">
+                            <h1 class="title roboto-thin m-0 p-0" style="padding: 0;margin: 0;font-size: 1.2rem;  ">
+                            <b style="display: flex;flex-direction: column;">
                                 TEZO'S PIZZA
+                                <Tag  style="padding: .3rem .3rem .1rem .3rem; margin: 0;font-family: roboto;">
+                                Abierto
+                            </Tag>
+                       
                             </b>
+                           
                         </h1>
+                        
                         
                         </div>
                     </div>
@@ -29,16 +35,15 @@
                 <div class="menus" v-if="true" style="">
 
                     <router-link to="/">
-                        <Button :style="is_active_router('/') ? 'box-shadow:0 .3rem white' : ''"
-                            style="color:white;border-radius: 0;" text label="Domilicios"></Button>
+                        <Button   :style="is_active_router('/') ? 'box-shadow:0 .3rem white' : ''"
+                            style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"  label="Domilicios"></Button>
                     </router-link>
 
                     <router-link to="/carta">
                         <div>
                             <Button :style="is_active_router('/carta') ? 'box-shadow:0 .3rem white' : ''"
-                            style="color:white;border-radius: 0;" text label="Carta"></Button>
+                            style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Carta"></Button>
 
-                       
                         </div>
                      
 
@@ -46,8 +51,11 @@
 
                     <router-link to="/rastrear">
                         <Button :style="is_active_router('/rastrear') ? 'box-shadow:0 .3rem white' : ''"
-                            style="color:white;border-radius: 0;" text label="Rastrear"></Button>
+                        style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Rastrear"></Button>
                     </router-link>
+
+                    <!-- <Button style="text-transform: capitalize;" @click="siteStore.visibles.currentSite = true" class="py-0 px-3" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
+                    </Button> -->
 
 
                     <!-- <Button style="color:white" text label="Nosotros"></Button>
@@ -81,6 +89,8 @@
                                 <i class="pi pi-whatsapp"></i>
                             </Button>
                         </a>
+
+                        
                     </div>
 
                 </div>
@@ -105,17 +115,17 @@
             </div>
 
 
+        </div>
 
-            <div style="color: white;align-items: center; justify-content:center ;display: flex; text-overflow: ellipsis; text-transform: capitalize;"> 
+
+
+        <div style="color: white;align-items: center; justify-content:center ;display: flex; text-overflow: ellipsis; text-transform: capitalize;"> 
 
 
                 
-                <Button style="text-transform: capitalize;" @click="siteStore.visibles.currentSite = true" class="py-0 px-3" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
-                </Button>
-            </div>
-            
-        </div>
-
+<Button  style="text-transform: capitalize;position: absolute;top: 100%;right:0 ; border-radius: 0 0 0rem 10rem; " @click="siteStore.visibles.currentSite = true" class="py-0 px-3 ubicacion" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
+</Button>
+</div>
     </div>
 
 
@@ -163,7 +173,9 @@ const store = useSidebarStore()
 </script>
 
 <style scoped>
-.app-topbar-container {}
+.app-topbar-container {
+    padding: .3rem;
+}
 
 .logo-sesion {
     display: flex;
@@ -181,6 +193,7 @@ const store = useSidebarStore()
     min-width: max-content;
 }
 
+
 i {
 
     font-size: 1.8rem;
@@ -190,7 +203,7 @@ i {
 
 .menus{
     display: flex;
-    padding: .5rem;
+    padding: .3rem;
 }
 
 .header-container {
@@ -218,10 +231,6 @@ i {
     -webkit-text-fill-color: transparent;
 }
 
-
-*:focus{
-    background-color: rgba(0, 0, 0, 0.24) !important;
-}
 
 
 .social-media2 {
@@ -284,6 +293,7 @@ img {
     max-width: 3rem;
     border-radius: 50%;
     overflow: hidden;
+    padding: .4rem;
 }
 
 .menu-button {
@@ -291,7 +301,10 @@ img {
     justify-content: end;
     padding: 0;
     margin: 0;
+    background-color: none;
 }
+
+
 
 
 @media (width < 1400px) {
@@ -307,10 +320,27 @@ img {
 
 }
 
+.ubicacion{
+    animation:  blink .5s ease infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+    border: none;
+  }
+  50% {
+    opacity: .8;
+    /* background-color: var(--primary-color); */
+    /* filter: brightness(1.2); */
+    border: none;
+  }
+}
+
 
 @media (width < 900px) {
     .app-topbar-container {
-        padding: 0 1rem;
+        padding: .3rem 1rem;
 
 
 
@@ -354,4 +384,6 @@ img {
         display: none;
     }
 }
+
+
 </style>

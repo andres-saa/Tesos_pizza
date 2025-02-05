@@ -3,7 +3,10 @@
         style="padding: 0rem;">
         <img class="imagen" :src="`${URI}/read-photo-product/${category.image_identifier}/600`">
 
-        <h3 class="name " style="text-transform: capitalize;">{{ category.category_name?.toLowerCase() }} </h3>
+        <div style="text-transform: capitalize;display: flex;padding-bottom: 0rem; justify-content: center;align-items: end; position: absolute;bottom: 0;background:linear-gradient(to top, black, transparent);width: 100%;height: 30%; text-align: center;">
+            <h3 class="name" > {{ category.category_name?.toLowerCase() }}  </h3>
+
+        </div>
     </div>
 </template>
 
@@ -33,12 +36,13 @@ const props = defineProps({
 <style scoped>
 .container {
     width: 100%;
+    position: relative;
     /* height: 100%; */
     /* aspect-ratio: 1 / 1;/ */
     height: 100%;
     transition: all ease 0.2s;
     overflow: hidden;
-    padding: 1rem;
+    /* padding: 1rem; */
     display: flex !important;
     flex-direction: column;
     justify-content: center;
@@ -63,15 +67,11 @@ p {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4/ 3;
     /* padding: 1rem; */
     transition: all ease 0.2s;
 }
 
-.container:hover {
-    background-color: var(--primary-color);
-
-}
 
 
 .container:hover>* {
@@ -85,7 +85,9 @@ p {
 
 
 .name{
-    padding:0 1rem;
+    padding:0 2rem;
+    color: white;
+    text-shadow: 0 .3rem 1rem rgb(255, 0, 0);
 }
 
 
@@ -97,8 +99,8 @@ p {
         padding: 1rem;
     }
 
-    .name {
-        font-size: 1.2rem;
+    .name { 
+        font-size: 2rem;
         padding: 1rem;
     }
 }
@@ -113,7 +115,7 @@ p {
     }
 
     .name {
-        font-size: 1.3rem;
+        font-size:2rem;
         padding: 1rem;
     }
 }

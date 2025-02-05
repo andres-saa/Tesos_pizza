@@ -5,10 +5,10 @@
 
         <app-topbar style="position: sticky;z-index: 999;left: 0;top: 0;" class="app-topbar"></app-topbar>
         <div class="side-bar"
-            style="display: flex;margin: auto; height: 100%;gap: 1rem; align-items: start;max-width: 1920px;position: relative;">
+            style="display: flex;margin: auto; height: 100%;gap: 1rem; align-items: start;max-width: 3840px;position: relative;">
 
             <div class="side-bar" v-if="route.path == '/'"
-                style=" position: fixed;left: 0;top:7rem;bottom: 0rem;overflow: hidden; width: 20rem;background-color: white;box-shadow: 0 0 2rem #00000050;overflow-y: auto;z-index: 9;">
+                style=" position: fixed;left: 0;top:2.7rem;bottom: 0rem;overflow: hidden; width: 20rem;background-color: white;box-shadow: 0 0 2rem #00000050;overflow-y: auto;z-index: 9;">
                 <div style="height: 100%;overflow: auto;display: flex;align-items: start;">
                     <side-bar class="side-bar" style="z-index: 99;position: relative;top: 0;">
                     </side-bar>

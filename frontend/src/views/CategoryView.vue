@@ -1,5 +1,6 @@
 <template>
 
+
     <barra-categorias style="position: sticky;top: 0;z-index: 90; background-color:white;"></barra-categorias>
 
     <div class="cantaniner" style="min-height: 100vh;padding: 0 1rem;">

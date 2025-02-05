@@ -16,7 +16,7 @@
         <div class="container p-0 ">
             
         <div class="imagen" style="display: flex;align-items: center; " >
-            <img style="width: 100%; aspect-ratio: 4 / 4 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem .3rem 0 0;"
+            <img style="width: 100%; aspect-ratio: 5 / 5 ; border-radius: .5rem; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.3rem .3rem 0 0;"
                 :src="currentImage(props.product.img_identifier)" @load="loadHighResImage(props.product.img_identifier)"
                 alt="">
         </div>
@@ -24,7 +24,7 @@
         
 
         <div class="texto p-3" style="display: flex;justify-content: space-between; flex-direction: column;">
-            <div style="display: flex;gap: 0rem; height: 100%; flex-direction: column;justify-content: space-between;">
+            <div style="display: flex;gap: 0rem; height: 100%;padding-bottom: 3rem; flex-direction: column;justify-content: space-between;">
 
              
 
@@ -39,9 +39,25 @@
                 </div>
 
 
-                <h6 class="py-0 m-0" style="font-weight: 400;">
+                <h6 class="py-0 m-0" >
                     {{ truncatedDescription?.toLocaleLowerCase() }}
                 </h6>
+
+
+                 
+                <div style="display: flex;justify-content: end;padding: 1rem; align-items: center;position: absolute;bottom: 0;text-align: end;width: 100%;right: 0;  gap: 1rem;justify-content:end;">
+                        
+                        <!-- <Button label="Ver mas" rounded></Button> -->
+                        <h6 v-if="props.product?.last_price" class="text-2xl p-0 m-0"
+                            style="text-decoration: line-through; opacity: .5;">
+                            {{ props?.product?.last_price }}
+                        </h6>
+               
+                        <h4 class="text-2xl p-0 m-0"><b>{{ formatoPesosColombianos(props.product.price +
+                            (selected_size.price || 0)) }}</b></h4>
+                    </div>
+   
+
 
 
 
@@ -57,23 +73,7 @@
         </div>
   
 
-        <div class="select-price-containe p-3" style="align-items: center; gap: 1rem; width: 100%;max-width:100%;">
-                <div>
-                    <div style="display: flex;justify-content: end; align-items: center; gap: 1rem;justify-content:end;">
-                        
-                        <!-- <Button label="Ver mas" rounded></Button> -->
-                        <h6 v-if="props.product?.last_price" class="text-xl p-0 m-0"
-                            style="text-decoration: line-through; opacity: .5;">
-                            {{ props?.product?.last_price }}
-                        </h6>
-               
-                        <h4 class="text-xl p-0 m-0"><b>{{ formatoPesosColombianos(props.product.price +
-                            (selected_size.price || 0)) }}</b></h4>
-                    </div>
-                </div>
-
-
-            </div>
+       
 
 
 

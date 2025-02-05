@@ -26,7 +26,7 @@
                 <router-link to="/rastrear">
                     <Button @click="() => store.side_bar_visible ? store.side_bar_visible = false : ''"
                         :style="is_active_router('/rastrear') ? 'box-shadow:0 .3rem white' : ''"
-                        style="color:white;border-radius: 0;padding: 0 0 .3rem 0;" text label="Rastrear"></Button>
+                        style="color:white;border-radius: 0;padding: 0 0 .3rem 0;" text label="Rastrear pedido"></Button>
                 </router-link>
 
 
@@ -36,7 +36,7 @@
 
             <div class="banner-container" style="margin: auto; position: relative; margin: auto;min-width: 100%;">
                 <div class="title" style="max-width: 100%; margin: auto;">
-                    <div class="categories">
+                    <div class="categories p-2">
                         <div @click="navigate_to_category(i.category_name, i.category_id)"
                             :style="route.params.category_id == i.category_id ? 'background-color: var(--primary-color); color: #fff;' : ''"
                             class="categorie" v-for="i in categories" :key="i.category_id">
@@ -119,7 +119,7 @@
 
 <style scoped>
 .side-bar-container {
-    min-width: 18rem;
+    min-width: 20rem;
     max-width: 80vw;
     height: 100%;
     min-height: 100%;
@@ -127,7 +127,7 @@
     /* min-height: max-content; */
     /* position: f; */
     /* top: 0rem; */
-    padding: 1rem;
+    /* padding: 1rem; */
     /* z-index: 9999999999; */
 }
 
@@ -230,7 +230,7 @@ h3 {
 
 .menu {
     background-color: #fff;
-    border-radius: .3rem;
+    /* border-radius: .3rem; */
     overflow: hidden;
     /* box-shadow: 0 0 1rem rgba(0, 0, 0, 0.113); */
     transition: all ease .3s;

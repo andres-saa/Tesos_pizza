@@ -8,7 +8,7 @@
             <h5> <b>productos</b> </h5>
 
             <div v-for="product in store.cart.products"
-                style="display: flex; justify-content: space-between;flex-direction: column; padding: 0; margin: 0; margin-bottom: 0;">
+                style="display: flex; justify-content: space-between; flex-direction: column; padding: 0; margin: 0; margin-bottom: 0;">
 
                 <div style="display: flex; justify-content: space-between; padding: 0; margin: 0; margin-bottom: 0;">
                     <div style="display: flex; align-items: center; padding: 0; margin: 0;">
@@ -22,9 +22,9 @@
                 </div>
 
                 <div
-                    style="display: flex;gap: 0.3em;rem;align-items: center;justify-content: end;padding: 0; width: 100%;flex-wrap: wrap;">
+                    style="display: flex;gap: 0.3em;rem;align-items: center;justify-content: start;padding: 0; width: 100%; flex-wrap: wrap;">
 
-                    <div style="display: flex; gap: 0.2rem; align-items: end; flex-direction: column;">
+                    <div style="display: flex; gap: 0.2rem; align-items: start; flex-direction: column;">
                         <Tag v-for="(flavor, index) in product.flavors" :key="index" style="padding: .3rem;">
                             <span style="color: black;">
                                 {{ product.flavors.length > 1 ? `1/2` : 'sabor' }}
@@ -33,10 +33,10 @@
                         </Tag>
                     </div>
 
-                    <div style="display: flex; gap: 0.2rem; align-items: end; flex-direction: column;">
-                        <Tag style="padding: .3rem;" severity="info">
-                            <span style="color: black;">
-                                SABOR DE LA GASEOSA {{ product.gaseosa?.name }}
+                    <div v-if="product?.gaseosa?.name" style="display: flex;width: 100%; gap: 0.2rem; align-items: start; flex-direction: column;">
+                        <Tag style="padding: " severity="info">
+                            <span style="">
+                               <span style="color: black;padding: 0;margin:0;">  SABOR DE LA GASEOSA </span> {{ product.gaseosa?.name }}
                             </span>
                             <!-- {{ flavor.name }} {{ product?.quantity > 1 && flavor.price > 0? `x ${product.quantity} =` : '' }} {{ flavor.price * product.quantity > 0 ? formatoPesosColombianos(flavor.price / 2 * product.quantity) : '' }} -->
                         </Tag>

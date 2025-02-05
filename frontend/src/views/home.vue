@@ -1,9 +1,8 @@
 <template>
     <banner style="width: 100%;"></banner>
-    <h2 style="">Explora nuestro maravilloso menu!</h2>
+    <h2 style="padding-top: 0;">Explora nuestro maravilloso menu!</h2>
     <gridCategorias></gridCategorias>
-
-
+    <!-- <category-view></category-view> -->
 
 
 </template>
@@ -13,7 +12,7 @@
 
 import gridCategorias from '@/components/gridCategorias.vue';
 import Banner from '@/components/Banner.vue';
-
+// import CategoryView from './CategoryView.vue';
 </script>
 
 
@@ -26,10 +25,21 @@ h2 {
     text-transform: uppercase;
     width: 100%;
     text-align: center;
-    margin: 2rem 0;
+    /* margin: 1rem 0; */
+    margin-top: 3rem;
     font-size: 2rem;
+    color: rgb(255, 252, 252);
     color: var(--primary-color);
     transition: all ease .3s;
+    /* text-shadow:
+    0 0 5px  #000000,
+    0 0 10px #000000,
+    0 0 15px #ff00dd,
+    0 0 20px #ff0000,
+
+
+    0 0 5px #ff0000ab; */
+
 }
 
 

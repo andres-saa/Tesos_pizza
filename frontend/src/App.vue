@@ -29,9 +29,9 @@ const cartStore = usecartStore()
   <router-view></router-view>
 
 
-  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: end;">
+  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: center;">
     <div class="social-media2 "
-      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;padding: .5rem;">
+      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;">
 
 <RouterLink to="/rastrear"> 
   <Button label="Rastrear mi pedido" style="min-width: max-content;padding: 0 1rem; height: 2rem;" rounded ></Button>
@@ -146,7 +146,8 @@ i {
 
 .menu-button2{
   display: flex;
-  padding: .4rem 0;
+  padding: .2rem 0;
+  align-items: center;
 }
 
 .header-container {
@@ -179,6 +180,7 @@ i {
   display: flex;
   /* flex-direction: column;   */
   gap: .5rem;
+  align-items: center;
 }
 
 
