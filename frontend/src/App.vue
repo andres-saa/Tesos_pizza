@@ -29,7 +29,7 @@ const cartStore = usecartStore()
   <router-view></router-view>
 
 
-  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: center;">
+  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: end;">
     <div class="social-media2 "
       style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;">
 
@@ -76,8 +76,9 @@ const cartStore = usecartStore()
 
     </Button>
   
-    <Badge v-if="cartStore.cart.products.length > 0" style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">{{ cartStore.cart.products.length }}</Badge>
-
+    <Badge v-if="cartStore.cart.products.length > 0" style="position: absolute;left: 70% ; bottom:60%;aspect-ratio: 1  / 1;border-radius: 50%;">
+      {{ cartStore.cart.products.length }}
+    </Badge>
   </div>
 
 </template>
@@ -240,10 +241,6 @@ h1 {
   font-size: 1.5rem;
   color: white;
   text-decoration: none;
-
-
-
-
 }
 
 
