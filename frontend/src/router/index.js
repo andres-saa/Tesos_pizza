@@ -36,6 +36,15 @@ const router = createRouter({
           },
           component: () => import('../views/carta.vue'),
         },
+
+        {
+          path: 'Horarios',
+          name: 'Horarios',
+          meta: {
+            title: 'Carta'
+          },
+          component: () => import('../views/Horarios.vue'),
+        },
         {
           path: 'rastrear',
           name: 'rastrear',

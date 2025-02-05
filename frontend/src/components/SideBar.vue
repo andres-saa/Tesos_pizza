@@ -8,7 +8,7 @@
 
 
             <div class="selector"
-                style="background-color: var(--primary-color);width: 100%; border-radius: .3rem;justify-content: space-between; gap:.5rem;padding: .5rem 1rem;position: sticky;top: 0;left: 0;right: 0;z-index: 99;"
+                style="background-color: var(--primary-color);width: 100%; border-radius: 0;justify-content: space-between; gap:.5rem;padding: .5rem 1rem;position: sticky;top: 0;left: 0;right: 0;z-index: 99;"
                 :style="!store.visible_categoires ? 'max-height:15rem' : 'max-height:0'">
 
                 <router-link to="/">

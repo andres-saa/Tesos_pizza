@@ -62,6 +62,12 @@
                         style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Rastrear Pedido"></Button>
                     </router-link>
 
+
+                    <router-link to="/horarios">
+                        <Button :style="is_active_router('/horarios') ? 'box-shadow:0 .3rem white' : ''"
+                        style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Nuestros horarios"></Button>
+                    </router-link>
+
                     <!-- <Button style="text-transform: capitalize;" @click="siteStore.visibles.currentSite = true" class="py-0 px-3" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
                     </Button> -->
 
@@ -296,7 +302,7 @@ img {
     max-width: 3rem;
     border-radius: 50%;
     overflow: hidden;
-    padding: .4rem;
+    padding: .1rem;
 }
 
 .menu-button {

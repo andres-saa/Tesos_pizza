@@ -304,7 +304,7 @@ img {
 }
 
 
-
+    
 
 .title {
     margin: 0;
