@@ -1,52 +1,100 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      // Ruta padre
       path: '/',
-      name: 'home',
+      name: 'restaurante',
+      meta: {
+        title: 'Restaurante'
+      },
       component: () => import('../AppLayout/AppLayout.vue'),
       children: [
         {
-          path: '/',
-          name: 'main',
+          path: '',
+          name: 'home',
+          meta: {
+            title: 'Domicilios'
+          },
           component: () => import('../views/home.vue'),
         },
         {
-          path: '/categoria/:category_name/:category_id',
+          path: 'categoria/:category_name/:category_id',
           name: 'categoria',
+          meta: {
+            title: 'Categoría'
+          },
           component: () => import('../views/CategoryView.vue'),
         },
         {
-          path: '/carta',
+          path: 'carta',
+          name: 'carta',
+          meta: {
+            title: 'Carta'
+          },
           component: () => import('../views/carta.vue'),
         },
         {
-          path: '/rastrear',
+          path: 'rastrear',
+          name: 'rastrear',
+          meta: {
+            title: 'Rastrear Pedido'
+          },
           component: () => import('../views/Rastrear.vue'),
         },
         {
-          path: '/cart',
+          path: 'cart',
           name: 'cart',
+          meta: {
+            title: 'Carrito'
+          },
           component: () => import('@/views/cart.vue'),
         },
-
         {
-          path: '/pay',
+          path: 'pay',
           name: 'pay',
+          meta: {
+            title: 'Pago'
+          },
           component: () => import('@/views/pay.vue'),
         },
-
         {
-          path: '/gracias',
+          path: 'gracias',
           name: 'gracias',
+          meta: {
+            title: 'Gracias'
+          },
           component: () => import('@/views/gracias.vue'),
         },
       ],
     },
   ],
 })
+
+
+
+
+
+router.afterEach((to) => {
+  const defaultTitle = `Tezo's Pizza`
+
+  if (to.name === 'categoria' && to.params.category_name) {
+    // Capitalizamos el nombre de la categoría
+    const categoryNameCapitalized = capitalizeFirstLetter(to.params.category_name)
+    document.title = `${categoryNameCapitalized} | ${defaultTitle}`
+  } else {
+    // De lo contrario, usamos meta.title o el título por defecto
+    document.title = to.meta?.title
+      ? `${to.meta.title} | ${defaultTitle}`
+      : defaultTitle
+  }
+})
+
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
 
 export default router

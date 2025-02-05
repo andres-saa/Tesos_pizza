@@ -66,6 +66,7 @@ const scrollToTop = () => {
 .layout-container {
     padding: 0rem;
     margin: 0;
+    min-height: 101vh;
 }
 
 .app-topbar {}

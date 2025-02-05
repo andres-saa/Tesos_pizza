@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="background-color: red; min-width: 100%;">
+  <div class="container" style="background-color: var(--primary-color); min-width: 100%;">
     <!-- Botón para ir al banner anterior (sólo se muestra si hay más de un banner) -->
 
     <!-- Contenedor (slider) con las imágenes -->

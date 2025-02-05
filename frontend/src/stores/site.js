@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { URI } from '../service/conection'
 import axios from 'axios'
 
-export const useSitesStore = defineStore('site', {
+export const useSitesStore = defineStore('site-3422', {
   persist: {
     key: 'site',
     storage: localStorage,

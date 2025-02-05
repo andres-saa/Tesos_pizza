@@ -24,13 +24,17 @@
                 <div
                     style="display: flex;gap: 0.3em;rem;align-items: center;justify-content: start;padding: 0; width: 100%; flex-wrap: wrap;">
 
-                    <div style="display: flex; gap: 0.2rem; align-items: start; flex-direction: column;">
-                        <Tag v-for="(flavor, index) in product.flavors" :key="index" style="padding: .3rem;">
+                    <div style="display: flex; gap: 0.2rem; align-items: center;width: 100%; justify-content: space-between;" v-for="(flavor, index) in product.flavors"> 
+
+                        <Tag  :key="index" style="padding: .3rem;">
                             <span style="color: black;">
                                 {{ product.flavors.length > 1 ? `1/2` : 'sabor' }}
                             </span>
-                            {{ flavor.name }} {{ product?.quantity > 1 && flavor.price > 0? `x ${product.quantity} =` : '' }} {{ flavor.price * product.quantity > 0 ? formatoPesosColombianos(flavor.price / 2 * product.quantity) : '' }}
+                            {{ flavor.name }} {{ product?.quantity > 1 && flavor.price > 0? `x ${product.quantity} =` : '' }} 
+
                         </Tag>
+                        <p class="p-0 m-0">      <b> {{ flavor.price * product.quantity > 0 ? formatoPesosColombianos(flavor.price / 2 * product.quantity) : '' }}
+                        </b>                     </p>
                     </div>
 
                     <div v-if="product?.gaseosa?.name" style="display: flex;width: 100%; gap: 0.2rem; align-items: start; flex-direction: column;">
@@ -141,17 +145,16 @@
 
             </router-link>
 
+            <Tag v-if="siteStore.status.status == 'closed'" style="width: 100%;text-transform: capitalize; height: 2.5rem;" class="mt-2"
+                severity="danger"> Cerrado, abrimos a las {{ siteStore.status.next_opening_time.split(':')?.slice(0,2).join(' : ') }} </Tag>
 
-
-            <Tag v-if="siteStore.status == 'cerrado'" style="width: 100%;height: 2.5rem;" class="mt-2"
-                severity="danger"> Este Restaurante esta cerrado</Tag>
-            <router-link to="/pay" v-if="route.path.includes('cart') && siteStore.status != 'cerrado'">
+            <router-link to="/pay" v-if="route.path.includes('cart') && siteStore.status.status != 'closed'">
                 <Button iconPos="right" icon="pi pi-arrow-right" label="Pedir" class="mt-2" severity="help"
                     style="outline: none;width: 100%; border: none;font-weight: bold; background-color: black;"></Button>
             </router-link>
 
-            <router-link to="/pay" v-else-if="siteStore.status != 'cerrado'">
-                <Button :disabled="store.sending_order || siteStore.status == 'cerrado'" @click="() => {
+            <router-link to="/pay" v-else-if="siteStore.status.status != 'closed'">
+                <Button :disabled="store.sending_order || siteStore.status.status == 'closed'" @click="() => {
                     orderService.sendOrder()
                     sending = true
                 }" iconPos="right" icon="pi pi-arrow-right" label="Finalizar pedido" class="mt-2" severity="help"
@@ -245,7 +248,7 @@ button {
 }
 
 * {
-    text-transform: uppercase;
+    text-transform: lowercase;
     font-size: 0.9rem;
 }
 

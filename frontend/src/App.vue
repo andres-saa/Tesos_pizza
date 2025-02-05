@@ -7,54 +7,85 @@ import router from './router';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { useSitesStore } from './stores/site';
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, onBeforeUnmount } from 'vue';
 import { usecartStore } from './stores/shoping_cart';
+import { URI } from './service/conection';
 import Banner from './components/Banner.vue';
 const store  = useSitesStore()
 const cartStore = usecartStore()
 
 
+const obtenerstatus = async () => {
+  const siteStore = useSitesStore()
 
+  try {
+    const response = await fetch(`${URI}/site/${31}/status`)
+    const data = await response.json()
+
+    siteStore.status = data
+  } catch (error) {
+    console.error('Error al obtener el status:', error)
+    siteStore.status = 'cerrado'
+  }
+}
+
+// Guardamos el ID del intervalo para poder limpiarlo
+let intervalId
+
+onMounted(() => {
+  // Ejecutamos inicialmente la función
+  obtenerstatus()
+
+  // Repetimos cada 5 segundos
+  intervalId = setInterval(() => {
+    obtenerstatus()
+  }, 5000)
+})
+
+onBeforeUnmount(() => {
+  // Limpiamos el intervalo al desmontar el componente
+  clearInterval(intervalId)
+})
 
 </script>
 
 <template>
 
 
-  <div class="" v-if="store.visibles.loading" style="width: 100vw; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
-    <img class="imagen" src="/public/images/logo.png" style="width:20vw ;max-width: 200px;" alt="">
+  <div class="" v-if="store.visibles.loading" style="width: 100vw;pointer-events: none; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
+    <img class="imagen" src="/public/images/logo.png" style="width:20vw ;max-width: 200px; " alt="">
   </div>
 
   <Toast></Toast>
   <router-view></router-view>
 
 
-  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: white; z-index: 900;width: 100%;justify-content: end;">
+  <div class="menu-button2 " style="position: fixed; box-shadow: 0 -.3rem 1rem #00000040; left: 0rem;bottom: 0;background-color: var(--p-badge-primary-background); z-index: 900;width: 100%;justify-content: center;">
     <div class="social-media2 "
-      style="background-color: #fff; padding: .1rem;;overflow: hidden;width:min-content;padding: .5rem;">
+      style="padding: .1rem;;overflow: hidden;width:min-content;padding: .5rem;">
 
 <RouterLink to="/rastrear"> 
-  <Button label="Rastrear mi pedido" style="min-width: max-content;padding: 0 1rem; height: 2rem;" rounded ></Button>
+  <Button label="Rastrear mi pedido" style="min-width: max-content;font-weight: bold;font-size: auto; height: 100%; background-color:  var(--p-button-primary-hover-background);"  ></Button>
 
 </RouterLink>
 
-      <a href="https://www.facebook.com/tezospizza/?locale=es_LA">
-        <Button style="padding: 0;color: #4267B2;" size="large" text class="menu-bars text-facebook">
+      <a href="https://www.facebook.com/tezospizza/?locale=es_LA" style="background-color: var(--p-button-primary-hover-background);">
+        <Button style="padding: 0;border-radius: .5rem;overflow: hidden;"   size="large" text class="menu-bars text-facebook p-2">
 
-          <i class="pi pi-facebook text-icon"></i>
+          <i style="color: #fff !important;" class="pi pi-facebook text-icon p-0 m-0"></i>
         </Button>
       </a>
 
 
-      <a href="https://www.instagram.com/tezos_pizza/?igsh=MTN0bnhueHE5M3l0dw%3D%3D">
-        <Button style="padding: 0;" size="large" text class="menu-bars text-instagram">
+      <a href="https://www.instagram.com/tezos_pizza/?igsh=MTN0bnhueHE5M3l0dw%3D%3D" style="background-color: var(--p-button-primary-hover-background);">
+        <Button style="padding: 0;" size="large" text class="menu-bars text-instagram p-2">
           <i class="pi pi-instagram "></i>
         </Button>
       </a>
 
       
-      <a href="https://wa.link/7pde2f">
-        <Button style="padding: 0;" size="large" text class="menu-bars text-whatsapp">
+      <a href="https://wa.link/7pde2f" style="background-color: var(--p-button-primary-hover-background);">
+        <Button style="padding: 0;" size="large" text class="menu-bars text-whatsapp p-2">
           <i class="pi pi-whatsapp"></i>
         </Button>
       </a>
@@ -146,7 +177,8 @@ i {
 
 .menu-button2{
   display: flex;
-  padding: .4rem 0;
+  padding: 0rem 0;
+  border-radius: 0;
 }
 
 .header-container {
@@ -156,20 +188,24 @@ i {
   padding-top: .5rem;
 }
 
+
+* {
+  border-radius: .5rem;
+}
 .text-facebook {
-  background: var(--facebook-gradient);
+  background: #fff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-instagram {
-  background: var(--instagram-gradient);
+  background: #fff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-whatsapp {
-  background: var(--whatsapp-gradient);
+  background: #fff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

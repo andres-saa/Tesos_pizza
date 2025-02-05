@@ -17,11 +17,19 @@
                             <h1 class="title roboto-thin m-0 p-0" style="padding: 0;margin: 0;font-size: 1.2rem;  ">
                             <b style="display: flex;flex-direction: column;">
                                 TEZO'S PIZZA
-                                <Tag  style="padding: .3rem .3rem .1rem .3rem; margin: 0;font-family: roboto;">
+                                <Tag  v-if="siteStore.status.status == 'open'" style="padding: .3rem .3rem .1rem .3rem; margin: 0;display: flex;align-items: center; font-family: roboto;    animation:  blink .5s ease infinite;">
+                                    <Tag class="ubicacion2" style="height: 1rem;width: 1rem;border-radius: 50%;"></Tag>
                                 Abierto
+                            </Tag>
+
+                            <Tag v-else severity="danger"  style="padding: .3rem .3rem .1rem .3rem; margin: 0;display: flex;align-items: center; font-family: roboto;    animation:  blink .5s ease infinite;">
+                                    <Tag class="ubicacion3" style="height: 1rem;width: 1rem;border-radius: 50%;"></Tag>
+                                Cerrado
                             </Tag>
                        
                             </b>
+
+         
                            
                         </h1>
                         
@@ -51,7 +59,7 @@
 
                     <router-link to="/rastrear">
                         <Button :style="is_active_router('/rastrear') ? 'box-shadow:0 .3rem white' : ''"
-                        style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Rastrear"></Button>
+                        style="color:white;border-radius: 0;background-color: var(--primary-color);border: none;"   label="Rastrear Pedido"></Button>
                     </router-link>
 
                     <!-- <Button style="text-transform: capitalize;" @click="siteStore.visibles.currentSite = true" class="py-0 px-3" icon="pi pi-map-marker" :label="`${siteStore.location.neigborhood?.name} - ${formatoPesosColombianos(siteStore.location.neigborhood?.delivery_price) }`">
@@ -69,23 +77,23 @@
                         style="background-color: #fff; padding: .1rem; border-radius: 10rem;overflow: hidden;">
 
 
-                        <a href="https://www.facebook.com/tezospizza/?locale=es_LA">
-                            <Button style="padding: 0;color: #4267B2;" size="large" text
-                                class="menu-bars text-facebook">
+                        <a class="p-0 m-0" href="https://www.facebook.com/tezospizza/?locale=es_LA" style="padding: 0;line-height: 0;">
+                            <Button style="padding: 0; line-height: 0;color: #4267B2;" size="large" text
+                                class="menu-bars text-facebook p-0 m-0">
 
                                 <i class="pi pi-facebook text-icon"></i>
                             </Button>
                         </a>
 
 
-                        <a href="https://www.instagram.com/tezos_pizza/?igsh=MTN0bnhueHE5M3l0dw%3D%3D">
-                            <Button style="padding: 0;" size="large" text class="menu-bars text-instagram">
+                        <a class="p-0 m-0" href="https://www.instagram.com/tezos_pizza/?igsh=MTN0bnhueHE5M3l0dw%3D%3D" style="padding: 0;line-height: 0;">
+                            <Button style="padding: 0;line-height: 0;" size="large" text class="menu-bars text-instagram p-0 m-0">
                                 <i class="pi pi-instagram "></i>
                             </Button>
                         </a>
 
-                        <a href="https://wa.link/7pde2f">
-                            <Button style="padding: 0;" size="large" text class="menu-bars text-whatsapp">
+                        <a class="p-0 m-0" href="https://wa.link/7pde2f" style="padding: 0;line-height: 0;">
+                            <Button style="padding: 0;line-height: 0;" size="large" text class="menu-bars text-whatsapp p-0 m-0">
                                 <i class="pi pi-whatsapp"></i>
                             </Button>
                         </a>
@@ -185,13 +193,6 @@ const store = useSidebarStore()
 
 }
 
-.menu-bars {
-    font-weight: bold;
-    aspect-ratio: 1 / 1;
-    padding: 9;
-    color: var(--primary-color);
-    min-width: max-content;
-}
 
 
 i {
@@ -243,6 +244,8 @@ i {
 .social-media {
     display: flex;
     gap: .5rem;
+    align-items: center;
+    border-radius: 10rem;
 }
 
 
@@ -321,7 +324,15 @@ img {
 }
 
 .ubicacion{
-    animation:  blink .5s ease infinite;
+    animation:  blink .5s ease infinite !important;
+}
+
+.ubicacion2{
+    animation:  blink2 .5s ease infinite !important;
+}
+
+.ubicacion3{
+    animation:  blink3 .5s ease infinite !important;
 }
 
 @keyframes blink {
@@ -336,6 +347,36 @@ img {
     border: none;
   }
 }
+
+
+@keyframes blink2 {
+  0%, 100% {
+    opacity: 1;
+    background-color: rgb(0, 255, 21);
+    border: none;
+  }
+  50% {
+    opacity: 1;
+    background-color: yellow;
+    filter: brightness(1.2);
+    border: none;
+  }
+}
+
+@keyframes blink3 {
+  0%, 100% {
+    opacity: 1;
+    background-color: rgb(255, 255, 255);
+    border: none;
+  }
+  50% {
+    opacity: 1;
+    background-color: rgb(255, 0, 0);
+    filter: brightness(1.2);
+    border: none;
+  }
+}
+
 
 
 @media (width < 900px) {

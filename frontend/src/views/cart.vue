@@ -22,8 +22,8 @@
                                     <div
                                         style="display:flex;flex-direction: column; justify-content:end; align-items: end; width:100%; gap:0rem">
                                         <span class="p-0 m-0"> {{ product.product.product_name }} </span>
-                                        <span style="text-transform: uppercase; font-weight: bold;">{{
-                                        product.product.category_name }}</span>
+                                        <span style="; font-weight: bold;">{{
+                                        product.product.category_name?.toLowerCase() }}</span>
                                     </div>
                                    
 
@@ -63,13 +63,12 @@
 
 
                         <div
-                            style="display: flex; gap:1rem;align-items: center;text-transform: uppercase; width: 100%;margin-top: 1rem; flex-wrap: wrap;">
-                            <h6 v-if="product?.flavors?.length > 1" style="margin: 0;text-transform: uppercase;"> <b
-                                    style="padding: .5rem;">Sabores</b> </h6>
+                            style="display: flex; gap:1rem;align-items: center;; width: 100%;margin-top: 1rem; flex-wrap: wrap;">
+                            <h6 v-if="product?.flavors?.length > 1" style="margin: 0;"> <b
+                                    style="">Sabores</b> </h6>
                             <h6 v-else-if="product?.flavors?.length > 0" style="margin: 0;"> <b>Sabor</b> </h6>
                             <div style="display: flex;gap: 1rem;flex-direction: row;">
-                                <Tag v-for="flavor in product.flavors" style=""> {{ flavor.name
-                                    }}</Tag>
+                                <Tag v-for="flavor in product.flavors" style=""> {{ flavor.name}}</Tag>
                             </div>
 
                         </div>
@@ -79,7 +78,7 @@
 
                             <h6  style="margin: 0;"> <b>Sabor de la gaseosa</b> </h6>
                             <div style="display: flex;gap: 1rem;flex-direction: row;">
-                                <Tag severity="info" style="text-transform: uppercase;"> {{ product.gaseosa?.name}}</Tag>
+                                <Tag severity="info" style=";"> {{ product.gaseosa?.name}}</Tag>
                             </div>
 
                         </div>
@@ -297,7 +296,7 @@ onMounted(async () => {
 }
 
 .name-product::first-letter {
-    text-transform: uppercase;
+    ;
 }
 
 img {
@@ -335,7 +334,7 @@ h2:hover {
 }
 
 .descripcion::first-letter {
-    text-transform: uppercase;
+    ;
 }
 
 @keyframes cambiaColor {
@@ -515,7 +514,7 @@ button:hover {
 }
 
 *::first-letter {
-    text-transform: uppercase;
+    ;
 }
 
 
@@ -547,6 +546,15 @@ button:hover {
     }
 
 
+}
+
+*{
+    text-transform: lowercase;
+
+}
+
+*::first-letter{
+    text-transform: uppercase;
 }
 
 </style>

@@ -32,7 +32,7 @@ const preparar_orden = () => {
     }
   })
 
-  const site_id = site.location.site.site_id
+  const site_id = 31
   const payment_method_id = user.user.payment_method_option?.id
   const delivery_price =
     payment_method_id === 7 ? 0 : site.location.neigborhood.delivery_price

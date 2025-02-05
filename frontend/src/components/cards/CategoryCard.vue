@@ -87,7 +87,7 @@ p {
 .name{
     padding:0 2rem;
     color: white;
-    text-shadow: 0 .3rem 1rem rgb(255, 0, 0);
+    /* text-shadow: 0 .3rem 1rem rgb(255, 0, 0); */
 }
 
 

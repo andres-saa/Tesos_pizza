@@ -62,11 +62,11 @@
             <p class="mb-2 text-center" style="margin: 1rem 0;">
               <b>{{ grupo.category }}</b>
             </p>
-            <div class="mt-2">
+            <div class="mt-2" style="">
               <div
                 v-for="item in grupo.items"
                 :key="item.aditional_item_instance_id"
-                style="display: flex; gap: 1rem;"
+                style="display: flex; gap: 1rem;align-items: center;"
               >
                 <Checkbox
                   class="my-1"
