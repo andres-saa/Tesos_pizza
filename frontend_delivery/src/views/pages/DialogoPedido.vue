@@ -75,332 +75,301 @@
     style="max-height: 95vh;width: 35rem; position: relative;">
     
     <div id="factura" style="width: 100%;">
+  <!-- Mostrar "TRANSFERENCIA APROBADA" si existe store.currentOrder.responsible_id -->
+  <Tag class="tag mb-2" severity="success" v-if="store.currentOrder.responsible_id">
+    <i class="pi pi-whatsapp mr-2"></i>
+    {{ 'transferencia aprobada' }}
+  </Tag>
+  <br />
 
+  <!-- Nombre del responsable (en minúsculas) -->
+  <Tag class="tag" severity="success" v-if="store.currentOrder.responsible_id">
+    {{ store.currentOrder.name?.toLowerCase() }}
+  </Tag>
 
+  <div style="width: auto;">
+    <!-- ID de la orden en minúsculas (conversión a string por seguridad) -->
+    <p
+      id="id"
+      style="font-weight: bold;min-width: 100%; width: max-content; text-align: center; color: black; margin:0rem;"
+    >
+      ID: {{ store.currentOrder.order_id }}
+    </p>
 
-      <Tag style="" class="tag mb-2" severity="success" v-if="store.currentOrder.responsible_id"> <i class="pi pi-whatsapp mr-2"></i>   TRANSFERENCIA APROBADA</Tag> <br> 
-      
-      <Tag class="tag" severity="success" v-if="store.currentOrder.responsible_id">  {{store.currentOrder.name}}</Tag>
+    <!-- Nombre del usuario en minúsculas -->
+    <p
+      id="id"
+      style="font-weight: bold;min-width: 100%; width: max-content; text-align: center; color: black; margin:0rem;"
+    >
+      {{ store.currentOrder.user_name?.toLowerCase() }}
+    </p>
 
-     
-    
-      <div class="" style="width: auto;">
-       
-          <p class="" id="id" style="font-weight: bold;min-width: 100%; width: max-content; text-align: center; color: black; margin:0rem;"> ID:{{ store.currentOrder.order_id }} </p>
+    <!-- Fecha y hora en minúsculas -->
+    <p
+      style="padding: 0; color: black; margin: auto; margin-bottom: 1rem; text-align: center; width: max-content; min-width: max-content;"
+    >
+      <b>
+        fecha: {{ (store.currentOrder.latest_status_timestamp?.split('T')[0])?.toLowerCase() }}
+      </b>
+      <br />
+      <b style="text-align: center;">
+        hora:
+        {{
+          (
+            store.currentOrder.latest_status_timestamp
+              ?.split('T')[1]
+              ?.split(':')
+              ?.slice(0, 2)
+              ?.join(':')
+          )?.toLowerCase()
+        }}
+      </b>
+    </p>
 
+    <!-- Encabezados "productos" / "total" -->
+    <div
+      style="
+        font-weight: bold;
+        color: white;
+        margin: 0;
+        background-color: black;
+        align-items: center;
+        display: grid;
+        grid-template-columns: auto auto;
+      "
+    >
+      <div style="width: 100%;">
+        <b>productos</b>
+      </div>
+      <div>
+        <p style="text-align: end; font-weight: bold;">
+          <b>total</b>
+        </p>
+      </div>
+    </div>
 
-          <p class="" id="id" style="font-weight: bold;min-width: 100%; width: max-content; text-align: center; color: black; margin:0rem;"> {{ store.currentOrder.user_name }} </p>
-
-
-
+    <!-- Listado de productos -->
+    <div v-for="(product, pIndex) in store.currentOrder.products" :key="pIndex">
+      <div style="display: grid; grid-template-columns: auto auto;">
+        <p class="m-0">
+          {{ product.quantity?.toString()?.toLowerCase() }}
+          {{ product.name?.toLowerCase() }}
+        </p>
+        <div>
+          <p style="text-align: end; color: black;">
+            <b>
+              {{ formatoPesosColombianos(product.price) }}
+            </b>
           
-              <p style="padding: 0;color: black; margin: auto; margin-bottom: 1rem;text-align: center; width: max-content;min-width: max-content; ">
-                <b>
-                  fecha: {{ store.currentOrder.latest_status_timestamp?.split('T')[0] }}
-
-                </b>
-                <br>
-
-                <b style="text-align: center;">
-                  Hora: {{ store.currentOrder.latest_status_timestamp?.split('T')[1]?.split(':')?.slice(0,2)?.join(':')  }}
-
-                </b>
-              </p>
-           
-
- <!-- <img src="https://cocina.salchimonster.com/images/logo.png" alt="" style="width: 2cm;"> -->
-          <div class=""
-            style="font-weight: bold;color:white;margin: 0; background-color: black;align-items: center;display: grid; grid-template-columns: auto auto; ">
-
-            <div style="width: 100%;" >
-
-              <b> productos</b>
-
-
-            </div>
-          
-            <div >
-              <p style="text-align: end;font-weight: bold;">
-                <b>
-                  total
-                </b>
-                
-              </p>
-            </div>
-
-          </div>
-
-          <div  v-for="product in store.currentOrder.products">
-
-            <div style="display: grid; grid-template-columns: auto auto;">
-             
-              <p class="m-0">
-                {{ product.quantity }}
-                {{ product.name }}
-              </p>
-          
-          
-            <!-- <div >
-              <p style="text-align: end;color: black;">
-                {{ formatoPesosColombianos(product.price) }}
-              </p>
-            </div> -->
-            <div >
-              <p style="text-align: end;color: black;">
-                <!-- {{ formatoPesosColombianos(product.price) }} -->
-                {{ formatoPesosColombianos(product.price) }}
-              </p>
-            </div>
-
-            <!-- {{ product.sabores }} -->
-
-
-
-        
-
-
-            </div>
-
-
-                <h6 class="m-0 pl-4"><b> {{ product.sabores.length > 1? 'sabores'   : '' }}</b> </h6>
-                <div class="pl-4" v-for="(flavor, index) in product.sabores.filter(p => !p.is_gaseosa)" :key="index" style="padding: 0;gap: 1rem; display: flex; justify-content: space-between;">
-
-
-                  <span style="color: black;">
-                    <b>
-                      {{ product.sabores.length > 1 ? `1/2` : 'sabor' }}
-                  </b>
-      
-                  </span>
-
-                  <span style="text-align: end;min-width: max-content;"> {{ flavor.sabor }} {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price ) : '' }}</span>
-                  
-                 
-                </div>
-
-
-                <div class="pl-4" v-for="(flavor, index) in product.sabores.filter(p => p.is_gaseosa)" :key="index" style="padding: 0;gap: 1rem; display: flex; justify-content: space-between;">
-
-
-<span style="color: black;">
-  <b>
-    SABOR DE LA GASEOSA
-</b>
-
-</span>
-
-<span style="text-align: end;min-width: max-content;"> {{ flavor.sabor }} {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price ) : '' }}</span>
-
-
-</div>
-                <div style="width: 100%;border-top: .1rem solid;"></div>
-                
-
-            
-
-            <div style="background-color: rgba(0, 0, 0, 0.286); height: 1px;">
-
-</div>  
-
-          </div>
-          
-
-
-
-
-          <div s  v-for="(items, grupo) in store.currentOrder.additional_items" :key="grupo"
-            style="position: relative; margin-top: 0.5rem;">
-
-
-
-            <p style="background-color: black;font-weight: bold; color: white; width: 100%;margin: 0;">
-              <b>{{ grupo }}</b>
-
-            </p>
-
-
-            <div   v-for="aditional in items">
-              <div style="display: grid; grid-template-columns: auto 20%;align-items: center;">
-
-                <div >
-                  <p >
-                    {{ aditional.aditional_quantity }}  {{ aditional.aditional_name }}
-                  </p>
-                </div>
-<!-- 
-                <div >
-                  <p style="text-align: end;color: black;">
-                    {{ formatoPesosColombianos(aditional.aditional_price) }}
-                  </p>
-                </div> -->
-                <div >
-                  <p style="text-align: end;color: black;">
-                    <!-- {{ formatoPesosColombianos(product.price) }} -->
-                    {{ formatoPesosColombianos(aditional.total_aditional_price) }}
-                  </p>
-                </div>
-              </div>
-              <div style="background-color: rgba(0, 0, 0, 0.286); height: 1px;">
-
-              </div>
-
-
-
-
-
-
-            </div>
-
-          </div>
-
-
-
-
-
- 
-
-
-
-
-
-
-          <div class="" style="display: grid ;color: ;margin-top: 0.5rem; grid-template-columns: auto auto">
-            <div class="">
-              <span style="font-weight: bold;"><b>Subtotal</b></span>
-            </div>
-            <div class="">
-              <p  style="text-align: end;font-weight: bold; color: black;">
-                <b >{{ formatoPesosColombianos(store.currentOrder.total_order_price) }}</b>
-              </p>
-            </div>
-            <div class="">
-              <span style="font-weight: bold;"><b>Domicilio</b></span>
-            </div>
-            <div class="">
-
-            
-              <p style="text-align: end;font-weight: bold;color: black;"> <b>
-               
-                  {{ formatoPesosColombianos(store.currentOrder.delivery_price) }}
-                </b>
-              </p>
-            </div>
-            <div class="">
-              <span  style="font-weight: bold;color: black;" ><b>Total</b></span>
-            </div>
-            <div class="">
-
-              <p style="text-align: end;color: black;font-weight: bold;"><b>{{ formatoPesosColombianos(store.currentOrder.delivery_price + store.currentOrder.total_order_price)
-              }}</b></p>
-
-            </div>
-            <div class="">
-              
-            </div>
-
-          </div>
-          <p  style="font-weight: bold;background-color: black;color: white;padding: 0; margin: 0; margin-top: 0.5rem;"><b>Notas</b></p>
-              <p class="notas" style="border: 1px solid;margin: 0;color: black; padding: 0.5rem;">
-                {{ store.currentOrder.order_notes }}
-              </p>
-
-
-
-
-              <p  style="background-color: black;font-weight: bold;margin-top: 1rem; color: white;">
-              <b>cliente</b>
-              </p>
-
-              <div style="display: grid; grid-template-columns: auto auto;">
-                <div class="" style="">
-              <span><b>NOMBRE</b></span>
-            </div>
-            <div class="">
-              <p style="text-align: end;color: black;">
-
-                {{ store.currentOrder.user_name }}
-              </p>
-
-            </div>
-            <div  style="">
-              <span><b>telefono</b></span>
-            </div>
-            <div>
-              <p style="text-align: end;color: black;">
-
-                {{ store.currentOrder.user_phone }}
-
-
-              </p>
-            </div>
-            <div style="">
-              <span><b>direccion </b></span>
-            </div>
-            <div >
-              <p style="text-align: end;color: black;">
-
-                {{ store.currentOrder.user_address }}
-
-
-              </p>
-            </div>
-
-
-
-
-            <div>
-              <span><b>metodo de pago</b></span>
-            </div>
-            <div >
-              <p style="text-align: end;color: black;">
-
-                {{ store.currentOrder.payment_method }}
-              </p>
-            </div>
-
-              </div>
-           
-          <!-- 
-            <router-link to="/SALCHIPAPAS/3" v-if="route.path.includes('cart')">
-                <Button outlined icon="pi pi-shopping-cart" label="Seguir comprando" class="mt-4" severity="danger"
-                    style="outline: none;width: 100%;font-weight: bold; background-color: rgba(0, 0, 0, 0);"></Button>
-
-            </router-link>
-
-            <router-link to="/cart" v-else>
-                <Button outlined icon="pi pi-arrow-left" label="Volver al carrito" class="mt-4" severity="danger"
-                    style="outline: none;width: 100%;font-weight: bold; background-color: rgba(0, 0, 0, 0);"></Button>
-
-            </router-link>
-
-
-            <router-link to="/pay" v-if="route.path.includes('cart')">
-                <Button iconPos="right" icon="pi pi-arrow-right" label="Pedir" class="mt-2" severity="help"
-                    style="outline: none;width: 100%; border: none;font-weight: bold; background-color: black;"></Button>
-            </router-link>
-
-            <router-link to="/pay" v-else>
-                <Button @click="orderService.sendOrder()" iconPos="right" icon="pi pi-arrow-right" label="Finalizar pedido"
-                    class="mt-2" severity="help"
-                    style="outline: none;width: 100%; border: none;font-weight: bold; background-color: black;"></Button>
-            </router-link> -->
-
-   
-
-
-
-
-
-
-
-
+          </p>
+        </div>
       </div>
 
+      <!-- Sabores normales -->
+      <h6 class="m-0 ">
+        <b>
+          {{
+            product.sabores?.filter(s => !s.is_gaseosa)?.length > 1
+              ? 'sabores'
+              : ''
+          }}
+        </b>
+      </h6>
+      <div
+        class=""
+        v-for="(flavor, fIndex) in product.sabores.filter(p => !p.is_gaseosa)"
+        :key="fIndex"
+        style="padding: 0; gap: 1rem; display: flex; justify-content: space-between;"
+      >
+        <span style="color: black;">
+          <b>
+            {{
+              product.sabores?.filter(s => !s.is_gaseosa)?.length > 1
+                ? '1/2'
+                : 'sabor'
+            }}
+          </b>
+        </span>
+        <span style="text-align: end; min-width: max-content;">
+          {{ flavor.sabor?.toLowerCase() }}
+          <b>  
+            {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price) : '' }}
+          </b>
+      
+        </span>
+      </div>
 
+      <!-- Sabores gaseosa -->
+      <div
+        class="pl-0"
+        v-for="(flavor, gIndex) in product.sabores.filter(p => p.is_gaseosa)"
+        :key="gIndex"
+        style="padding: 0; gap: 1rem; display: flex; justify-content: space-between;"
+      >
+        <span style="color: black;">
+          <b>sabor de la gaseosa</b>
+        </span>
+        <span style="text-align: end; min-width: max-content;">
+          {{ flavor.sabor?.toLowerCase() }}
+          {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price) : '' }}
+        </span>
+      </div>
+<div style="widows: 100%;border-top: .1rem solid ;opacity: .1;">
 
-
-
+</div>
+      <div style="width: 100%; border-top: 0.1rem solid;"></div>
+      <div style="background-color: rgba(0, 0, 0, 0.286); height: 1px;"></div>
     </div>
+
+    <!-- Adicionales -->
+    <div
+      v-for="(items, grupo) in store.currentOrder.additional_items"
+      :key="grupo"
+      style="position: relative; margin-top: 0.5rem;"
+    >
+      <p
+        style="
+          background-color: black;
+          font-weight: bold;
+          color: white;
+          width: 100%;
+          margin: 0;
+        "
+      >
+        <b>{{ grupo?.toLowerCase() }}</b>
+      </p>
+      <div
+        v-for="(aditional, aIndex) in items"
+        :key="aIndex"
+      >
+        <div style="display: grid; grid-template-columns: auto 20%; align-items: center;">
+          <div>
+            <p>
+              {{ aditional.aditional_quantity?.toString()?.toLowerCase() }}
+              {{ aditional.aditional_name?.toLowerCase() }}
+            </p>
+          </div>
+          <div>
+            <p style="text-align: end; color: black;">
+              {{ formatoPesosColombianos(aditional.total_aditional_price) }}
+            </p>
+          </div>
+        </div>
+        <div style="background-color: rgba(0, 0, 0, 0.286); height: 1px;"></div>
+      </div>
+    </div>
+
+    <!-- Subtotal, domicilio, total -->
+    <div
+      style="
+        display: grid;
+        margin-top: 0.5rem;
+        gap: 0;
+        grid-template-columns: auto auto;
+      "
+    >
+      <div>
+        <span style="font-weight: bold;"><b>subtotal</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; font-weight: bold; color: black;">
+          <b>{{ formatoPesosColombianos(store.currentOrder.total_order_price) }}</b>
+        </p>
+      </div>
+
+      <div>
+        <span style="font-weight: bold;"><b>domicilio</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; font-weight: bold; color: black;">
+          <b>{{ formatoPesosColombianos(store.currentOrder.delivery_price) }}</b>
+        </p>
+      </div>
+
+      <div>
+        <span style="font-weight: bold; color: black;"><b>total</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; color: black; font-weight: bold;">
+          <b>
+            {{
+              formatoPesosColombianos(
+                store.currentOrder.delivery_price + store.currentOrder.total_order_price
+              )
+            }}
+          </b>
+        </p>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <p
+      style="
+        font-weight: bold;
+        background-color: black;
+        color: white;
+        padding: 0;
+        margin: 0;
+        margin-top: 0.5rem;
+      "
+    >
+      <b>notas</b>
+    </p>
+    <p class="notas" style="border: 1px solid; margin: 0; color: black; padding: 0.5rem;">
+      {{ store.currentOrder.order_notes?.toLowerCase() }}
+    </p>
+
+    <!-- Datos del cliente -->
+    <p
+      style="
+        background-color: black;
+        font-weight: bold;
+        margin-top: 1rem;
+        color: white;
+      "
+    >
+      <b>cliente</b>
+    </p>
+    <div style="display: grid; grid-template-columns: auto auto;gap: 0;">
+      <div>
+        <span><b>nombre</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; color: black;">
+          {{ store.currentOrder.user_name?.toLowerCase() }}
+        </p>
+      </div>
+
+      <div>
+        <span><b>telefono</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; color: black;">
+          {{ store.currentOrder.user_phone?.toLowerCase() }}
+        </p>
+      </div>
+
+      <div>
+        <span><b>direccion</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; color: black;">
+          {{ store.currentOrder.user_address?.toLowerCase() }}
+        </p>
+      </div>
+
+      <div>
+        <span><b>metodo de pago</b></span>
+      </div>
+      <div>
+        <p style="text-align: end; color: black;">
+          {{ store.currentOrder.payment_method?.toLowerCase() }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <template #footer>
 
@@ -506,7 +475,7 @@ const IMPRIMIR = () => {
     ventanaImpresion.document.write(estilosPagina[i].outerHTML);
   }
 
-  ventanaImpresion.document.write('<style>  @media print { html{height: min-content;}  *{text-transform:uppercase;align-items:center; width:100%; font-family: sans-serif;padding:0;margin:0; font-size:o.9rem !IMPORTANT} body { padding:0; -webkit-print-color-adjust: exact; /* Chrome, Safari */ color-adjust: exact; /* Firefox */ } }  </style>');
+  ventanaImpresion.document.write('<style>  @media print { html{height: min-content;} *:first-letter{text-transform:capitalize !important}  *{gap:3rem; text-transform: capitalize !important;align-items:start !important; width:100%; font-family: sans-serif;padding:0;margin:0;margin:0; font-size:o.7rem !IMPORTANT} body { padding:0; -webkit-print-color-adjust: exact; /* Chrome, Safari */ color-adjust: exact; /* Firefox */ } }  </style>');
   ventanaImpresion.document.write('</head><body>');
   ventanaImpresion.document.write(contenidoFactura);
 
