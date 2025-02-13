@@ -322,7 +322,7 @@ class Aditions:
             order_by='id',
               condition='exist = true'  # Ordenar por id
         )
-        result = self.db.fetch_all(query=query)
+        result = self.db.execute_query(query=query,fetch=True)
         return result
 
     def get_banner_by_id(self, banner_id: int):

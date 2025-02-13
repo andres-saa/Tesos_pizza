@@ -7,8 +7,7 @@ from models.orders.order2 import Order2
 from models.payment_method import Pyment_method
 order_router = APIRouter()
 from pydantic import BaseModel
-import schedule
-import time
+
 import pytz
 from fastapi import APIRouter
 from schema.order import order_schema_post
@@ -686,32 +685,3 @@ async def get_daily_average_ticket(site_ids: str, status: str, start_date: str, 
         order_instance.close_connection()
 
 
-
-
-from apscheduler.schedulers.background import BackgroundScheduler
-
-scheduler = BackgroundScheduler(timezone=timezone('America/Bogota'))
-scheduler.start()
-
-def scheduled_job():
-    tz = pytz.timezone('America/Bogota')
-    current_time = datetime.now(tz)
-    # Ajusta el 'start_date' para que comience a las 10 AM del día anterior
-    start_date = current_time.replace(hour=10, minute=0, second=0, microsecond=0) - timedelta(days=1)
-    # Ajusta el 'end_date' para que termine a las 4 AM del día actual
-    end_date = current_time.replace(hour=4, minute=0, second=0, microsecond=0)
-    if current_time.hour < 4:
-        # Si la hora actual es menor a las 4 AM, ajusta el 'end_date' al día anterior
-        end_date -= timedelta(days=1)
-    
-    # Convertir a UTC y formatear de acuerdo a lo que la función espera
-    start_date_utc = start_date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M:%S')
-    end_date_utc = end_date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M:%S')
-    
-    get_sales_report(start_date_utc, end_date_utc)
-
-# Asegúrate de que el cron job está configurado para la hora correcta
-
-
-# Programa la tarea para que se ejecute todos los días a la 1 AM
-scheduler.add_job(scheduled_job, 'cron', hour=5, minute=0)
