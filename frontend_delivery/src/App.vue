@@ -5,9 +5,10 @@ import { useOrderStore } from './store/order';
 import { useSitesStore } from './store/site';
 import { orderService } from './service/orderService';
 import { URI } from './service/conection';
+import { useReportesStore } from './store/reportes';
 
 
-
+const reportes = useReportesStore()
 
 const sitestore = useSitesStore();
 const store = useOrderStore();
@@ -77,6 +78,43 @@ const acept = () => {
 </script>
 
 <template>
-  
+        <div
+    class=""
+    v-if="reportes.loading.visible"
+    style="width: 100vw;transition: all ease .3s;backdrop-filter: blur(5px);  flex-direction: column;pointer-events:auto; background-color: #00000020; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;"
+  >
+  <div class="luz" style="aspect-ratio: 1  / 1;display: flex;justify-content: center;align-items: center;">
+
+    <div class="girar" style="width: 150px;z-index: -1; height: 150px;padding: 3rem; background-color: var(--primary-color); position: absolute;"></div>
+    <div class="imagen" style="display: flex;padding: 1rem;border-radius: .3rem; background-color: white;  gap: 1rem; flex-direction: column; align-items:center;">
+      <img src="https://tezospizza.com/assets/logo-OWRhlFWd.webp" style="width:20vw ;max-width: 100px;" alt="">
+      <h5 style="color: black;">Cargando...</h5>
+    </div>
+  </div>
+
+  </div>
+
     <router-view class="col-12 p-0" />
 </template>
+
+
+<style scoped>
+
+
+
+.girar{
+
+animation: girar infinite .5s linear;
+
+}
+
+
+
+@keyframes girar {
+
+100%{
+  transform: rotate(360deg);
+}
+
+}
+</style>

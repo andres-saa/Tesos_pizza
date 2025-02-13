@@ -1,185 +1,179 @@
 <template>
-
-
-
-
-
-
-
-  <div class="grid mx-auto mb-8" style="max-width: 400px;">
-
-    <DialogoPedido>
-
-    </DialogoPedido>
-
-    <div id="cuadre" class=" cuadre my-2 p-2  m-0 " style="width: 100%;top: 5rem; display: flex;align-items: center;position: relative;">
-     
-        <div class="shadow-2 p-0 m-0" style="width: 100%;border-radius: 0.5rem;">
-
-
-          <p class="" style="background-color: #ffffff61; width: max-content; margin: auto; padding: 1rem;">
-                        <p class="text-center text-2xl" style="color: black;font-weight: bold;"><i class="pi pi-history
-            text-2xl
-            "></i> <b>
-              CUADRE DE CAJA <br> {{ siteStore.site.site_name }}  <br> {{ colombiaDateTime }}
-            </b></p>
-          </p>
-
-          <p class="" style="background-color:#00c510;text-align: center;margin: 0;">
-            <span class="text-center text-xl" style="color: black;font-weight: bold;"> Enviadas</span>
-          </p>
-
-          <div style="overflow-y: auto;">
-
-            <div class="px-3 py-1" v-for="orden in store.TodayOrders.filter(order => order.current_status == 'enviada') ">
-              <cuadreItem :order="orden" />
-            </div>
-
-          </div>
-
-
-          <p class="" style="background-color:#ff4444; text-align: center;margin: 0;">
-            <span class="text-center text-xl" style="color: black;font-weight: bold;"> Canceladas</span>
-          </p>
-
-          <div style="overflow-y: auto;">
-
-            <div class="px-3 py-1" v-for="orden in store.TodayOrders.filter(order => order.current_status == 'cancelada')">
-              <cuadreItem :order="orden" />
-            </div>
-          </div>
-
-
-          <p class="" style="background-color:yellow;text-align: center;">
-            <span class="text-center text-xl" style="color: rgb(0, 0, 0);font-weight: bold;"> Resumen</span>
-          </p>
-
-
-          <Button style="border-radius: 50%;left: 100%; position: absolute;" rounded severity="help" icon="pi pi-print text-2xl" @click="IMPRIMIR"> </Button>
-
-   <div class="px-3 py-2 text-2xl" style="display: flex;font-weight: bold;margin: 0; align-items: center;justify-content: space-between;">
-            <div style=" display: flex;align-items: center;">
-                <b style="min-width: max-content;color: black;">
-        CUADRE 
-
-            </b>
-
-
-            </div>
-
-            
-            
-          
-            
-            
-                <b style="color:black">
-                    {{formatoPesosColombianos(totalEnviadas)  }}
-
-                </b>
-                
-       
-           
-
-          
-
+  <div style="margin: auto; max-width: 700px; margin-top: 4rem;" class="p-3">
     
-            
-            
-        </div>
-        
-
-
-
-
-        </div>
-    
+    <!-- Filtros de fecha -->
+    <div class="flex gap-3 mb-4">
+      <!-- Calendar de PrimeVue para fechaInicio -->
+      <Calendar 
+        showTime 
+        hourFormat="12" 
+        v-model="fechaInicio" 
+        dateFormat="dd / mm / yy" 
+        placeholder="Fecha inicio" 
+      />
+      <!-- Calendar de PrimeVue para fechaFin -->
+      <Calendar 
+        showTime 
+        hourFormat="12"  
+        v-model="fechaFin" 
+        dateFormat="dd / mm / yy" 
+        placeholder="Fecha fin" 
+      />
+      <!-- Botón para buscar (PrimeVue Button) -->
+      <Button 
+        size="small" 
+        severity="help" 
+        label="Buscar" 
+        icon="pi pi-search" 
+        @click="buscarReportes" 
+      />
     </div>
 
+    <!-- Iteración sobre data -->
+    <div v-for="categorie in data" :key="categorie.category_name">
+      <h5 class="m-0 my-4">
+        <b>{{ categorie.category_name }}</b>
+      </h5>
 
+      <DataTable stripedRows :value="categorie.products_info">
+        <Column class="p-0" style="width: 15rem;">
+          <template #body="nuevo">
+            <h6 
+              class="px-4 m-0 py-1" 
+              style="text-transform: capitalize; background-color: var(--primary-color); color: white;"
+            >
+              <b style="display: flex; justify-content: space-between;">
+                {{ nuevo.data.product_name?.toLowerCase() }}
+              </b>
+            </h6>
 
-  
+            <DataTable :value="nuevo.data.flavors_info">
+              <!-- Columna Sabor -->
+              <Column header="Sabor" class="p-0" style="width: 15rem;">
+                <template #body="datos">
+                  <h6 
+                    class="m-0" 
+                    style="text-transform: capitalize;" 
+                    v-if='datos.data.flavor?.replace(/"/g, "") != "NO_FLAVOR"'
+                  >
+                    {{ datos.data.flavor?.toLowerCase() }}
+                  </h6>
+                  <h6 class="m-0" v-else> --- </h6>
+                </template>
+              </Column>
 
+              <!-- Columna Cantidad -->
+              <Column class="p-0 text-center" style="width: 15rem;">
+                <template #header>
+                  <div class="text-center" style="width: 100%;">
+                    <h6 class="m-0"><b>Cantidad</b></h6>
+                  </div>
+                </template>
+                <template #body="datos">
+                  <h6 class="m-0">{{ datos.data.quantity_text }}</h6>
+                </template>
+              </Column>
 
+              <!-- Columna Valor -->
+              <Column class="p-0 text-right" style="width: 15rem;">
+                <template #header>
+                  <div class="text-right" style="width: 100%;">
+                    <h6 class="m-0"><b>Valor</b></h6>
+                  </div>
+                </template>
+                <template #body="datos">
+                  <h6 class="m-0">{{ formatToColombianPeso(datos.data.revenue) }}</h6>
+                </template>
+              </Column>
+            </DataTable>
+          </template>
+        </Column>
+      </DataTable>
+
+      <h5 class="m-0 my-0 text-right" style="width: 100%;">
+        <b>{{ formatoPesosColombianos(categorie.category_total_revenue) }}</b>
+      </h5>
+    </div>
   </div>
-
-
-  <!-- <div :class="dialog_pedido_visible ? 'before' : ''"></div> -->
 </template>
 
 <script setup>
+/* ===== Importaciones de Vue y librerías ===== */
+import { ref, onMounted, computed } from 'vue';
 
-
-import DialogoPedido from './DialogoPedido.vue';
-
-import { onMounted} from 'vue';
+/* ===== Importaciones de tu proyecto ===== */
 import { useOrderStore } from '../../store/order';
-import cuadreItem from './cuadreItem.vue';
-import { formatoPesosColombianos } from '../../service/formatoPesos';
-const store = useOrderStore()
-const siteStore = useSitesStore()
-
-const now = new Date();
-
-// Convertir la fecha y hora actual a la zona horaria de Colombia
-const options = {
-  timeZone: 'America/Bogota',
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric'
-};
-
-// Formatear la fecha y la hora según las opciones establecidas
-const colombiaDateTime = now.toLocaleString('es-CO', options);
-
-console.log(colombiaDateTime);
-
-import { computed } from 'vue';
 import { useSitesStore } from '../../store/site';
+import { fetchService } from '../../service/utils/fetchService';
+import { URI } from '../../service/conection';
+import { formatToColombianPeso } from '../../service/valoresReactivosCompartidos';
+import { formatoPesosColombianos } from '../../service/formatoPesos';
 
-const totalEnviadas = computed(() => {
-  return store.TodayOrders.filter(order => order.current_status === 'enviada')
-                          .reduce((total, order) => total + order.total_order_price, 0);
-});
+/* ===== Importar y configurar dayjs con timezone ===== */
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
-onMounted(() => {
-  store.getTodayOrders()
-})
+// Extender dayjs
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
+// Zona horaria para Colombia
+const ZONA_HORARIA_COLOMBIA = 'America/Bogota';
 
+/* ===== Stores y refs ===== */
+const store = useOrderStore();
+const siteStore = useSitesStore();
 
-const IMPRIMIR = () => {
-  const contenidoFactura = document.getElementById('cuadre').innerHTML;
+// Data principal que se renderiza
+const data = ref([]);
 
-  // Abrir una nueva ventana para imprimir
-  const ventanaImpresion = window.open('', '_blank');
+// Variables para los calendarios
+const fechaInicio = ref(null);
+const fechaFin = ref(null);
 
-  ventanaImpresion.document.write('<html><head><title>Cuadre</title>');
-
-  // Copiar estilos CSS de la página principal a la ventana de impresión
-  const estilosPagina = document.getElementsByTagName('style');
-
-  for (let i = 0; i < estilosPagina.length; i++) {
-    ventanaImpresion.document.write(estilosPagina[i].outerHTML);
+/* ===== Función para obtener reportes ===== */
+const buscarReportes = async () => {
+  // Validar que ambos campos tengan valor
+  if (!fechaInicio.value || !fechaFin.value) {
+    alert("Por favor selecciona ambas fechas.");
+    return;
   }
 
-  ventanaImpresion.document.write('<style>  @media print {  html{height: min-content; box-shadow:none}  *{text-transform:uppercase;align-items:center; font-family: sans-serif;padding:0;margin:0; font-size:12pt !IMPORTANT} body { padding:0rem; -webkit-print-color-adjust: exact; /* Chrome, Safari */ color-adjust: exact; /* Firefox */ } }  </style>');
-  ventanaImpresion.document.write('</head><body>');
-  ventanaImpresion.document.write(contenidoFactura);
+  // Convertimos a string en formato YYYY-MM-DD
+  const startDate = fechaInicio.value.toISOString().split("T")[0];
+  const endDate = fechaFin.value.toISOString().split("T")[0];
 
-  ventanaImpresion.document.write('</body></html>');
-
-  ventanaImpresion.document.close();
-
-  // Imprimir la ventana
-  ventanaImpresion.print();
-
-  // Cerrar la ventana después de 1 segundo (puedes ajustar este tiempo)
-  setTimeout(() => {
-    ventanaImpresion.close();
-  }, 0.01);
+  // Llamada a la API
+  data.value = await fetchService.get(`${URI}/get-reports?start_date=${startDate}&end_date=${endDate}`);
 };
 
+/* ===== Ciclo de vida onMounted ===== */
+onMounted(async () => {
+  // 1. Obtenemos la fecha/hora actual en la zona horaria de Colombia
+  let ahora = dayjs().tz(ZONA_HORARIA_COLOMBIA);
+
+  // 2. Establecemos la fechaInicio: hoy a las 10:00 a. m.
+  const inicio = ahora.hour(10).minute(0).second(0);
+
+  // 3. Establecemos la fechaFin: mañana a las 4:00 a. m.
+  const fin = inicio.add(1, 'day').hour(4).minute(0).second(0);
+
+  // 4. Convertimos a objetos Date (para que Calendar de PrimeVue los acepte)
+  fechaInicio.value = inicio.toDate();
+  fechaFin.value = fin.toDate();
+
+  // 5. Cargamos pedidos y reportes
+  store.getTodayOrders();
+  await buscarReportes();
+});
+
+/* ===== Ejemplo de cómputo (sólo si lo usas en otro lado) ===== */
+const totalEnviadas = computed(() => {
+  return store.TodayOrders
+    .filter(order => order.current_status === 'enviada')
+    .reduce((total, order) => total + order.total_order_price, 0);
+});
+
+/* ===== Funciones para formatear moneda (importadas) ===== */
 </script>
