@@ -171,7 +171,7 @@ const menus = [
     { name: ' Menu', to: '/tienda-menu/productos/PIZZA/25' },
     { name: ' Horarios', to: '/horarios' },
     { name: ' Admin', to: '/tienda-menu/productos/PROMOCIONES/31' },
-    { name: ' Reportes', to: '/reporte-ventas/valor-ventas' }
+    // { name: ' Reportes', to: '/reporte-ventas/valor-ventas' }
 
 ]
 
