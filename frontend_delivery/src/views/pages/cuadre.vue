@@ -31,8 +31,9 @@
 
     <!-- Iteración sobre data -->
     <div v-for="categorie in data" :key="categorie.category_name">
-      <h5 class="m-0 my-2">
+      <h5 class="m-0 mt-4" style="display: flex;justify-content: space-between; width: 100%;">
         <b>{{ categorie.category_name }}</b>
+        <!-- <b>{{ categorie.category_total_quantity }}</b> -->
       </h5>
 
       <DataTable stripedRows :value="categorie.products_info">
@@ -40,11 +41,18 @@
           <template #body="nuevo">
             <h6 
               class="px-4 m-0 py-1" 
-              style="text-transform: capitalize; background-color: var(--primary-color); color: white;"
+              style="text-transform: capitalize;display: flex;justify-content: space-between; background-color: var(--primary-color); color: white;"
             >
               <b style="display: flex; justify-content: space-between;">
                 {{ nuevo.data.product_name?.toLowerCase() }}
+
               </b>
+
+              <b style="display: flex; justify-content: space-between;">
+                {{ nuevo.data.product_total_quantity }}
+
+              </b>
+            
             </h6>
 
             <DataTable :value="nuevo.data.flavors_info">
@@ -86,11 +94,15 @@
                 </template>
               </Column>
             </DataTable>
+            
           </template>
         </Column>
       </DataTable>
 
-      <h5 class="m-0 my-0 text-right" style="width: 100%;">
+      <h5 class="m-0 my-0 text-right" style="width: 100%;justify-content: space-between;display: flex;">
+ 
+        <span class="m-0" style="text-transform: capitalize;"> <b>  <b>( {{ categorie.category_total_quantity_text }} )</b> {{ categorie.category_name?.toLowerCase() }}'s</b></span>
+       
         <b>{{ formatoPesosColombianos(categorie.category_total_revenue) }}</b>
       </h5>
     </div>
