@@ -56,78 +56,7 @@
         {{ store.currentProduct.product_description.toLowerCase() }}
       </p>
 
-      <div style="color: black;">
-        <div v-for="grupo in adicionales" :key="grupo.category">
-          <div class="mb-2">
-            <p class="mb-2 text-center" style="margin: 1rem 0;">
-              <b>{{ grupo.category }}</b>
-            </p>
-            <div class="mt-2" style="">
-              <div
-                v-for="item in grupo.items"
-                :key="item.aditional_item_instance_id"
-                style="display: flex; gap: 1rem;align-items: center;"
-              >
-                <Checkbox
-                  class="my-1"
-                  :binary="true"
-                  v-model="item.checked"
-                  @change="() => handleAdditionChange(item, grupo.category)"
-                />
-                <div
-                  style="display: flex; width: 100%; gap: 1rem; justify-content: space-between;"
-                >
-                  <span class="text-sm adicion" style="text-transform: lowercase;">
-                    {{ item.aditional_item_name }}
-                  </span>
-                  <span v-if="item.checked" style="display: flex; align-items: center;">
-                    <span
-                      v-if="item.aditional_item_price > 0"
-                      class="pl-2 py-1 text-sm"
-                    >
-                      <b>
-                        {{
-                          formatoPesosColombianos(
-                            item.aditional_item_price * selectedAdditions[item.aditional_item_instance_id]?.quantity
-                          )
-                        }}
-                      </b>
-                    </span>
-
-                    <Button
-                      @click="decrement(item)"
-                      class="ml-2"
-                      severity="danger"
-                      style="width: 2rem; height: 1.5rem; border: none;"
-                      icon="pi pi-minus"
-                    ></Button>
-                    <InputText
-                      :modelValue="selectedAdditions[item.aditional_item_instance_id]?.quantity"
-                      readonly
-                      style="width: 2rem; border: none; height: 1.5rem;"
-                      class="p-0 text-center"
-                    />
-                    <Button
-                      @click="increment(item)"
-                      severity="danger"
-                      style="width: 2rem; height: 1.5rem; border: none;"
-                      icon="pi pi-plus"
-                    ></Button>
-                  </span>
-
-                  <span
-                    v-else-if="item.aditional_item_price > 0"
-                    class="pl-2 py-1 text-sm"
-                  >
-                    <b>{{ formatoPesosColombianos(item.aditional_item_price) }}</b>
-                  </span>
-                </div>
-              </div>
-              <hr />
-            </div>
-          </div>
-        </div>
-      </div>
+   
     </div>
 
     <!-- SECCION DE SABORES Y GASEOSA -->
@@ -217,7 +146,7 @@
         <h6 class="py-0 m-0 mb-2">
           <b> Elija el sabor 2</b>
         </h6>
-        <Select
+        <Select class="mb-3"
           filterPlaceholder="Buscar sabor..."
           filter
           :options="sizes"
@@ -279,7 +208,7 @@
 
       <!-- Gaseosa -->
       <div v-if="gaseosas.length > 0">
-        <h6 class="py-0 m-0 my-3">
+        <h6 class="py-0 m-0 mt-0 mb-3">
           <b> Elija el sabor de la gaseosa </b>
         </h6>
         <Select
@@ -304,6 +233,80 @@
       </div>
     </div>
     <!-- FIN SECCION DE SABORES Y GASEOSA -->
+
+
+    <div style="color: black;">
+        <div v-for="grupo in adicionales" :key="grupo.category">
+          <div class="mb-2">
+            <p class="mb-2 text-center" style="margin: 1rem 0;">
+              <b>{{ grupo.category }}</b>
+            </p>
+            <div class="mt-2" style="">
+              <div
+                v-for="item in grupo.items"
+                :key="item.aditional_item_instance_id"
+                style="display: flex; gap: 1rem;align-items: center;"
+              >
+                <Checkbox
+                  class="my-1"
+                  :binary="true"
+                  v-model="item.checked"
+                  @change="() => handleAdditionChange(item, grupo.category)"
+                />
+                <div
+                  style="display: flex; width: 100%; gap: 1rem; justify-content: space-between;"
+                >
+                  <span class="text-sm adicion" style="text-transform: lowercase;">
+                    {{ item.aditional_item_name }}
+                  </span>
+                  <span v-if="item.checked" style="display: flex; align-items: center;">
+                    <span
+                      v-if="item.aditional_item_price > 0"
+                      class="pl-2 py-1 text-sm"
+                    >
+                      <b>
+                        {{
+                          formatoPesosColombianos(
+                            item.aditional_item_price * selectedAdditions[item.aditional_item_instance_id]?.quantity
+                          )
+                        }}
+                      </b>
+                    </span>
+
+                    <Button
+                      @click="decrement(item)"
+                      class="ml-2"
+                      severity="danger"
+                      style="width: 2rem; height: 1.5rem; border: none;"
+                      icon="pi pi-minus"
+                    ></Button>
+                    <InputText
+                      :modelValue="selectedAdditions[item.aditional_item_instance_id]?.quantity"
+                      readonly
+                      style="width: 2rem; border: none; height: 1.5rem;"
+                      class="p-0 text-center"
+                    />
+                    <Button
+                      @click="increment(item)"
+                      severity="danger"
+                      style="width: 2rem; height: 1.5rem; border: none;"
+                      icon="pi pi-plus"
+                    ></Button>
+                  </span>
+
+                  <span
+                    v-else-if="item.aditional_item_price > 0"
+                    class="pl-2 py-1 text-sm"
+                  >
+                    <b>{{ formatoPesosColombianos(item.aditional_item_price) }}</b>
+                  </span>
+                </div>
+              </div>
+              <hr />
+            </div>
+          </div>
+        </div>
+      </div>
 
     <template #footer>
       <div style="display: flex; justify-content: center;">

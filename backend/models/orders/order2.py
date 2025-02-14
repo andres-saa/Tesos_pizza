@@ -39,7 +39,16 @@ class Order2:
         self.conn = psycopg2.connect(self.conn_str)
         self.cursor = self.conn.cursor()
         self.db = dataBase()
-        
+
+
+    def get_reports(self, start_date: str, end_date: str):
+        query = """
+                SELECT *
+                FROM orders.f_report_categories_by_latest_status(%s, %s);
+            """
+        response = self.db.execute_query(query=query, params=(start_date, end_date), fetch=True)
+        return response
+            
     def create_order(self, order_data: OrderSchemaPost):
         user_id = self.create_user(order_data.user_data)
         
@@ -675,9 +684,9 @@ class Order2:
         orders_dict = [dict(zip(columns_info, row)) for row in orders_info]
 
         # Convert and format timestamps to Colombia timezone
-        for order in orders_dict:
-            if 'latest_status_timestamp' in order:
-                order['latest_status_timestamp'] = order['latest_status_timestamp'].astimezone(colombia_tz)
+        # for order in orders_dict:
+        #     if 'latest_status_timestamp' in order:
+        #         order['latest_status_timestamp'] = order['latest_status_timestamp'].astimezone(colombia_tz)
 
         # Fetch additional order details
         for order in orders_dict:

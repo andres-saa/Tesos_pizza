@@ -53,6 +53,16 @@ def traslate(data:traslate):
     result = order_instance.traslate_order(data.order_id,data.site_id)
     return result
 
+
+from fastapi import Query
+
+@order_router.get('/get-reports/')
+def get_order_count_by_site_id(start_date: str = Query(...), end_date: str = Query(...)):
+    order_instance = Order2()
+    result = order_instance.get_reports(start_date, end_date)
+    order_instance.close_connection()
+    return result
+
 async def notify_all_clients(site_id: int, message: str, sender: WebSocket):
     for client in connected_clients[site_id]:
         if client != sender:  # Evita enviar el mensaje de vuelta al emisor original
@@ -63,6 +73,7 @@ async def notify_all_clients(site_id: int, message: str, sender: WebSocket):
                 if not connected_clients[site_id]:
                     del connected_clients[site_id]
                     
+
 
 
 

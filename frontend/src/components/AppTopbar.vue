@@ -98,7 +98,7 @@
                             </Button>
                         </a>
 
-                        <a class="p-0 m-0" href="https://wa.link/7pde2f" style="padding: 0;line-height: 0;">
+                        <a class="p-0 m-0" href="https://wa.me/573135839879" style="padding: 0;line-height: 0;">
                             <Button style="padding: 0;line-height: 0;" size="large" text class="menu-bars text-whatsapp p-0 m-0">
                                 <i class="pi pi-whatsapp"></i>
                             </Button>

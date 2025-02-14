@@ -31,7 +31,7 @@
 
     <!-- Iteración sobre data -->
     <div v-for="categorie in data" :key="categorie.category_name">
-      <h5 class="m-0 my-4">
+      <h5 class="m-0 my-2">
         <b>{{ categorie.category_name }}</b>
       </h5>
 
@@ -94,7 +94,18 @@
         <b>{{ formatoPesosColombianos(categorie.category_total_revenue) }}</b>
       </h5>
     </div>
+
+    <div style="height: 2px;width: 100%;background-color: black;">
+
+    </div>
+    <h2 class="m-0 my-0 text-right" style="width: 100%;display: flex;justify-content: space-between;">
+      <span><b>Total</b></span>
+        <b>{{ formatoPesosColombianos(totalCategoryRevenue) }}</b>
+      </h2>
+ 
   </div>
+
+
 </template>
 
 <script setup>
@@ -117,6 +128,13 @@ import timezone from 'dayjs/plugin/timezone';
 // Extender dayjs
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+
+const totalCategoryRevenue = computed(() => {
+  return data.value.reduce((acc, category) => {
+    return acc + category.category_total_revenue
+  }, 0)
+})
 
 // Zona horaria para Colombia
 const ZONA_HORARIA_COLOMBIA = 'America/Bogota';

@@ -168,19 +168,13 @@ watch(() => user.user.payment_method_option, (new_val) => {
 
 
 <style scoped>
-*:focus {
-    border: none;
-}
 
 .led {
     animation: cambiaColor 1s infinite;
     /* 3s de duración, animación infinita */
 }
 
-*:focus {
-    border: none;
-    outline: none;
-}
+
 
 
 .title {
@@ -391,9 +385,7 @@ button:hover {
 
 .clase {}
 
-*:focus {
-    outline: none;
-}
+
 
 /* 
 * {
@@ -404,10 +396,7 @@ button:hover {
     text-transform: uppercase;
 }
 
-input:focus {
-    outline: none;
-    border: none;
-}
+
 
 /* Estilo del pulgar de la barra de desplazamiento */
 /* WebKit (Chrome, Safari) */
