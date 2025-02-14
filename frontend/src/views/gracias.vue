@@ -330,17 +330,19 @@
             label="PUEDES RASTREARLO AQUI"></Button>
         </router-link>
 
+        <h6>Realiza 7 compras y reclama un obsequio</h6>
 
         <a v-if="user.user.payment_method_option.id == 6" :href="whatsappUrl" target="_blank"> <Button
             icon="pi pi-whatsapp" severity="danger" class="wsp"
             style="font-weight: bold;background-color: #00b66c; border: none; width: 100%;"
             label="REALIZAR TRANSFERENCIA"></Button>
         </a>
+        
 
-        <a v-else :href="whatsappUrl2" target="_blank"> <Button
+        <a @click="router.push('/')" v-else :href="whatsappUrl2" target="_blank"> <Button
             icon="pi pi-whatsapp" severity="danger" class="wsp"
             style="font-weight: bold;background-color: #00b66c; border: none; width: 100%;"
-            label="PREGUNTAR POR PROMOCIONES"></Button>
+            label="ACUMULAR PUNTOS"></Button>
         </a>
 
         <router-link to="/">
@@ -429,7 +431,7 @@ onMounted(() => {
 onMounted(() => {
   text2.value = `Hola soy *${user.user.name.toUpperCase()}* 🤗 acabo de hacer el siguiente pedido en la página web. El número de la orden es *#${store.last_order}*.\n
 
-*Escribo para Preguntar por las promociones disponibles*\n
+*Escribo para aplicar por el obsequio de las 7 compras*\n
 *🛒 PRODUCTOS*\n${store.cart.products.map(product => `*${product.quantity}* ${product.product.product_name}`).join('\n')}\n\n`;
 
   if (store.cart.additions.length > 0) {
