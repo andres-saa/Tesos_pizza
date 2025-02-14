@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
       </a>
 
       
-      <a href="https://wa.link/7pde2f" style="background-color: var(--p-button-primary-hover-background);">
+      <a href="https://wa.me/573135839879" style="background-color: var(--p-button-primary-hover-background);">
         <Button style="padding: 0;" size="large" text class="menu-bars text-whatsapp p-2">
           <i class="pi pi-whatsapp"></i>
         </Button>
