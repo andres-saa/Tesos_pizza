@@ -336,6 +336,13 @@
             style="font-weight: bold;background-color: #00b66c; border: none; width: 100%;"
             label="REALIZAR TRANSFERENCIA"></Button>
         </a>
+
+        <a  :href="whatsappUrl2" target="_blank"> <Button
+            icon="pi pi-whatsapp" severity="danger" class="wsp"
+            style="font-weight: bold;background-color: #00b66c; border: none; width: 100%;"
+            label="PREGUNTAR POR PROMOCIONES"></Button>
+        </a>
+
         <router-link to="/">
           <Button icon="pi pi-arrow-left" severity="danger" outlined
             style="font-weight: bold; border: none; width: 100%;" label="VOLVER AL MENU"></Button>
@@ -362,6 +369,7 @@ import Button from 'primevue/button';
 const site = useSitesStore();
 import { formatoPesosColombianos } from '@/service/utils/formatoPesos';
 const text = ref('');
+const text2 = ref('');
 const store = usecartStore();
 const user = useUserStore()
 
@@ -412,6 +420,47 @@ onMounted(() => {
 });
 
 
+
+
+
+
+
+
+onMounted(() => {
+  text2.value = `Hola soy *${user.user.name.toUpperCase()}* 🤗 acabo de hacer el siguiente pedido en la página web. El número de la orden es *#${store.last_order}*.\n
+
+*Escribo para Preguntar por las promociones disponibles*\n
+*🛒 PRODUCTOS*\n${store.cart.products.map(product => `*${product.quantity}* ${product.product.product_name}`).join('\n')}\n\n`;
+
+  if (store.cart.additions.length > 0) {
+    text.value += `*➕ ADICIONES*\n${store.cart.additions.filter(a => a.group == 'ADICIONES').map(product => `*${product.quantity}* ${product.name}`).join('\n')}\n\n`;
+  }
+
+  if (store.cart.additions.filter(a => a.group == 'CAMBIOS').length > 0) {
+    text.value += `*➕ CAMBIOS*\n${store.cart.additions.filter(a => a.group == 'CAMBIOS').map(product => `*${product.quantity}* ${product.name}`).join('\n')}\n\n`;
+  }
+
+  if (store.cart.additions.filter(a => a.group == 'SALSAS').length > 0) {
+    text.value += `*➕ SALSAS*\n${store.cart.additions.filter(a => a.group == 'SALSAS').map(product => ` ${product.name}`).join('\n')}\n\n`;
+  }
+
+  text.value += `*📍 DIRECCIÓN*\n${user.user.address} BARRIO ${site.location?.neigborhood?.name}\n
+*📞 TELEFONO*\n${user.user.phone_number}\n
+*📝 NOTAS*\n${store.cart.order_notes || 'Sin notas'}\n
+*💰 METODO DE PAGO*\n${user.user.payment_method_option.name}\n
+*Muchas Gracias* 🙏`;
+
+  console.log(text.value);
+
+});
+
+
+
+
+
+
+
+
 const whatsappUrl = computed(() => {
   const baseUrl = 'https://api.whatsapp.com/send';
   const urlParams = new URLSearchParams({
@@ -420,6 +469,18 @@ const whatsappUrl = computed(() => {
   });
   return `${baseUrl}?${urlParams.toString()}`;
 });
+
+
+
+const whatsappUrl2 = computed(() => {
+  const baseUrl = 'https://api.whatsapp.com/send';
+  const urlParams = new URLSearchParams({
+    phone: '573135839879',
+    text: text2.value
+  });
+  return `${baseUrl}?${urlParams.toString()}`;
+});
+
 
 
 onBeforeUnmount(() => {
