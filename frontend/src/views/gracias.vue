@@ -337,7 +337,7 @@
             label="REALIZAR TRANSFERENCIA"></Button>
         </a>
 
-        <a  :href="whatsappUrl2" target="_blank"> <Button
+        <a v-else :href="whatsappUrl2" target="_blank"> <Button
             icon="pi pi-whatsapp" severity="danger" class="wsp"
             style="font-weight: bold;background-color: #00b66c; border: none; width: 100%;"
             label="PREGUNTAR POR PROMOCIONES"></Button>
