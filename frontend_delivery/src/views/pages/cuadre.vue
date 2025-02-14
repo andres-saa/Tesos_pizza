@@ -5,7 +5,7 @@
     <div class="flex gap-3 mb-4">
       <!-- Calendar de PrimeVue para fechaInicio -->
       <Calendar 
-        showTime 
+  
         hourFormat="12" 
         v-model="fechaInicio" 
         dateFormat="dd / mm / yy" 
@@ -13,7 +13,7 @@
       />
       <!-- Calendar de PrimeVue para fechaFin -->
       <Calendar 
-        showTime 
+ 
         hourFormat="12"  
         v-model="fechaFin" 
         dateFormat="dd / mm / yy" 
