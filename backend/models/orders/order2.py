@@ -105,7 +105,7 @@ class Order2:
         return user_id
 
     def create_order_entry(self, user_id, order_data):
-        if order_data.payment_method_id == 6:
+        if order_data.payment_method_id == 20:
 
 
             order_insert_query = """
@@ -388,7 +388,7 @@ class Order2:
 
     def update_order_status(self, order_id, payment_method_id, inserted_by ):
 
-        if  payment_method_id != 6:
+        if  payment_method_id != 20:
 
 
             validation = 'generada'
