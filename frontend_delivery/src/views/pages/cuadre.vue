@@ -30,9 +30,9 @@
     </div>
 
     <!-- Iteración sobre data -->
-    <div v-for="categorie in data" :key="categorie.category_name">
-      <h5 class="m-0 mt-2" style="display: flex;justify-content: start; width: 100%;">
-          <b>( {{ categorie.category_total_quantity_text }} ) {{ categorie.category_name }}</b>
+    <div class="shadow-3 p-3   mt-4" v-for="categorie in data" :key="categorie.category_name">
+      <h5 class="m-0 mt-0" style="display: flex;justify-content: space-between; width: 100%;">
+        <b class="pb-3">{{ categorie.category_name }}</b>
         <!-- <b>{{ categorie.category_total_quantity }}</b> -->
       </h5>
 
@@ -43,16 +43,13 @@
               class="px-2 m-0 py-1" 
               style="text-transform: capitalize;display: flex;justify-content: space-between; background-color: var(--primary-color); color: white;"
             >
-              <b style="display: flex;gap: .5rem; justify-content: space-between;">
-              
-              
-                <span> (                 {{ nuevo.data.product_total_quantity }}
-                   ) </span>
+              <b style="display: flex; justify-content: space-between;">
                 {{ nuevo.data.product_name?.toLowerCase() }}
 
               </b>
 
-           
+            
+            
             </h6>
 
             <DataTable :value="nuevo.data.flavors_info">
@@ -98,13 +95,57 @@
           </template>
         </Column>
       </DataTable>
+      
 
-      <h5 class="m-0 my-0 text-right" style="width: 100%;justify-content: end;display: flex;">
+
+      <div class="my-1" style="height: 1px;width: 100%;background-color: black;">
+
+</div>
+
+<h5 style="text-transform: capitalize;" class="p-0 m-0"> <b>Resumen de {{ categorie.category_name?.toLowerCase() }}'s</b> </h5>
+
+
+<DataTable stripedRows :value="categorie.products_info">
+          <Column class="p-0" style="width: 15rem;">
+            <template #body="nuevo">
+              <h6 
+                class="px-0 m-0 py-0" 
+                style="text-transform: capitalize;display: flex;justify-content: space-between; "
+              >
+                
+              <span>
+                <b> {{ nuevo.data.product_total_quantity_text }} </b>    {{ nuevo.data.product_name?.toLowerCase() }}
+
+              </span>
+
+
+              <span>
+                <b> {{ formatoPesosColombianos( nuevo.data.product_total_revenue) }} </b>   
+              </span>
+              
+              </h6>
+            </template>
+          </Column>
+          
+          
+
+
+
+      </DataTable>
+      <div class="my-1" style="height: 1px;width: 100%;background-color: black;">
+
+</div>
+
+
+      <h6 class="m-0 my-0 text-right" style="width: 100%;justify-content: space-between;display: flex;">
  
-        <!-- <span class="m-0" style="text-transform: capitalize;"> <b>  <b></b> {{ categorie.category_name?.toLowerCase() }}'s</b></span> -->
+        <span class="m-0" style="text-transform: capitalize;">  <b> {{ categorie.category_total_quantity_text }} </b> 
+          
+          
+          {{ categorie.category_name?.toLowerCase() }}'s</span>
        
         <b>{{ formatoPesosColombianos(categorie.category_total_revenue) }}</b>
-      </h5>
+      </h6>
     </div>
 
     <div style="height: 2px;width: 100%;background-color: black;">
