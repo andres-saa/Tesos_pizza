@@ -56,6 +56,7 @@ class site_schedule:
             schedule_list.append({"schedule_id": schedule_id, "site_id": site_id, "day_of_week": day_of_week, "opening_time": opening_time, "closing_time": closing_time})
         return schedule_list
 
+    
     def is_site_open(self, site_id: int, current_time: str = None):
         # Configurar la zona horaria de Colombia
         colombia_tz = pytz.timezone('America/Bogota')
@@ -69,7 +70,7 @@ class site_schedule:
         # Obtener el día de la semana en la zona horaria de Colombia
         current_day_of_week = (int(datetime.now(colombia_tz).strftime("%w")) + 1) % 7 or 7
         
-        print(current_day_of_week)
+        print("Día de la semana:", current_day_of_week)
         query = f"""
         SELECT opening_time, closing_time
         FROM site_schedule
@@ -82,13 +83,25 @@ class site_schedule:
 
         if schedule_data:
             opening_time, closing_time = schedule_data
-            if opening_time <= current_time < closing_time:
-                return True, None  # El sitio está abierto
+            
+            # Caso en que la sede cierra después de media noche
+            if opening_time <= closing_time:
+                # Horario normal en el mismo día
+                if opening_time <= current_time < closing_time:
+                    return True, None  # El sitio está abierto
+                else:
+                    return False, opening_time  # El sitio está cerrado, devolver la hora de apertura
             else:
-                return False, opening_time  # El sitio está cerrado, devolver la hora de apertura
+                # Horario que cruza la medianoche:
+                # Ej: apertura a las 20:00 y cierre a las 02:00
+                if current_time >= opening_time or current_time < closing_time:
+                    return True, None  # El sitio está abierto
+                else:
+                    return False, opening_time  # El sitio está cerrado, devolver la hora de apertura
         else:
-            return False, None  # No se encontró ningún horario para el sitio y el día dados   
+            return False, None  # No se encontró ningún horario para el sitio y el día dados
 
+    
     def update_schedule(self, schedule_id, schedule_data: site_schedule_schema):
         site_id = schedule_data.site_id
         day_of_week = schedule_data.day_of_week
