@@ -99,7 +99,7 @@ class Product:
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
     
     
-                
+
     def select_all_sabores_by_product_id(self, product_id: int):
         """
         Obtiene todos los sabores asociados a un producto específico y los separa en dos listas:
@@ -143,7 +143,8 @@ class Product:
                     'name': row['flavor_name'],
                     'price': row['flavor_price'],
                     'premium': row['is_premium'],
-                    'has_flavor': row['has_flavor']
+                    'has_flavor': row['has_flavor'],
+                    'is_gaseosa': row['is_gaseosa']  # Se incluye el parámetro is_gaseosa
                 }
 
                 if row['is_gaseosa']:
@@ -164,6 +165,10 @@ class Product:
                 'normal': [],
                 'gaseosa': []
             }
+    
+    
+    
+
 
     def select_all_sabores(self):
         select_query = "SELECT * FROM inventory.sabor;"
