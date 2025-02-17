@@ -157,34 +157,6 @@
 
 
 
-            <router-link to="/" v-if="route.path.includes('cart')">
-                <Button outlined icon="pi pi-shopping-cart" label="Seguir comprando" class="mt-4" severity="danger"
-                    style="outline: none;width: 100%;font-weight: bold; background-color: rgba(0, 0, 0, 0);"></Button>
-
-            </router-link>
-
-            <router-link to="/cart" v-else>
-                <Button outlined icon="pi pi-arrow-left" label="Volver al carrito" class="mt-4" severity="danger"
-                    style="outline: none;width: 100%;font-weight: bold; background-color: rgba(0, 0, 0, 0);"></Button>
-
-            </router-link>
-
-            <Tag v-if="siteStore.status.status == 'closed'" style="width: 100%;text-transform: capitalize; height: 2.5rem;" class="mt-2"
-                severity="danger"> Cerrado, abrimos a las {{ siteStore.status.next_opening_time.split(':')?.slice(0,2).join(' : ') }} </Tag>
-
-            <router-link to="/pay" v-if="route.path.includes('cart') && siteStore.status.status != 'closed'">
-                <Button iconPos="right" icon="pi pi-arrow-right" label="Pedir" class="mt-2" severity="help"
-                    style="outline: none;width: 100%; border: none;font-weight: bold; background-color: black;"></Button>
-            </router-link>
-
-            <router-link to="/pay" v-else-if="siteStore.status.status != 'closed'">
-                <Button :disabled="store.sending_order || siteStore.status.status == 'closed'" @click="() => {
-                    orderService.sendOrder()
-                    sending = true
-                }" iconPos="right" icon="pi pi-arrow-right" label="Finalizar pedido" class="mt-2" severity="help"
-                    style="outline: none;width: 100%; border: none;font-weight: bold; background-color: black;"></Button>
-            </router-link>
-
         </div>
 
 

@@ -30,7 +30,7 @@
                                     <div style="display:flex">
                                         <div class="p-0"
                                             style="box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2); background-color:#ff620000; border-radius: 5rem; display: flex;">
-                                            <Button @click="store.removeProductInstance(product.product.id,product.flavors)"
+                                            <Button @click="store.decrementProductBySignature(product.signature)"
                                                 icon="pi pi-minus" severity="success"
                                                 style="border:none; outline:none; width:2rem; height:1.5rem; border-radius: 0.4rem 0 0 0.4rem;">
                                             </Button>
@@ -41,7 +41,7 @@
 
                                      
 
-                                            <Button @click="store.addProductToCart(product.product,1,[],product.flavors)" icon="pi pi-plus"
+                                            <Button @click="store.incrementProductBySignature(product.signature)" icon="pi pi-plus"
                                                 severity="success"
                                                 style="font-weight: bold; border:none; outline:none; width:2rem; height:1.5rem; border-radius:0 0.4rem 0.4rem 0;">
                                             </Button>
@@ -55,23 +55,46 @@
                         </div>
 
 
-                        <Button class="ml-2" @click="store.removeProductFromCart(product.product.id,product.flavors)" icon="pi pi-times"
+                        <Button class="ml-2" @click="store.removeProductFromCartBySignature(product.signature)" icon="pi pi-times"
                             severity="danger" rounded
                             style="border:none; right: -.5rem; top: -.5rem; position: absolute; outline:none; width:2rem; height:2rem" />
 
 
 
 
-                        <div
-                            style="display: flex; gap:1rem;align-items: center;; width: 100%;margin-top: 1rem; flex-wrap: wrap;">
-                            <h6 v-if="product?.flavors?.length > 1" style="margin: 0;"> <b
-                                    style="">Sabores</b> </h6>
-                            <h6 v-else-if="product?.flavors?.length > 0" style="margin: 0;"> <b>Sabor</b> </h6>
-                            <div style="display: flex;gap: 1rem;flex-direction: row;">
-                                <Tag v-for="flavor in product.flavors" style=""> {{ flavor.name}}</Tag>
-                            </div>
+                            <div
+  style="display: flex; gap:1rem; align-items: center; width: 100%; margin-top: 1rem; flex-wrap: wrap;"
+>
+  <h6 v-if="product?.flavors?.filter(f => !f.is_gaseosa).length > 1" style="margin: 0;">
+    <b>Sabores</b>
+  </h6>
+  <h6 v-else-if="product?.flavors?.length > 0" style="margin: 0;">
+    <b>Sabor</b>
+  </h6>
+  <div style="display: flex; gap: 1rem; flex-direction: row;">
+    <Tag
+      v-for="(flavor, index) in product.flavors"
+      :key="index"
+      style=""
+    >
+      {{ flavor.name }} x {{ product.quantity }}
+      <span v-if="flavor.price > 0">
+        {{
+          formatoPesosColombianos(
+            (
+              // Si existen más de un sabor (excluyendo gaseosa) se toma la mitad del precio,
+              // de lo contrario se usa el precio completo.
+              product.flavors.filter(f => !f.is_gaseosa).length > 1
+                ? flavor.price / 2
+                : flavor.price
+            ) * product.quantity
+          )
+        }}
+      </span>
+    </Tag>
+  </div>
+</div>
 
-                        </div>
 
                         <div
                             style="display: flex;gap:1rem;align-items: center;width: 100%;flex-wrap: wrap;" v-if="product.gaseosa?.name">

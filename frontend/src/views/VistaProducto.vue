@@ -55,8 +55,6 @@
       >
         {{ store.currentProduct.product_description.toLowerCase() }}
       </p>
-
-   
     </div>
 
     <!-- SECCION DE SABORES Y GASEOSA -->
@@ -234,79 +232,77 @@
     </div>
     <!-- FIN SECCION DE SABORES Y GASEOSA -->
 
-
+    <!-- SECCIÓN DE ADICIONALES -->
     <div style="color: black;">
-        <div v-for="grupo in adicionales" :key="grupo.category">
-          <div class="mb-2">
-            <p class="mb-2 text-center" style="margin: 1rem 0;">
-              <b>{{ grupo.category }}</b>
-            </p>
-            <div class="mt-2" style="">
+      <div v-for="grupo in adicionales" :key="grupo.category">
+        <div class="mb-2">
+          <p class="mb-2 text-center" style="margin: 1rem 0;">
+            <b>{{ grupo.category }}</b>
+          </p>
+          <div class="mt-2">
+            <div
+              v-for="item in grupo.items"
+              :key="item.aditional_item_instance_id"
+              style="display: flex; gap: 1rem; align-items: center;"
+            >
+              <Checkbox
+                class="my-1"
+                :binary="true"
+                v-model="item.checked"
+                @change="() => handleAdditionChange(item, grupo.category)"
+              />
               <div
-                v-for="item in grupo.items"
-                :key="item.aditional_item_instance_id"
-                style="display: flex; gap: 1rem;align-items: center;"
+                style="display: flex; width: 100%; gap: 1rem; justify-content: space-between;"
               >
-                <Checkbox
-                  class="my-1"
-                  :binary="true"
-                  v-model="item.checked"
-                  @change="() => handleAdditionChange(item, grupo.category)"
-                />
-                <div
-                  style="display: flex; width: 100%; gap: 1rem; justify-content: space-between;"
-                >
-                  <span class="text-sm adicion" style="text-transform: lowercase;">
-                    {{ item.aditional_item_name }}
-                  </span>
-                  <span v-if="item.checked" style="display: flex; align-items: center;">
-                    <span
-                      v-if="item.aditional_item_price > 0"
-                      class="pl-2 py-1 text-sm"
-                    >
-                      <b>
-                        {{
-                          formatoPesosColombianos(
-                            item.aditional_item_price * selectedAdditions[item.aditional_item_instance_id]?.quantity
-                          )
-                        }}
-                      </b>
-                    </span>
-
-                    <Button
-                      @click="decrement(item)"
-                      class="ml-2"
-                      severity="danger"
-                      style="width: 2rem; height: 1.5rem; border: none;"
-                      icon="pi pi-minus"
-                    ></Button>
-                    <InputText
-                      :modelValue="selectedAdditions[item.aditional_item_instance_id]?.quantity"
-                      readonly
-                      style="width: 2rem; border: none; height: 1.5rem;"
-                      class="p-0 text-center"
-                    />
-                    <Button
-                      @click="increment(item)"
-                      severity="danger"
-                      style="width: 2rem; height: 1.5rem; border: none;"
-                      icon="pi pi-plus"
-                    ></Button>
-                  </span>
-
+                <span class="text-sm adicion" style="text-transform: lowercase;">
+                  {{ item.aditional_item_name }}
+                </span>
+                <span v-if="item.checked" style="display: flex; align-items: center;">
                   <span
-                    v-else-if="item.aditional_item_price > 0"
+                    v-if="item.aditional_item_price > 0"
                     class="pl-2 py-1 text-sm"
                   >
-                    <b>{{ formatoPesosColombianos(item.aditional_item_price) }}</b>
+                    <b>
+                      {{
+                        formatoPesosColombianos(
+                          item.aditional_item_price * selectedAdditions[item.aditional_item_instance_id]?.quantity
+                        )
+                      }}
+                    </b>
                   </span>
-                </div>
+                  <Button
+                    @click="decrement(item)"
+                    class="ml-2"
+                    severity="danger"
+                    style="width: 2rem; height: 1.5rem; border: none;"
+                    icon="pi pi-minus"
+                  ></Button>
+                  <InputText
+                    :modelValue="selectedAdditions[item.aditional_item_instance_id]?.quantity"
+                    readonly
+                    style="width: 2rem; border: none; height: 1.5rem;"
+                    class="p-0 text-center"
+                  />
+                  <Button
+                    @click="increment(item)"
+                    severity="danger"
+                    style="width: 2rem; height: 1.5rem; border: none;"
+                    icon="pi pi-plus"
+                  ></Button>
+                </span>
+                <span
+                  v-else-if="item.aditional_item_price > 0"
+                  class="pl-2 py-1 text-sm"
+                >
+                  <b>{{ formatoPesosColombianos(item.aditional_item_price) }}</b>
+                </span>
               </div>
-              <hr />
             </div>
+            <hr />
           </div>
         </div>
       </div>
+    </div>
 
     <template #footer>
       <div style="display: flex; justify-content: center;">
@@ -386,8 +382,8 @@ watch(
       adicionales.value = await adicionalesService.getAditional(product_id);
 
       const sabores = await fetchService.get(`${URI}/sabores/product_id/${store.currentProduct?.product_id}`);
-      sizes.value = sabores?.normal;
-      gaseosas.value = sabores?.gaseosa;
+      sizes.value = sabores?.normal || [];
+      gaseosas.value = sabores?.gaseosa || [];
 
       // Resetear selección de sabores y gaseosa
       sabor1.value = {};
@@ -397,7 +393,7 @@ watch(
   }
 );
 
-// Marcar/destapar los adicionales
+// Manejo de adiciones
 const handleAdditionChange = (item, group) => {
   if (item.checked) {
     const new_item = {
@@ -416,27 +412,27 @@ const handleAdditionChange = (item, group) => {
 };
 
 const increment = (item) => {
-  if (item.checked) {
+  if (item.checked && selectedAdditions.value[item.aditional_item_instance_id]) {
     selectedAdditions.value[item.aditional_item_instance_id].quantity++;
   }
 };
 
 const decrement = (item) => {
-  const currentQuantity = selectedAdditions.value[item.aditional_item_instance_id].quantity;
-  if (currentQuantity > 1) {
+  if (
+    selectedAdditions.value[item.aditional_item_instance_id] &&
+    selectedAdditions.value[item.aditional_item_instance_id].quantity > 1
+  ) {
     selectedAdditions.value[item.aditional_item_instance_id].quantity--;
   }
 };
 
 /**
- * Evita agregar al carrito si no se han elegido sabor(es) o gaseosa cuando son requeridos.
+ * Agrega el producto principal y, de forma separada, sus adicionales.
  */
 const addToCart = (product) => {
   // Validaciones de sabores:
-  // Si hay disponibles 'sizes' (sabores):
   if (sizes.value?.length > 0) {
     if (saboresmultiples.value) {
-      // Se necesitan 2 sabores (sabor1 y sabor2)
       if (!sabor1.value?.id || !sabor2.value?.id) {
         toast.add({
           severity: 'warn',
@@ -447,7 +443,6 @@ const addToCart = (product) => {
         return;
       }
     } else {
-      // Solo un sabor
       if (!sabor1.value?.id) {
         toast.add({
           severity: 'warn',
@@ -460,7 +455,7 @@ const addToCart = (product) => {
     }
   }
 
-  // Validación de gaseosa (si se muestra, es porque gaseosas.length > 0)
+  // Validación de gaseosa (si aplica)
   if (gaseosas.value?.length > 0) {
     if (!gaseosa.value?.name) {
       toast.add({
@@ -473,15 +468,21 @@ const addToCart = (product) => {
     }
   }
 
-  // Si pasa las validaciones, construimos las adiciones y sabores
-  const additionsArray = Object.values(selectedAdditions.value);
+  // Agregar el producto principal SIN incluir las adiciones
   const flavors = saboresmultiples.value
     ? [sabor1.value, sabor2.value]
     : sabor1.value?.id
       ? [sabor1.value]
       : [];
 
-  store.addProductToCart(product, 1, additionsArray, flavors, gaseosa.value);
+  store.addProductToCart(product, 1, [], flavors, gaseosa.value);
+
+  // Agregar cada adicional seleccionado por separado
+  const additionsArray = Object.values(selectedAdditions.value);
+  additionsArray.forEach(adition => {
+    store.addAdditionToCart(adition);
+    console.log('Adicional agregado:', adition);
+  });
 
   // Resetear selecciones
   selectedAdditions.value = {};
@@ -500,8 +501,8 @@ const addToCart = (product) => {
     detail: `${product.product_name} se ha agregado al carrito.`,
     life: 3000
   });
-  // Debug
-  console.log(store.cart.products);
+
+  console.log('Carrito:', store.cart.products);
 };
 </script>
 
