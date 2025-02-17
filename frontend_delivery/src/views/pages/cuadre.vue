@@ -5,7 +5,7 @@
     <div class="flex gap-3 mb-4">
       <!-- Calendar de PrimeVue para fechaInicio -->
       <Calendar 
-  
+        showTime
         hourFormat="12" 
         v-model="fechaInicio" 
         dateFormat="dd / mm / yy" 
@@ -13,7 +13,7 @@
       />
       <!-- Calendar de PrimeVue para fechaFin -->
       <Calendar 
- 
+      showTime
         hourFormat="12"  
         v-model="fechaFin" 
         dateFormat="dd / mm / yy" 
@@ -36,7 +36,7 @@
         <!-- <b>{{ categorie.category_total_quantity }}</b> -->
       </h5>
 
-      <DataTable stripedRows :value="categorie.products_info">
+      <DataTable v-if="categorie.category_name != 'Adicionales'" stripedRows :value="categorie.products_info">
         <Column class="p-0" style="width: 15rem;">
           <template #body="nuevo">
             <h6 
@@ -52,7 +52,7 @@
             
             </h6>
 
-            <DataTable :value="nuevo.data.flavors_info">
+            <DataTable v-if="nuevo.data.flavors_info" :value="nuevo.data.flavors_info">
               <!-- Columna Sabor -->
               <Column header="Sabor" class="p-0" style="width: 15rem;">
                 <template #body="datos">
@@ -211,14 +211,17 @@ const buscarReportes = async () => {
     return;
   }
 
-  // Convertimos a string en formato YYYY-MM-DD
-  const startDate = fechaInicio.value.toISOString().split("T")[0];
-  const endDate = fechaFin.value.toISOString().split("T")[0];
+  // Convertir a string en formato con zona horaria de Colombia
+  const startDate = dayjs(fechaInicio.value)
+    .tz(ZONA_HORARIA_COLOMBIA)
+    .format('YYYY-MM-DDTHH:mm:ssZ');
+  const endDate = dayjs(fechaFin.value)
+    .tz(ZONA_HORARIA_COLOMBIA)
+    .format('YYYY-MM-DDTHH:mm:ssZ');
 
   // Llamada a la API
   data.value = await fetchService.get(`${URI}/get-reports?start_date=${startDate}&end_date=${endDate}`);
 };
-
 /* ===== Ciclo de vida onMounted ===== */
 onMounted(async () => {
   // 1. Obtenemos la fecha/hora actual en la zona horaria de Colombia
