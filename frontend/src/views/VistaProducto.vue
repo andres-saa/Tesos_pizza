@@ -2,10 +2,9 @@
   <Dialog
     :closable="false"
     v-model:visible="store.visibles.currentProduct"
-    :style="{ width: '30rem' }"
     :modal="true"
-    class="p-fluid pt-0 m-0"
-    style="justify-content: center; margin: 0 1rem; max-width: 90%; background-color: white; position: relative; border-radius: 1rem; padding-top: 2rem;"
+    class="p-fluid pt-0 m-0 mx-3 dialog"
+    style="justify-content: center; margin: 0 1rem;  background-color: white; position: relative; border-radius: .5rem; padding-top: 2rem;"
   >
     <Button
       @click="store.setVisible('currentProduct', false)"
@@ -16,7 +15,7 @@
     </Button>
 
     <template #header>
-      <div class="header col-12 my-0 py-0"
+      <div class="header col-12 my-0 py-0 px-0 md:px-3"
         style="display: flex; justify-content: space-between; background-color: rgb(255, 255, 255); z-index:99; height: min-content;"
       >
         <p
@@ -34,17 +33,21 @@
       </div>
     </template>
 
+    <div class="container">
+
+  
     <div
-      class="col-12 p-0 mt-0 shadow-5"
-      style="display: flex; align-items: center; max-height: 45rem; background-color:white; border-radius: 0.5rem;"
+      class="col-12 p-0 mt-0 shadow-5 photo"
+      style="display: flex; align-items: center; max-height: 45rem; background-color:white;;top: 0; border-radius: 0.5rem;"
     >
       <img
-        style="width: 100%; aspect-ratio: 1 / 1; border-radius: 0.5rem; background-color: rgb(255, 255, 255); object-fit: cover;"
+        style="width: 100%; height: 100%; border-radius: 0.5rem; background-color: rgb(255, 255, 255); object-fit: cover;"
         :src="`${URI}/read-photo-product/${store.currentProduct.img_identifier}/600`"
         alt=""
       />
     </div>
 
+    <div>
     <div class="col-12 p-0 my-0" style="margin: 3rem 0;">
       <p class="col-12 p-0" style="font-weight: bold; color: black; margin: 1rem 0;">
         DESCRIPCION
@@ -304,6 +307,10 @@
       </div>
     </div>
 
+
+
+    </div>
+  </div>
     <template #footer>
       <div style="display: flex; justify-content: center;">
         <Button
@@ -319,7 +326,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch,computed, ref } from 'vue';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
@@ -358,6 +365,18 @@ const selectedSaborOption = ref({});
 
 // Manejo de adiciones
 const adicionales = ref([]);
+
+
+const dialogStyle = computed(() => {
+  return isBelow1200.value
+    ? { width: '90%', 'max-width': '40rem' }
+    : { width: '90%', 'max-width': '1200px' };
+});
+
+
+
+// Computed para determinar si la pantalla es menor a 1200px
+const isBelow1200 = computed(() => screenWidth.value < 1200);
 
 // Ejemplo de tamaño o tipo seleccionado (si aplica)
 const selected_size = ref({});
@@ -531,5 +550,42 @@ const addToCart = (product) => {
 
 * {
   font-family: roboto;
+}
+
+
+.container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  /* background-color: red; */
+  padding: 0;
+
+}
+
+.photo{
+  position: sticky
+}
+
+.dialog{
+  max-width: 1070px !important;
+}
+
+@media (width < 1070px) {
+
+  .container{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 30rem;
+
+
+}
+
+.photo{
+    position: static;
+  }
+
+
+  
 }
 </style>
