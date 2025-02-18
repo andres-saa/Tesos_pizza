@@ -19,13 +19,13 @@
         style="display: flex; justify-content: space-between; background-color: rgb(255, 255, 255); z-index:99; height: min-content;"
       >
         <p
-          class="mayuscula md:pl-4 nombre col-9 text-l lg:text-xl p-0 text-left"
+          class="mayuscula md:pl-4 nombre col-9 text-l lg:text-4xl p-0 text-left"
           style="color:black; font-weight: bold"
         >
           {{ store.currentProduct.product_name }}
         </p>
         <p
-          class="md:pr-4 precio col-3 text-l lg:text-xl p-0 text-right"
+          class="md:pr-4 precio col-3 text-l lg:text-xl p-0 text-right mayuscula"
           style="color:black; font-weight: bold"
         >
           {{ formatoPesosColombianos(store.currentProduct.price + (selected_size.price || 0)) }}
@@ -546,6 +546,9 @@ const addToCart = (product) => {
 
 .mayuscula {
   text-transform: uppercase;
+  font-size: 1.5rem;
+  padding: 0;
+  margin: 0;
 }
 
 * {
@@ -584,6 +587,14 @@ const addToCart = (product) => {
 .photo{
     position: static;
   }
+
+
+  .mayuscula {
+  text-transform: uppercase;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+}
 
 
   
