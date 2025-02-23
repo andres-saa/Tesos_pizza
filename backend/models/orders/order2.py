@@ -729,8 +729,6 @@ class Order2:
         return orders_dict
 
 
-
-
     def get_orders_to_transfer(self):
         colombia_tz = pytz.timezone('America/Bogota')
         now = datetime.now(colombia_tz)
