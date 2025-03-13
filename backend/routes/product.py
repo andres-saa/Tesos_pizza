@@ -98,7 +98,7 @@ class aditionals(BaseModel):
 
 
 @product_router.put("/products/update/{product_instance_id}")
-def update_product_and_instances(product_instance_id: int, product: ProductSchemaPost, additional_item_ids: List[int], flavor_ids: List[int]):
+def update_product_and_instances(product_instance_id: int, product: ProductSchemaPost, additional_item_ids: List[int], flavor_ids: dict):
     product_instance = Product()
     try:
         existing_product = product_instance.select_product_by_id(product_instance_id)

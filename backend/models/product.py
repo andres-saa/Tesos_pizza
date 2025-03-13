@@ -310,21 +310,47 @@ class Product:
                         SELECT %s, id FROM inventory.product_instances WHERE product_id = %s AND site_id = %s;
                     """, (additional_instance_id, product_info['product_id'], site_id))
 
-            # Elimina las asociaciones de productos con sabores existentes
-            self.cursor.execute("""
-                DELETE FROM inventory.sabor_product
-                WHERE product_id = %s;
-            """, (product_info['product_id'],))
+            # # Elimina las asociaciones de productos con sabores existentes
+            # self.cursor.execute("""
+            #     DELETE FROM inventory.sabor_product
+            #     WHERE product_id = %s;
+            # """, (product_info['product_id'],))
 
             # Inserta las nuevas asociaciones de sabores
-            for flavor_id in flavor_ids:
-                for site in all_sites:
-                    site_id = site[0]
-                    self.cursor.execute("""
-                        INSERT INTO inventory.sabor_product (sabor_id, product_id)
-                        VALUES (%s, %s);
-                    """, (flavor_id, product_info['product_id']))
+            for selector in flavor_ids['maintained']:
+                site_id = site[0]
+                self.cursor.execute("""
+                    UPDATE inventory.product_flavor_selector set
+                    flavor_group_id=%s, shoping_name=%s, invoice_name=%s, combine=%s
+                    WHERE id = %s;
+                """, (selector["flavor_group_id"],selector["shoping_name"],selector["invoice_name"],selector["combine"],selector["id"]))
 
+
+            for selector in flavor_ids['deleted']:
+                site_id = site[0]
+                self.cursor.execute("""
+                    UPDATE inventory.product_flavor_selector  set
+                    exist = false
+                    WHERE id = %s;
+                """, (selector['id'],))
+
+            
+            
+            for selector in flavor_ids['new']:
+                site_id = site[0]
+                self.cursor.execute("""
+                    INSERT INTO inventory.product_flavor_selector(
+                    product_id, 
+                    flavor_group_id, 
+                    shoping_name, 
+                    invoice_name, 
+                    combine)
+                    VALUES ( %s, %s, %s, %s, %s);
+                """, (selector['product_id'],
+                      selector['flavor_group_id'],
+                      selector['shoping_name'],
+                      selector['invoice_name'],
+                      selector['combine'],))
             # Confirma los cambios
             self.cursor.execute("COMMIT;")
             return "Producto, sus instancias, adicionales y sabores actualizados con éxito en todas las sedes."

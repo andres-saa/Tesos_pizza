@@ -70,7 +70,7 @@ class Category:
         # Definimos la consulta que verifica la existencia de instancias activas de productos por cada categoría
         select_query = f"""
         SELECT c.*
-        FROM inventory.active_product_categories_with_site AS c
+        FROM inventory.active_product_categories AS c
         WHERE c.site_id = {site_id} AND c.restaurant_id = {restaurant_id};
         """
         self.cursor.execute(select_query)

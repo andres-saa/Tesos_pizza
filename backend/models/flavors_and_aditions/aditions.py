@@ -141,12 +141,15 @@ class Aditions:
         
         return result
     
-    
     def get_flavors_by_product(self, product_id: int):
         # Consulta para obtener los grupos de sabores y los sabores asociados
-        query = """
+        query_flavors = """
         SELECT fg.name AS group_name,
-            s.id AS flavor_id, s.name AS flavor_name, s.price AS flavor_price, s.premium AS is_premium,
+            fg.id AS group_id,
+            s.id AS flavor_id,
+            s.name AS flavor_name,
+            s.price AS flavor_price,
+            s.premium AS is_premium,
             CASE WHEN sp.product_id IS NOT NULL THEN TRUE ELSE FALSE END AS has_flavor
         FROM inventory.flavor_group fg
         JOIN inventory.flavor_group_flavor fgf ON fg.id = fgf.flavor_group_id
@@ -156,12 +159,13 @@ class Aditions:
         ORDER BY s.premium DESC;
         """
         params = (product_id,)
-        raw_result = self.db.fetch_all(query=query, params=params)
+        raw_flavors = self.db.fetch_all(query=query_flavors, params=params)
 
-        # Procesamiento para agrupar los sabores por su grupo de sabores
+        # Procesamiento para agrupar los sabores por su grupo
         grouped_flavors = {}
-        for row in raw_result:
-            group = row['group_name']
+        for row in raw_flavors:
+            group_id = row['group_id']
+            group_name = row['group_name']
             flavor = {
                 'flavor_id': row['flavor_id'],
                 'flavor_name': row['flavor_name'],
@@ -169,20 +173,42 @@ class Aditions:
                 'is_premium': row['is_premium'],
                 'has_flavor': row['has_flavor']
             }
-            if group in grouped_flavors:
-                grouped_flavors[group].append(flavor)
+            if group_id in grouped_flavors:
+                grouped_flavors[group_id]['flavors'].append(flavor)
             else:
-                grouped_flavors[group] = [flavor]
+                grouped_flavors[group_id] = {
+                    'group_id': group_id,
+                    'group_name': group_name,
+                    'flavors': [flavor]
+                }
+        flavor_groups = list(grouped_flavors.values())
 
-        # Convertir los resultados agrupados a una lista de objetos JSON
-        result = []
-        for group_name, flavors in grouped_flavors.items():
-            result.append({
-                'group_name': group_name,
-                'flavors': flavors
+        # Consulta para obtener los selectores del producto
+        query_selectors = """
+        SELECT id, product_id, flavor_group_id, shoping_name, invoice_name, combine
+        FROM inventory.product_flavor_selector 
+        WHERE product_id = %s and exist = true;
+        """
+        raw_selectors = self.db.fetch_all(query=query_selectors, params=params)
+        selectors = []
+        for row in raw_selectors:
+            selectors.append({
+                'id': row['id'],
+                'product_id': row['product_id'],
+                'flavor_group_id': row['flavor_group_id'],
+                'shoping_name': row['shoping_name'],
+                'invoice_name': row['invoice_name'],
+                'combine': row['combine']
             })
 
+        # Se retorna un objeto que contiene tanto los grupos de sabores como los selectores
+        result = {
+            'flavor_groups': flavor_groups,
+            'selectors': selectors
+        }
         return result
+
+
 
     
     
