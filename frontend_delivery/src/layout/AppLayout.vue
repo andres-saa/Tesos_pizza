@@ -67,7 +67,7 @@ const { onMenuToggle } = useLayout();
 </script>
 
 <template>
-    <div class="layout-wrapper col-12 " :class="containerClass">
+    <div class="layout-wrapper col-12 " :class="containerClass" style="min-width: 1024px;">
 
         
         <div class="col-12"
@@ -81,7 +81,7 @@ const { onMenuToggle } = useLayout();
 
         </div>
 
-        <app-topbar v-if="route.path != '/pedido-manual'"></app-topbar>
+        <app-topbar v-if="route.path != '/pedido-manual'" style="min-width: 1024px;"></app-topbar>
 
         <router-link to="/">
             <Button v-if="route.path == '/pedido-manual'"  :icon="'pi pi-angle-double-left text-4xl'"  rounded=""  style="border: none;color: white;width: 3rem;height: 3rem; border-radius: 50%; position: absolute;background-color: rgb(255, 106, 0); left:1rem; top: 0.5rem;z-index: 9" class="p-2 shadow-5 boton"

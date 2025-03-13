@@ -138,82 +138,87 @@
         grid-template-columns: auto auto;
       "
     >
-      <div style="width: 100%;">
+      <p style="width: 100%;padding: 0 .5rem;margin: 0;">
         <b>productos</b>
-      </div>
-      <div>
-        <p style="text-align: end; font-weight: bold;">
+      </p>
+
+      
+        <p style="text-align: end;padding: 0 .5rem; font-weight: bold;">
           <b>total</b>
         </p>
-      </div>
+      
     </div>
 
     <!-- Listado de productos -->
     <div v-for="(product, pIndex) in store.currentOrder.products" :key="pIndex">
       <div style="display: grid; grid-template-columns: auto auto;">
         <p class="m-0">
-          {{ product.quantity?.toString()?.toLowerCase() }}
-          {{ product.name?.toLowerCase() }}
+          <b>
+            {{ product.quantity?.toString()?.toLowerCase() }}
+            {{ product.name?.toLowerCase() }}
+          </b>
+         
         </p>
         <div>
           <p style="text-align: end; color: black;">
             <b>
-              {{ formatoPesosColombianos(product.price) }}
+              {{ formatoPesosColombianos(product.price * product.quantity) }}
             </b>
           
           </p>
         </div>
       </div>
 
-      <!-- Sabores normales -->
-      <h6 class="m-0 ">
+  <div v-for="grupo in product.sabores">
+    <div style="display: flex;align-items: center ;justify-content: space-between;">
+      <h6 class="m-0 p-0" style="width: 100%;background-color: #00000020;" >
         <b>
           {{
-            product.sabores?.filter(s => !s.is_gaseosa)?.length > 1
-              ? 'sabores'
-              : ''
+              grupo.invoice_name
           }}
+         
         </b>
       </h6>
+    
+       
+    </div>
+      
+
       <div
         class=""
-        v-for="(flavor, fIndex) in product.sabores.filter(p => !p.is_gaseosa)"
+        v-for="(flavor, fIndex) in grupo.flavors"
         :key="fIndex"
         style="padding: 0; gap: 1rem; display: flex; justify-content: space-between;"
       >
         <span style="color: black;">
           <b>
             {{
-              product.sabores?.filter(s => !s.is_gaseosa)?.length > 1
+              grupo.flavors.length === 2
                 ? '1/2'
-                : 'sabor'
+                : ``
             }}
+
+
           </b>
+          {{ flavor.name?.toLowerCase() }}
         </span>
         <span style="text-align: end; min-width: max-content;">
-          {{ flavor.sabor?.toLowerCase() }}
-          <b>  
+          
+          <b v-if="grupo.flavors.length !== 2">  
             {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price) : '' }}
           </b>
+
+          <b v-else>  
+            {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price / 2 ) : '' }}
+          </b>
+
       
         </span>
       </div>
 
-      <!-- Sabores gaseosa -->
-      <div
-        class="pl-0"
-        v-for="(flavor, gIndex) in product.sabores.filter(p => p.is_gaseosa)"
-        :key="gIndex"
-        style="padding: 0; gap: 1rem; display: flex; justify-content: space-between;"
-      >
-        <span style="color: black;">
-          <b>sabor de la gaseosa</b>
-        </span>
-        <span style="text-align: end; min-width: max-content;">
-          {{ flavor.sabor?.toLowerCase() }}
-          {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price) : '' }}
-        </span>
-      </div>
+  </div>
+  
+  
 <div style="widows: 100%;border-top: .1rem solid ;opacity: .1;">
 
 </div>
@@ -308,7 +313,7 @@
         font-weight: bold;
         background-color: black;
         color: white;
-        padding: 0;
+        padding: 0 .5rem;
         margin: 0;
         margin-top: 0.5rem;
       "
@@ -325,6 +330,7 @@
         background-color: black;
         font-weight: bold;
         margin-top: 1rem;
+        padding: 0 .5rem;
         color: white;
       "
     >
