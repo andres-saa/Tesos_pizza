@@ -84,10 +84,19 @@ class AdditionalItemMin(BaseModel):
     aditional_item_instance_id: int
     quantity:int
 
+
+
+class flavor(BaseModel):
+    id:int
+    
+class flavor_group(BaseModel):
+    selector_id:int
+    flavors:List[flavor]
+
 class minOrderItem(BaseModel):
     product_instance_id: int
     quantity: int
-    sabors:Optional[List[int]]=[]
+    flavors:Optional[List[flavor_group]]=[]
 
 class OrderItem(minOrderItem):
     price: Decimal

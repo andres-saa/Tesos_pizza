@@ -20,6 +20,7 @@ from datetime import datetime,timedelta
 import pytz
 import random
 import string
+import uuid
 
 
 
@@ -238,10 +239,9 @@ async def upload_user_photo(user_id: str, evidence_id: str, contest_id: str, fil
     return JSONResponse(content={"message": "hecho"}, status_code=200)
 
 
-def generate_random_string(length=8):
+def generate_random_string():
     """Genera un string aleatorio para usar como identificador único."""
-    letters = string.ascii_letters + string.digits
-    return ''.join(random.choice(letters) for _ in range(length))
+    return str(uuid.uuid4())
 
 
 

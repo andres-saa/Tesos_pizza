@@ -114,17 +114,8 @@ class Product:
         """
         # Consulta para obtener los sabores asociados al producto, incluyendo la cualidad 'gaseosa' del grupo
         select_query = """
-            SELECT 
-                spv.id AS flavor_id,
-                spv.name AS flavor_name,
-                spv.price AS flavor_price,
-                spv.premium AS is_premium,
-                TRUE AS has_flavor,  -- Dado que estamos filtrando por product_id, siempre tendrá sabor
-                spv.gaseosa AS is_gaseosa
-            FROM 
-                inventory.sabor_product_view spv
-            WHERE 
-                spv.product_id = %s;
+            SELECT * from inventory.product_flavor_selector_json_view where product_id = %s
+                
         """
         params = (product_id,)
 
@@ -133,37 +124,13 @@ class Product:
             columns = [desc[0] for desc in self.cursor.description]
             raw_result = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
 
-            # Inicializar listas para almacenar los sabores
-            normal_flavors = []
-            gaseosa_flavors = []
-
-            for row in raw_result:
-                flavor = {
-                    'id': row['flavor_id'],
-                    'name': row['flavor_name'],
-                    'price': row['flavor_price'],
-                    'premium': row['is_premium'],
-                    'has_flavor': row['has_flavor'],
-                    'is_gaseosa': row['is_gaseosa']  # Se incluye el parámetro is_gaseosa
-                }
-
-                if row['is_gaseosa']:
-                    gaseosa_flavors.append(flavor)
-                else:
-                    normal_flavors.append(flavor)
-
-            # Retornar un diccionario con ambas listas
-            return {
-                'normal': normal_flavors,
-                'gaseosa': gaseosa_flavors
-            }
+            return raw_result
 
         except Exception as e:
             # Manejo de excepciones: puedes personalizar esto según tus necesidades
             print(f"Error al obtener los sabores: {e}")
             return {
-                'normal': [],
-                'gaseosa': []
+                "error":e
             }
     
     

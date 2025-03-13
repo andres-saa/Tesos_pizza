@@ -343,10 +343,10 @@ class Order2:
         for product in order_data.order_products:
             # Insertar el producto en la tabla orders.order_items
             order_item_id = self.insert_order_item(order_id, product, product_prices)
-            
+            # print(order_item_id,'item_id')
             # Insertar los sabores asociados al producto
-            self.insert_order_sabors(order_item_id, product.sabors)
-        
+            self.insert_order_sabors(order_item_id, product.flavors )
+            
         # Confirmar los cambios
         self.conn.commit()
 
@@ -357,16 +357,32 @@ class Order2:
         """
         self.cursor.execute(order_items_insert_query, (order_id, product.product_instance_id, product.quantity, product_prices[product.product_instance_id]))
         order_item_id = self.cursor.fetchone()[0]
+        self.conn.commit()
         return order_item_id
 
-    def insert_order_sabors(self, order_item_id, sabors):
+    def insert_order_sabors(self, order_item_id, flavors):
         # Insertar cada sabor en orders.order_sabor
-        for sabor_id in sabors:
-            insert_sabor_query = """
-            INSERT INTO orders.order_sabor (sabor_id, order_item_id)
-            VALUES (%s, %s);
+        for selector in flavors:
+
+            
+            insert_sabor_group = """
+            INSERT INTO orders.order_item_sabors (product_flavor_selector_id, order_item_id)
+            VALUES (%s, %s) returning id;
             """
-            self.cursor.execute(insert_sabor_query, (sabor_id, order_item_id))
+
+            result_selector = self.db.execute_query(insert_sabor_group,[selector.selector_id,order_item_id],fetch=True)
+            # result_selector = self.cursor.execute(insert_sabor_group, (selector.selector_id, order_item_id))
+            selector_id = result_selector[0]["id"]
+            # order_item_id = self.cursor.fetchone()[0]
+            
+
+            for flavor_order_item in selector.flavors:
+                insert_sabor = """
+                INSERT INTO orders.order_sabor (sabor_id, order_item_sabors_id)
+                VALUES (%s, %s) returning id;
+                """
+                result_selector = self.cursor.execute(insert_sabor, (flavor_order_item.id, selector_id))
+               
 
     def insert_order_aditionals(self, order_id, order_data):
         if order_data.order_aditionals:
@@ -692,7 +708,7 @@ class Order2:
 
             # Obtener productos relacionados con la orden
             products_query = f"""
-            SELECT name, price, quantity, total_price, sabores, product_id, img_identifier
+            SELECT name, price, quantity, total_price, sabores,max_flavor,combine_flavor, product_id, img_identifier
             FROM orders.order_products WHERE order_id = %s;
             """
             self.cursor.execute(products_query, (order_id,))

@@ -26,6 +26,12 @@ sites = [
         username="tezos_pizza",
         password="tezos_pizza_2024"
     ),
+       Site(
+        site_id=32,
+        site_name="TEZO'S",
+        username="tezos_pizza_test",
+        password="tezos_pizza_2024"
+    ),
 ]
 
 

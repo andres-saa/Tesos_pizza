@@ -1,0 +1,15 @@
+ [ 
+    {
+        "invoice_name":"sabores de la pizza",
+        "flavors": [ 
+            { "id": 19, "name": "CRIOLLA", "price": 4000, "premium": true, "has_flavor": true, "is_gaseosa": false }
+             ]
+    },
+    
+     
+    {
+        "invoice_name":"sabores de la gaseosa",
+        "flavors": [ 
+            { "id": 19, "name": "CRIOLLA", "price": 4000, "premium": true, "has_flavor": true, "is_gaseosa": false }
+             ]
+    }, ] 
