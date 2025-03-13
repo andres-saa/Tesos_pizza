@@ -51,8 +51,27 @@ const props = defineProps({
     border-radius: .5rem;
     background-color: white;
     cursor: pointer;
+
+    transition: all .2s ease;
+    animation: startd ease .5s   ;
     /* Para que el efecto de escala no salga del contenedor */
 
+}
+
+
+@keyframes startd {
+    0% {
+        transform: translateY(-3rem) scale(0.9);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(0.5rem) scale(1.02);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 h2 {

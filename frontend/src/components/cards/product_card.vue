@@ -287,7 +287,25 @@ const sizes = ref([])
 
 .container2{
     transition: all .2s ease;
+    animation: startd ease .5s   ;
 }
+
+
+@keyframes startd {
+    0% {
+        transform: translateY(-3rem) scale(0.9);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(0.5rem) scale(1.02);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
 
 .container2:hover{
     background-color:var(--primary-color);

@@ -18,7 +18,9 @@ import { onMounted, ref, watch } from 'vue';
 import { URI } from '@/service/conection';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
+import { usecartStore } from '@/stores/shoping_cart';
 
+const store = usecartStore()
 const route = useRoute()
 const products = ref([])
 const show_sizes = ref(false)
@@ -39,8 +41,13 @@ const navigate_to_category = (category) => {
 const update = async () => {
 
 
+   
+    products.value = store.currentCategorie.products
     const category_id = route.params.category_id
-    products.value = await fetchService.get(`${URI}/products-active/category-id/${category_id}/site/31/5`)
+    if (!products.value) {
+        products.value = await fetchService.get(`${URI}/products-active/category-id/${category_id}/site/31/5`)
+
+    }
 
 
 }
@@ -56,6 +63,10 @@ watch(() => route.params.category_id, async (newval) => {
     update()
 })
 
+// watch(() => store.versionMenu, async() => {
+//     products.value = await fetchService.get(`${URI}/products-active/category-id/${category_id}/site/31/5`)
+//     alert('hola')
+// })
 
 
 

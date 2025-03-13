@@ -19,10 +19,13 @@ export const usecartStore = defineStore('tezoqs-csart22', {
   persist: {
     key: 'tezos-carqts22',
     storage: localStorage,
-    paths: ['cart', 'last_order'],
+    paths: ['cart', 'last_order','currentCategorie','categories','versionMenu'],
   },
   state: () => ({
     currentProduct: {},
+    currentCategorie:{},
+    categories:[],
+    versionMenu:0,
     visibles: {
       currentProduct: false,
       addAdditionToCart: false,
@@ -91,48 +94,41 @@ export const usecartStore = defineStore('tezoqs-csart22', {
 
     // Agrega un producto al carrito utilizando la firma para identificarlo.
     // Se almacenan los adicionales directamente en el producto.
-    addProductToCart(product, quantity = 1, additionalItems = [], flavors = [], gaseosa = null) {
-      // Incluimos los adicionales en la firma para que la comparación sea completa.
-      const signature = generateProductSignature(product, flavors, additionalItems, gaseosa);
-      
-      // Busca el producto en el carrito comparando la signature.
+    addProductToCart(product, quantity = 1,flavorLists = [], additionalItems = [],  gaseosa = null) {
+      // Crea la firma que identifica este producto con su arreglo de sub-listas de sabores
+      const signature = generateProductSignature(product, flavorLists, additionalItems, gaseosa);
+    
+      // Verifica si este producto (misma signature) ya existe en el carrito
       const cartProduct = this.cart.products.find(p => p.signature === signature);
     
       if (cartProduct) {
-        // Si ya existe, incrementa la cantidad y actualiza el total (incluyendo los adicionales)
+        // Ya existe, solo incrementa la cantidad
         cartProduct.quantity += quantity;
-        cartProduct.total_cost += this.calculateProductTotal(
-          product,
-          quantity,
-          additionalItems,
-          flavors
-        );
-        // También podrías actualizar los adicionales si es necesario.
-        cartProduct.additionalItems = [
-          ...cartProduct.additionalItems,
-          ...additionalItems,
-        ];
+        cartProduct.total_cost += this.calculateProductTotal(product, quantity, additionalItems, flavorLists);
+    
+        console.log(flavorLists)
+        // Fusionar los adicionales (si quieres) o simplemente manejarlo como lo has hecho:
+        cartProduct.additionalItems.push(...additionalItems);
+    
       } else {
-        // Si no existe, crea una nueva entrada en el carrito incluyendo los adicionales.
+        // Agrega un nuevo elemento al arreglo 'products'
         this.cart.products.push({
           product,
           quantity,
-          flavors: this.groupFlavors(flavors),
-          gaseosa, // Almacena la gaseosa seleccionada
-          signature, // Firma única para identificar el producto
+          signature,
+          flavors: flavorLists,        // <-- Aquí guardamos la lista de listas
+          gaseosa,
           additionalItems: [...additionalItems],
-          total_cost: this.calculateProductTotal(
-            product,
-            quantity,
-            additionalItems,
-            flavors
-          ),
+          total_cost: this.calculateProductTotal(product, quantity, additionalItems, flavorLists),
         });
       }
     
-      // Ya no es necesario agregarlos a nivel global.
+      console.log(flavorLists)
+
+      // Recalcula el total general del carrito
       this.calculateCartTotal();
     },
+    
     
     
 
@@ -171,6 +167,24 @@ export const usecartStore = defineStore('tezoqs-csart22', {
         this.calculateCartTotal();
       }
     },
+    calculateCartTotal() {
+      const productsTotal = this.cart.products.reduce((total, cartProduct) => {
+        return total + this.calculateProductTotal(
+          cartProduct.product,
+          cartProduct.quantity,
+          cartProduct.additionalItems,
+          cartProduct.flavors || []
+        );
+      }, 0);
+    
+      const additionsTotal = this.cart.additions.reduce(
+        (total, addition) => total + addition.price * addition.quantity,
+        0
+      );
+    
+      this.cart.total_cost = productsTotal + additionsTotal;
+    },
+    
 
     // Remueve un producto del carrito usando únicamente la signature.
     removeProductFromCartBySignature(signature) {
@@ -207,55 +221,36 @@ export const usecartStore = defineStore('tezoqs-csart22', {
 
     // Agrupa los sabores sumando las cantidades de sabores repetidos.
     groupFlavors(flavors) {
-      return flavors.reduce((acc, flavor) => {
-        const existingFlavor = acc.find(f => f.id === flavor.id)
-        if (existingFlavor) {
-          existingFlavor.quantity += 1
-        } else {
-          acc.push({ ...flavor, quantity: 1 })
-        }
-        return acc
-      }, [])
+      return flavors
     },
 
-    // Calcula el costo total de un producto (incluyendo adicionales y sabores).
-    calculateProductTotal(product, quantity, additionalItems, flavors = []) {
-      // Costo de adicionales.
+    
+    calculateProductTotal(product, quantity, additionalItems, flavorLists = []) {
+      // Costo de adicionales
       const additionalCost = additionalItems.reduce(
         (total, item) => total + item.price * item.quantity,
-        0,
-      );
-    
-      // Filtra sabores que no sean gaseosa.
-      const validFlavors = flavors.filter(flavor => !flavor.is_gaseosa);
-      
-      // Calcula costo de sabores.
-      const flavorCost = validFlavors.reduce((total, flavor) => {
-        return total + (validFlavors.length > 1 ? flavor.price / 2 : flavor.price);
-      }, 0);
-      
-      return (product.price + additionalCost + flavorCost) * quantity;
-    },
-
-    // Recalcula el costo total del carrito (productos y adiciones)
-    calculateCartTotal() {
-      const productsTotal = this.cart.products.reduce((total, cartProduct) => {
-        const productTotal = this.calculateProductTotal(
-          cartProduct.product,
-          cartProduct.quantity,
-          cartProduct.additionalItems,
-          cartProduct.flavors || []
-        );
-        return total + productTotal;
-      }, 0);
-
-      const additionsTotal = this.cart.additions.reduce(
-        (total, addition) => total + addition.price * addition.quantity,
         0
       );
+    
+      let flavorCost = 0;
+    
+      // Recorremos cada "sublista" de sabores
+      for (const subList of flavorLists) {
+        if (subList.flavors.length > 1) {
+          // Sumar todos sus precios y tomar la mitad
+          const sumSubList = subList.flavors.reduce((acc, f) => acc + (f.price || 0), 0);
+          flavorCost += sumSubList / 2;
+        } else if (subList.flavors.length === 1) {
+          // Solo un sabor, precio completo
+          flavorCost += (subList.flavors[0].price || 0);
+        }
+        // Si subList está vacío (casi seguro no pasa), añadir 0.
+      }
 
-      this.cart.total_cost = productsTotal + additionsTotal;
+      // console.log(flavorLists)
+      return (product.price + additionalCost + flavorCost) * quantity;
     },
+    
 
     // Agrega una adición a nivel de carrito (no asociada a un producto específico).
     addAdditionToCart(addition) {

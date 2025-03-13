@@ -5,7 +5,7 @@
     <div class="container">
 
 
-        <category-card v-for="(category, index) in categories" :key="index" class="card" :category="category"
+        <category-card v-for="(category, index) in store.categories" :key="index" class="card" :category="category"
             :title="category.category_name"> </category-card>
 
     </div>
@@ -16,7 +16,8 @@ import { onMounted, ref } from 'vue';
 import CategoryCard from './cards/CategoryCard.vue';
 import { fetchService } from '@/service/utils/fetchService';
 import { URI } from '@/service/conection';
-
+import { usecartStore } from '@/stores/shoping_cart';
+const store = usecartStore()
 const categories = ref([])
 
 
@@ -25,7 +26,7 @@ const categories = ref([])
 
 
 onMounted(async () => {
-    categories.value = await fetchService.get(`${URI}/categories/31/5`)
+    // store.categories = await fetchService.get(`${URI}/categories/31/5`)
 })
 </script>
 

@@ -10,7 +10,10 @@ import { useSitesStore } from './stores/site';
 import { onMounted, watch, onBeforeUnmount } from 'vue';
 import { usecartStore } from './stores/shoping_cart';
 import { URI } from './service/conection';
+import { fetchService } from './service/utils/fetchService';
 import Banner from './components/Banner.vue';
+import { useRoute } from 'vue-router';
+const route = useRoute()
 const store  = useSitesStore()
 const cartStore = usecartStore()
 
@@ -32,14 +35,22 @@ const obtenerstatus = async () => {
 // Guardamos el ID del intervalo para poder limpiarlo
 let intervalId
 
-onMounted(() => {
+onMounted(async() => {
   // Ejecutamos inicialmente la función
   obtenerstatus()
 
+  cartStore.categories = await fetchService.get(`${URI}/categories/31/5`)
+
+  if (route.params?.category_id) {
+    cartStore.currentCategorie = cartStore.categories.filter(c => c.category_id == route.params.category_id)
+
+  }
+  cartStore.versionMenu++
+  // alert(cartStore.versionMenu)
   // Repetimos cada 5 segundos
   intervalId = setInterval(() => {
     obtenerstatus()
-  }, 5000)
+  }, 60000)
 })
 
 onBeforeUnmount(() => {

@@ -19,10 +19,7 @@ const preparar_orden = () => {
   const order_products = cart.cart.products.map(p => ({
     product_instance_id: p.product.id,
     quantity: p.quantity,
-    sabors: [
-      ...(p.flavors ? p.flavors.map(flavor => flavor.id) : []),
-      ...(p.gaseosa && p.gaseosa.id ? [p.gaseosa.id] : [])
-    ],
+    flavors: p.flavors
   }));
 
   const order_aditionals = cart.cart.additions.map(a => {
