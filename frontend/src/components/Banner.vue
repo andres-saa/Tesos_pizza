@@ -138,6 +138,8 @@ img {
   min-width: 100%;
   aspect-ratio: 16/7; /* Ajusta según tu preferencia */
   object-fit: cover;
+  height: 100%;
+  
 }
 
 /* Botones de navegación */

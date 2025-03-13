@@ -7,7 +7,7 @@ import router from './router';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { useSitesStore } from './stores/site';
-import { onMounted, watch, onBeforeUnmount } from 'vue';
+import { onMounted, watch, onBeforeUnmount, ref } from 'vue';
 import { usecartStore } from './stores/shoping_cart';
 import { URI } from './service/conection';
 import { fetchService } from './service/utils/fetchService';
@@ -58,13 +58,22 @@ onBeforeUnmount(() => {
   clearInterval(intervalId)
 })
 
+const loadingClass = ref({
+  true:'entrar',
+  false:'salir'
+})
+
 </script>
 
 <template>
 
 
-  <div class="" v-if="store.visibles.loading" style="width: 100vw;pointer-events: none; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
-    <img class="imagen" src="/public/images/logo.png" style="width:20vw ;max-width: 200px; " alt="">
+  <div  style="width: 100vw;pointer-events: none; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
+    
+    <div :class="loadingClass[store.visibles.loading]">
+      <img class="imagen"  src="/public/images/logo.png" style="width:20vw ;max-width: 200px; " alt="">
+
+    </div>
   </div>
 
   <Toast></Toast>
@@ -255,6 +264,91 @@ i {
 }
 
 
+.entrar {
+  animation: entrarcorto 0.3s forwards;
+}
+
+.salir {
+  animation: salircorto 0.3s forwards;
+}
+
+@media (width < 600px) {
+
+  .salir {
+  animation: salir 0.3s forwards;
+  }
+
+  .entrar {
+    animation: entrar 0.3s forwards;
+  }
+
+  
+}
+
+@keyframes entrar {
+
+  0% {
+        transform: translateX(-50vw) scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+  
+}
+
+@keyframes salir {
+
+0% 
+
+  {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+  }
+
+  100% {
+      transform: translateX(50vw) scale(0.5);
+      opacity: 0;
+  }
+
+}
+
+
+
+@keyframes entrarcorto {
+
+0% {
+      transform: translateX(-10vw) scale(0.5);
+      opacity: 0;
+  }
+
+  100% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+  }
+
+}
+
+@keyframes salircorto {
+
+0% 
+
+{
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+100% {
+    transform: translateX(10vw) scale(0.5);
+    opacity: 0;
+}
+
+}
+
+
+
 .header {
 
   display: flex;
@@ -266,18 +360,28 @@ i {
 
 
 .imagen {
-  animation: hithere 1s ease infinite;
+  animation: saltitos .5s linear infinite;
+  /* opacity: 0; */
 
 }
 
-@keyframes hithere {
-  30% { transform: scale(1.2); }
-  40%, 60% { transform: rotate(-20deg) scale(1.2); }
-  50% { transform: rotate(20deg) scale(1.2); }
-  70% { transform: rotate(0deg) scale(1.2); }
-  100% { transform: scale(1); }
+@keyframes saltitos {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-30px); /* Salto hacia arriba */
+  }
+  50% {
+    transform: translateY(0); /* Vuelve a la posición original */
+  }
+  65% {
+    transform: translateY(-15px); /* Rebote pequeño */
+  }
+  100% {
+    transform: translateY(0); /* Termina en reposo */
+  }
 }
-
 
 h1 {
   font-family: "Luckiest Guy", cursive;
