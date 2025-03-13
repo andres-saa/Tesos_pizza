@@ -43,12 +43,7 @@
                 <InputNumber v-model="newProduct.price" prefix="$" maxFractionDigits="0" style="width: 100%;"></InputNumber>
             </div>
 
-            <div>
-                <span>cuantos sabores puede combinar?:</span>
-                <InputNumber v-model="newProduct.max_flavor" suffix=" sabores" maxFractionDigits="0" rows="3" min="0" max="2"
-                    style="width: 100%;resize: none;">
-                </InputNumber>
-            </div>
+           
         </div>
 
 
