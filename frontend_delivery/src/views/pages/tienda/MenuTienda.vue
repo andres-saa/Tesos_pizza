@@ -15,12 +15,7 @@
 
     </div>
     <router-view class=""></router-view>
-    <dialogEditProduct class="m-3"></dialogEditProduct>
-    <dialogDeleteProduct></dialogDeleteProduct> 
-    <dialogAddProduct></dialogAddProduct>
-    <dialogGestorCategorias></dialogGestorCategorias>
-    
-
+ 
 
 </div>
 
@@ -33,7 +28,7 @@
 import { onMounted, ref } from 'vue';
 import BarraCategorias from '@/components/BarraCategorias.vue';
 import { siteService } from '@/service/siteService.js';
-import dialogEditProduct from '../dialogEditProduct.vue';
+// import dialogEditProduct from '../dialogEditProduct.vue';
 import { useSitesStore } from '@/store/site';
 import dialogAddProduct from '../dialogAddProduct.vue'
 import dialogDeleteProduct from '../dialogDeleteProduct.vue';

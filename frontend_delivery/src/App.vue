@@ -68,6 +68,10 @@ onMounted(() => {
 
 const notif = ref(true)
 
+const loadingClass = ref({
+  true:'entrar',
+  false:'salir'
+})
 
 
 const sonido = new Audio('/sound/beep.mp3')
@@ -78,20 +82,12 @@ const acept = () => {
 </script>
 
 <template>
-        <div
-    class=""
-    v-if="reportes.loading.visible"
-    style="width: 100vw;transition: all ease .3s;backdrop-filter: blur(5px);  flex-direction: column;pointer-events:auto; background-color: #00000020; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;"
-  >
-  <div class="luz" style="aspect-ratio: 1  / 1;display: flex;justify-content: center;align-items: center;">
+    <div  style="width: 100vw;pointer-events: none; height: 100vh;position: fixed;display: flex;align-items: center;justify-content: center; left: 0;right: 0;z-index: 99999999;">
+    
+    <div :class="loadingClass[reportes.loading.visible]">
+      <img class="imagen"  src="/images/logo.png" style="width:15vw ;max-width: 150px; " alt="">
 
-    <div class="girar" style="width: 150px;z-index: -1; height: 150px;padding: 3rem; background-color: var(--primary-color); position: absolute;"></div>
-    <div class="imagen" style="display: flex;padding: 1rem;border-radius: .3rem; background-color: white;  gap: 1rem; flex-direction: column; align-items:center;">
-      <img src="https://tezospizza.com/assets/logo-OWRhlFWd.webp" style="width:20vw ;max-width: 100px;" alt="">
-      <h5 style="color: black;">Cargando...</h5>
     </div>
-  </div>
-
   </div>
 
     <router-view class="col-12 p-0" />
@@ -102,19 +98,115 @@ const acept = () => {
 
 
 
-.girar{
 
-animation: girar infinite .5s linear;
+.entrar {
+  animation: entrarcorto 0.3s forwards;
+}
+
+.salir {
+  animation: salircorto 0.3s forwards;
+}
+
+@media (width < 600px) {
+
+  .salir {
+  animation: salir 0.3s forwards;
+  }
+
+  .entrar {
+    animation: entrar 0.3s forwards;
+  }
+
+  
+}
+
+@keyframes entrar {
+
+  0% {
+        transform: translateX(-50vw) scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+  
+}
+
+@keyframes salir {
+
+0% 
+
+  {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+  }
+
+  100% {
+      transform: translateX(50vw) scale(0.5);
+      opacity: 0;
+  }
 
 }
 
 
 
-@keyframes girar {
+@keyframes entrarcorto {
 
-100%{
-  transform: rotate(360deg);
+0% {
+      transform: translateX(-10vw) scale(0.5);
+      opacity: 0;
+  }
+
+  100% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+  }
+
+}
+.imagen {
+  animation: saltitos .5s linear infinite;
+  border-radius: 50%;
+  /* opacity: 0; */
+
+}
+
+
+@keyframes saltitos {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-30px); /* Salto hacia arriba */
+  }
+  50% {
+    transform: translateY(0); /* Vuelve a la posición original */
+  }
+  65% {
+    transform: translateY(-15px); /* Rebote pequeño */
+  }
+  100% {
+    transform: translateY(0); /* Termina en reposo */
+  }
+}
+
+
+
+@keyframes salircorto {
+
+0% 
+
+{
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+100% {
+    transform: translateX(10vw) scale(0.5);
+    opacity: 0;
 }
 
 }
+
 </style>

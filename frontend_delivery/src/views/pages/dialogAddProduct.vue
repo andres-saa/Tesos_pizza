@@ -21,7 +21,7 @@
      
             <div>
                 <span>ID de Categoría:</span>
-                <Dropdown v-model="newProduct.category_id" :options="categories" optionLabel="name" optionValue="id" placeholder="Selecciona una categoría" style="width: 100%;" />
+                <Dropdown v-model="newProduct.category_id" filter filterPlaceholder="Buscar categoria" :options="categories" optionLabel="name" optionValue="id" placeholder="Selecciona una categoría" style="width: 100%;" />
             </div>
 
             <div>
@@ -75,6 +75,7 @@ import { useSitesStore } from '../../store/site';
 import {fetchService} from '../../service/utils/fetchService'
 import { URI } from '../../service/conection';
 
+const emit = defineEmits(['actualizar'])
 
 
 const sabores = ref([])
@@ -252,6 +253,7 @@ const send = async() => {
     const additional_item_ids = seleccionados.value;
     await productService.createProductInstance(product, additional_item_ids);
     resetForm();
+    emit("actualizar")
 };
 
 

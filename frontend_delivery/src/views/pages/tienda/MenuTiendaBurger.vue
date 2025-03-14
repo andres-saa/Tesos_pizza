@@ -11,7 +11,7 @@
         <Dropdown v-model="siteStore.site" :options="sites.filter(site => site.show_on_web)" optionLabel="site_name" class="" style="width: 100%;"/> 
     </div>
     <router-view class=""></router-view>
-    <dialogEditProduct class="m-3"></dialogEditProduct>
+    <!-- <dialogEditProduct class="m-3"></dialogEditProduct> -->
     <dialogDeleteProduct></dialogDeleteProduct> 
     
 </div>
