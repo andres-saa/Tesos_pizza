@@ -93,7 +93,7 @@ class Product:
 
 
     def select_all_products(self):
-        select_query = "SELECT * FROM inventory.products;"
+        select_query = "SELECT * FROM inventory.products where visible = true;"
         self.cursor.execute(select_query)
         columns = [desc[0] for desc in self.cursor.description]
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
@@ -260,14 +260,15 @@ class Product:
 
             update_product_query = """
             UPDATE inventory.products
-            SET name = %s, description = %s, img_identifier = %s, max_flavor = %s
+            SET name = %s, description = %s, img_identifier = %s, max_flavor = %s, is_combo = %s
             WHERE id = %s;
             """
             self.cursor.execute(update_product_query, (
                 product_info['name'],
                 product_info['description'],
                 product_info['img_identifier'],
-                product_info['max_flavor'],  # Asumiendo que max_flavor se pasa en product_info
+                product_info['max_flavor'],
+                product_info['is_combo'],  # Asumiendo que max_flavor se pasa en product_info
                 product_info['product_id']
             ))
 
@@ -317,13 +318,26 @@ class Product:
             # """, (product_info['product_id'],))
 
             # Inserta las nuevas asociaciones de sabores
+
             for selector in flavor_ids['maintained']:
                 site_id = site[0]
+
+
+                reference_id = selector["reference_id"]
+                price = selector["price"]
+
+                if (not reference_id):
+                    reference_id = product_info['product_id']
+
+                if (not price or price == 0):
+                    price = product_info['price']
+
                 self.cursor.execute("""
                     UPDATE inventory.product_flavor_selector set
-                    flavor_group_id=%s, shoping_name=%s, invoice_name=%s, combine=%s
+                    flavor_group_id=%s, shoping_name=%s, invoice_name=%s, combine=%s ,reference_id=%s , price=%s
                     WHERE id = %s;
-                """, (selector["flavor_group_id"],selector["shoping_name"],selector["invoice_name"],selector["combine"],selector["id"]))
+                """, (selector["flavor_group_id"],selector["shoping_name"],selector["invoice_name"],selector["combine"],reference_id,
+                      price,selector["id"]))
 
 
             for selector in flavor_ids['deleted']:
@@ -338,19 +352,36 @@ class Product:
             
             for selector in flavor_ids['new']:
                 site_id = site[0]
+
+                  
+                reference_id = selector["reference_id"]
+                price = selector["price"]
+
+                if (not reference_id):
+                    reference_id = product_info['product_id']
+
+                if (not price or price == 0):
+                    price = product_info['price']
+
+
+
                 self.cursor.execute("""
                     INSERT INTO inventory.product_flavor_selector(
-                    product_id, 
-                    flavor_group_id, 
-                    shoping_name, 
-                    invoice_name, 
-                    combine)
-                    VALUES ( %s, %s, %s, %s, %s);
+                        product_id, 
+                        flavor_group_id, 
+                        shoping_name, 
+                        invoice_name, 
+                        combine,
+                        reference_id,
+                        price)
+                    VALUES ( %s, %s, %s, %s, %s,%s,%s);
                 """, (selector['product_id'],
                       selector['flavor_group_id'],
                       selector['shoping_name'],
                       selector['invoice_name'],
-                      selector['combine'],))
+                      selector['combine'],
+                      reference_id,
+                      price))
             # Confirma los cambios
             self.cursor.execute("COMMIT;")
             return "Producto, sus instancias, adicionales y sabores actualizados con éxito en todas las sedes."

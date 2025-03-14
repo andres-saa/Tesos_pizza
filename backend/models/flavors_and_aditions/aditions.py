@@ -185,7 +185,7 @@ class Aditions:
 
         # Consulta para obtener los selectores del producto
         query_selectors = """
-        SELECT id, product_id, flavor_group_id, shoping_name, invoice_name, combine
+        SELECT id, product_id, flavor_group_id, shoping_name, invoice_name, combine,price,reference_id
         FROM inventory.product_flavor_selector 
         WHERE product_id = %s and exist = true;
         """
@@ -198,7 +198,9 @@ class Aditions:
                 'flavor_group_id': row['flavor_group_id'],
                 'shoping_name': row['shoping_name'],
                 'invoice_name': row['invoice_name'],
-                'combine': row['combine']
+                'combine': row['combine'],
+                'reference_id': row['reference_id'],
+                'price': row['price']
             })
 
         # Se retorna un objeto que contiene tanto los grupos de sabores como los selectores
