@@ -24,7 +24,7 @@
         
 
         <div class="texto p-3" style="display: flex;justify-content: space-between; flex-direction: column;">
-            <div style="display: flex;gap: 0rem; height: 100%;padding-bottom: 3rem; flex-direction: column;justify-content: space-between;">
+            <div style="display: flex;gap: 0rem; height: 100%;padding-bottom: 4rem; flex-direction: column;justify-content: space-between;">
 
              
 
@@ -45,13 +45,13 @@
 
 
                  
-                <div style="display: flex;justify-content: end;padding: 1rem; align-items: center;position: absolute;bottom: 0;text-align: end;width: 100%;right: 0;  gap: 1rem;justify-content:end;">
+                <div style="display: flex;justify-content: end;flex-direction: column; padding: 1rem; align-items: end;position: absolute;bottom: 0;text-align: end;width: 100%;right: 0;  gap: 0rem;justify-content:end;">
                         
                         <!-- <Button label="Ver mas" rounded></Button> -->
-                        <h6 v-if="props.product?.last_price" class="text-2xl p-0 m-0"
+                        <h4 v-if="props.product?.last_price" class="text-2xl p-0 m-0"
                             style="text-decoration: line-through; opacity: .5;">
-                            {{ props?.product?.last_price }}
-                        </h6>
+                            {{`‎  ${formatoPesosColombianos( props?.product?.last_price)  } ‎ ` }}
+                        </h4>
                
                         <h4 class="text-2xl p-0 m-0"><b>{{ formatoPesosColombianos(props.product.price +
                             (selected_size.price || 0)) }}</b></h4>
