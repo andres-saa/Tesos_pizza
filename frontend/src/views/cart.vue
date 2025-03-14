@@ -165,25 +165,34 @@
             
 
               <div v-for="(grupo, index) in product.flavors"
-              style="display: flex; gap: .5rem;flex-wrap: wrap; flex-direction: row;">
+              style="display: flex; gap: .5rem;flex-wrap: wrap; flex-direction: column;">
+<h6 class="m-0">
+  {{ grupo.invoice_name }} 
 
-              {{ grupo.invoice_name }}
+</h6>
+
+              <div style="display: flex; flex-wrap: wrap;gap: .3rem;">
                 <Tag
                   v-for="(flavor, index) in grupo.flavors"
                   :key="index"
                   style="text-transform: capitalize;"
                 >
-                  {{ flavor.name }} x {{ product.quantity }}
+                {{   grupo.flavors.length == 2
+                        ? '1/2'
+                        : ''}} {{ flavor.name }} x {{ product.quantity }}
 
                   <!-- Si el flavor tiene precio > 0, muéstralo -->
-                  <span v-if="flavor.price > 0">
+                  <span >
                     {{ formatoPesosColombianos(
-                      product.is_combined
+                      grupo.flavors.length == 2
                         ? (flavor.price / 2) * product.quantity
                         : flavor.price * product.quantity
                     ) }}
                   </span>
                 </Tag>
+                
+              </div>
+             
               </div>
             </div>
 

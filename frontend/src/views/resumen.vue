@@ -87,7 +87,7 @@
 {{
   // Si está combinado => half price. De lo contrario => full price.
   formatoPesosColombianos(
-    (product.is_combined ? flavor.price / 2 : flavor.price) * product.quantity
+    (grupo.flavors.length == 2 ? flavor.price / 2 : flavor.price) * product.quantity
   )
 }}
 </b>
