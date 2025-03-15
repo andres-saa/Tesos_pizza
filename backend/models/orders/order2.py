@@ -668,6 +668,8 @@ class Order2:
         result = self.db.execute_query(query=query,params=params,fetch=True)
         return result
 
+
+
     def get_orders_by_site_id_for_today(self, site_id):
         # Obtener la fecha actual en la zona horaria de Colombia
         colombia_tz = pytz.timezone('America/Bogota')
@@ -825,6 +827,134 @@ class Order2:
         orders_dict.sort(key=lambda x: x['latest_status_timestamp'], reverse=True)
 
         return orders_dict
+
+
+
+
+
+
+
+    def get_orders_by_site_id_for_date_range(self, site_id, start_date, end_date):
+        """
+        Obtiene las órdenes de un sitio específico (site_id) dentro de un rango de fechas,
+        desde start_date hasta end_date (ambas como datetime o ISO strings),
+        y retorna una lista de diccionarios con la información de la orden, 
+        productos y adicionales.
+        """
+
+        # Zona horaria de Colombia
+        colombia_tz = pytz.timezone('America/Bogota')
+
+        # Si se reciben datetime, se convierten a la zona horaria de Colombia y a string ISO
+        if isinstance(start_date, datetime):
+            start_date = start_date.astimezone(colombia_tz).isoformat()
+        if isinstance(end_date, datetime):
+            end_date = end_date.astimezone(colombia_tz).isoformat()
+
+        # Consulta para obtener las órdenes en el rango indicado
+        combined_order_query = f"""
+            SELECT DISTINCT ON (order_id) 
+                order_id, 
+                inserted_by_id, 
+                inserted_by_name, 
+                order_notes, 
+                delivery_price, 
+                payment_method, 
+                total_order_price, 
+                current_status, 
+                latest_status_timestamp, 
+                user_name, 
+                user_address, 
+                user_phone, 
+                calcel_sol_state, 
+                calcel_sol_asnwer, 
+                cancelation_solve_responsible, 
+                responsible_observation, 
+                authorized, 
+                responsible_id, 
+                name
+            FROM orders.combined_order_view
+            WHERE site_id = %s
+            AND latest_status_timestamp >= %s 
+            AND latest_status_timestamp < %s
+            AND authorized = true
+            ORDER BY order_id, latest_status_timestamp DESC;
+        """
+        self.cursor.execute(combined_order_query, (site_id, start_date, end_date))
+        orders_info = self.cursor.fetchall()
+
+        columns_info = [desc[0] for desc in self.cursor.description]
+        orders_dict = [dict(zip(columns_info, row)) for row in orders_info]
+
+        # (Opcional) Convertir timestamps a zona horaria de Colombia (si deseas mostrarlo local)
+        # for order in orders_dict:
+        #     if 'latest_status_timestamp' in order and isinstance(order['latest_status_timestamp'], datetime):
+        #         order['latest_status_timestamp'] = order['latest_status_timestamp'].astimezone(colombia_tz)
+
+        # Obtener información de productos y adicionales para cada orden
+        for order in orders_dict:
+            order_id = order['order_id']
+
+            # Obtener productos relacionados con la orden
+            products_query = """
+                SELECT 
+                    name, 
+                    price, 
+                    quantity,
+                    category_name,
+                    category_id,
+                    total_price, 
+                    sabores,
+                    product_id,
+                    max_flavor,
+                    combine_flavor, 
+                    product_id, 
+                    img_identifier
+                FROM orders.order_products 
+                WHERE order_id = %s;
+            """
+            self.cursor.execute(products_query, (order_id,))
+            products = self.cursor.fetchall()
+            products_columns = [desc[0] for desc in self.cursor.description]
+            order['products'] = [dict(zip(products_columns, p)) for p in products]
+
+            # Obtener ítems adicionales relacionados con la orden
+            additionals_query = """
+                SELECT 
+                    aditional_name,
+                    aditional_quantity,
+                    aditional_type,
+                    aditional_price,
+                    total_aditional_price
+                FROM orders.vw_order_aditional_items 
+                WHERE order_id = %s;
+            """
+            self.cursor.execute(additionals_query, (order_id,))
+            additionals = self.cursor.fetchall()
+            additionals_columns = [desc[0] for desc in self.cursor.description]
+
+            # Agrupar ítems adicionales por tipo
+            grouped_additionals = {}
+            for row in additionals:
+                additional = dict(zip(additionals_columns, row))
+                additional_type = additional['aditional_type']
+                if additional_type not in grouped_additionals:
+                    grouped_additionals[additional_type] = [additional]
+                else:
+                    grouped_additionals[additional_type].append(additional)
+
+            order['additional_items'] = grouped_additionals
+
+        return orders_dict
+
+
+
+
+
+
+
+
+
 
 
 

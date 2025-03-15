@@ -57,9 +57,9 @@ def traslate(data:traslate):
 from fastapi import Query
 
 @order_router.get('/get-reports/')
-def get_order_count_by_site_id(start_date: str = Query(...), end_date: str = Query(...)):
+def get_order_count_by_site_id(start_date: str = Query(...), end_date: str = Query(...), site_id: str = Query(...) ):
     order_instance = Order2()
-    result = order_instance.get_reports(start_date, end_date)
+    result = order_instance.get_orders_by_site_id_for_date_range(site_id,start_date, end_date)
     order_instance.close_connection()
     return result
 
