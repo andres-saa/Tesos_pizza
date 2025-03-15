@@ -1,5 +1,5 @@
 <template>
-    <div class="container" @click="navigate_to_category(category.category_name, category.category_id)"
+    <div class="container" @click="navigate_to_category(category)"
         style="padding: 0rem;">
         <img class="imagen" :src="`${URI}/read-photo-product/${category.image_identifier}/600`">
 
@@ -17,11 +17,15 @@ import { URI } from '@/service/conection';
 
 
 
+import { usecartStore } from '@/stores/shoping_cart';
 
+const store = usecartStore()
 
-const navigate_to_category = (categor_name, category_id) => {
-    router.push(`/categoria/${categor_name}/${category_id}`)
-}
+const navigate_to_category = (categorie) => {
+    store.currentCategorie = categorie
+    router.push(`/categoria/${categorie.category_name}/${categorie.category_id}`);
+
+};
 
 // Definir las props
 const props = defineProps({
