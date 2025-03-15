@@ -204,14 +204,11 @@
         </span>
         <span style="text-align: end; min-width: max-content;">
           
-          <b v-if="grupo.flavors.length !== 2">  
+          <b >  
             {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price) : '' }}
           </b>
 
-          <b v-else>  
-            {{ flavor.price > 0 ? formatoPesosColombianos(flavor.price / 2 ) : '' }}
-          </b>
-
+      
       
         </span>
       </div>

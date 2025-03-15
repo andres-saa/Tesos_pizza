@@ -39,6 +39,7 @@ import { productService } from '@/service/ProductService';
 import { useSitesStore } from '@/store/site';
 
 
+const emit = defineEmits(['actualizar'])
 
 
 const site_store = useSitesStore()
@@ -105,6 +106,7 @@ const deleteProduct = async(product_id) => {
    await productService.deleteProduct(product_id)
    store.visibles.dialogDeleteProduct = false
    site_store.update += 1
+   emit("actualizar")
 }
 
 watch(() => store.currentProductToEdit.id, async () => {

@@ -49,7 +49,10 @@ export const useReportesStore = defineStore('reportes', {
             ventasCharData:{},
             ordersCharData:{},
             ticketsCharData:{},
-            loading:false,
+            loading:{
+                visible:false,
+                tittle:'Cargando'
+            },
             visibleNotifications:false,
             visibleOrder:{
                 visible:false,

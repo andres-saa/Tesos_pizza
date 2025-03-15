@@ -359,7 +359,7 @@
       maintainedSelectors.value = data.selectors;
     }
 
-    cargado.value = true
+    cargado.value = false
   });
   
   // Para recolectar IDs de adicionales seleccionados y enviar la información
@@ -382,7 +382,7 @@
   };
   
   // Función send que prepara el payload con tres listas de selectores
-  const send = (additional_item_ids) => {
+  const send = async (additional_item_ids) => {
   const selectorsPayload = {
     maintained: maintainedSelectors.value,
     deleted: deletedSelectors.value,
@@ -430,7 +430,7 @@
   }
 
 
-  productService.updateProductInstance(product, additional_item_ids, selectorsPayload);
+ await productService.updateProductInstance(product, additional_item_ids, selectorsPayload);
 //   site_store.update += 1;
   emit("actualizar")
 

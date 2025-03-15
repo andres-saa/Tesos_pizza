@@ -4,7 +4,7 @@
 <div v-if="renderComponent">
 
     <dialogEditProduct @actualizar="actualiza" class="m-3"></dialogEditProduct>
-    <dialogDeleteProduct></dialogDeleteProduct> 
+    <dialogDeleteProduct @actualizar="actualiza"></dialogDeleteProduct> 
     <dialogAddProduct @actualizar="actualiza"></dialogAddProduct>
     <dialogGestorCategorias></dialogGestorCategorias>
     
@@ -19,19 +19,13 @@
 
     <div v-if="!noProducts" class="grid p-1 pb-8" style="max-width: 900px;margin: auto;" >
     
-    
-    
-   
-    
-    
-        <div v-for="(product, index) in products" :key="product.id" class=" col-12 md:col-4 lg:col-3 sm:col-6">
-    
+        <div v-for="(product, index) in siteStore.currentProducts" :key="product.id" class=" col-12 md:col-4 lg:col-3 sm:col-6">
+            
                 <TarjetaMenu  @update="getProducts()" style="width: 100%;" :id="`tarjeta-${index}`"  :product="product"></TarjetaMenu>
         </div>
     
     
-    
-    
+
     </div>
     
 
@@ -57,6 +51,7 @@ import dialogDeleteProduct from '../dialogDeleteProduct.vue'
 import { useSitesStore } from '@/store/site'
 import dialogGestorCategorias from '../dialogGestorCategorias.vue'
 // import { nextTick } from 'vue'
+import { categoriesService } from '../../../service/restaurant/categoriesService'
 import { siteService } from '@/service/siteService'
 import { nextTick } from 'vue';
 
@@ -106,7 +101,15 @@ const getProducts = async()=> {
 
 const actualiza = async() => {
 // const { proxy } = getCurrentInstance()
-  await getProducts()
+
+setTimeout(async() => {
+    const categoires = await categoriesService.getCategories()
+    siteStore.categories = categoires
+    const { products } = categoires.find(c => c.category_id == route.params.category_id)
+    siteStore.currentProducts = products
+}, 2000);
+
+
 
 
   

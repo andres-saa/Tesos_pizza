@@ -9,12 +9,14 @@
         
 
         <div v-for="section in categories" :key="section.id" class="p-1">
-            <button @click="navigateToCategory(section.category_name,section.category_id)"
+            <button @click="navigateToCategory(section.category_name,section.category_id,section.products)"
                 :class="checkSelected(section) ? 'selected menu-button' : 'menu-button'"
                 class="p-1 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
                 <span class="text-lg" style="min-width: max-content;">{{ section.category_name }}</span>
             </button>
         </div>
+
+        
     </div>
     </div>
     
@@ -36,14 +38,15 @@ import { useSitesStore } from '../store/site';
 const store = useSitesStore()
 
 const categories = ref([]);
+const route = useRoute()
 
-
-const navigateToCategory = (categoryName,category_id) => {
+const navigateToCategory = (categoryName,category_id,products = []) => {
     if(category_id == 1000){
         router.push('/tienda-menu/productos/adiciones')
     } else  if(category_id == 2000){
         router.push('/tienda-menu/productos/sabores')
     } else {
+        store.currentProducts = products
         router.push({ name: 'sesion', params: { menu_name: categoryName, category_id:category_id } });
     }
 };
@@ -51,14 +54,21 @@ const navigateToCategory = (categoryName,category_id) => {
 
 onMounted(async () => {
     categories.value = await categoriesService.getCategories()
+    
+    const { products } = categories.value.find(c => c.category_id == route.params.category_id)
+    store.currentProducts = products
+    console.log(products)
+
     categories.value.push({
         category_name:'Adiciones',
-        category_id:1000
+        category_id:1000,
+        products:[]
     })
 
     categories.value.push({
         category_name:'Sabores',
-        category_id:2000
+        category_id:2000,
+        products:[]
     })
 }
    

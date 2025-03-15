@@ -21,7 +21,9 @@ export const useSitesStore = defineStore('site', {
 
             },
             restaurant_id:1,
-            update:0
+            update:0,
+            categories:[],
+            currentProducts:[]
 
 
 

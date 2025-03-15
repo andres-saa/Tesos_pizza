@@ -1,7 +1,7 @@
 <template>
     <!-- {{ store.currentProduct }} -->
 
-    <div v-if="renderComponent" @mouseover=" () => house = true" @mouseleave="() => house = false" class="container shadow-2 col-12 shadow-2 p-3" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
+    <div :class="anim['true']" v-if="renderComponent" @mouseover=" () => house = true" @mouseleave="() => house = false" class="container shadow-2 col-12 shadow-2 p-3" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
 
         <div style="display: flex; position: absolute; right: -1rem; top: -1rem; gap: 0.2rem;z-index: 9;">
             
@@ -124,6 +124,7 @@ const emit = defineEmits(['update'])
 
 
 const store = useProductStore()
+
 
 
 const anim = {

@@ -101,10 +101,12 @@ const acept = () => {
 
 .entrar {
   animation: entrarcorto 0.3s forwards;
+  opacity: 0;
 }
 
 .salir {
   animation: salircorto 0.3s forwards;
+  opacity: 0;
 }
 
 @media (width < 600px) {

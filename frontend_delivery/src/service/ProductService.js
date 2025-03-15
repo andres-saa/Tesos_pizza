@@ -91,7 +91,6 @@ export const productService = {
         const productStore = useProductStore();
         const store = useReportesStore();
         store.setLoading(true, 'actualizando en todas las sedes');
-        productStore.visibles.dialogEditProduct = false;
     
         try {
             const response = await axios.put(`${URI}/products/update/${product.product_id}`, {
@@ -103,15 +102,23 @@ export const productService = {
             if (response.status === 200) {
                 store.setLoading(false, 'actualizando en todas las sedes');
                 console.log('Product instance status updated successfully:', response.data);
+                productStore.visibles.dialogEditProduct = false;
+
                 return response.data;
+
             } else {
                 console.error('Failed to update product instance status:', response.status);
                 store.setLoading(false, 'actualizando en todas las sedes');
+                productStore.visibles.dialogEditProduct = false;
+
                 return null;
             }
+
         } catch (error) {
             console.error('Error updating product instance status:', error);
             store.setLoading(false, 'actualizando en todas las sedes');
+            productStore.visibles.dialogEditProduct = false;
+
             return null;
         }
     },
