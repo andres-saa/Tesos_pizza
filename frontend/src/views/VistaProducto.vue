@@ -83,7 +83,8 @@
             height: 100%;
             border-radius: 0.5rem;
             background-color: rgb(255, 255, 255);
-            object-fit: cover;
+            object-fit: contain;
+            aspect-ratio: 1 / 1;
           "
           :src="`${URI}/read-photo-product/${store.currentProduct.img_identifier}/600`"
           alt=""

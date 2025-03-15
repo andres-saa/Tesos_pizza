@@ -2,7 +2,7 @@
     <Toast />
 
     <div class="container2 p-shadow p-0" @click="open(props.product)"
-        style="border-radius: 0.5rem; height: 100%;position: relative;box-shadow: 0 0 .5rem #00000020;">
+        style="border-radius: 0.5rem; height: 100%;position: relative;">
 
         <div class="name-phone">
             
@@ -23,7 +23,7 @@
 
         
 
-        <div class="texto p-3" style="display: flex;justify-content: space-between; flex-direction: column;">
+        <div class="texto p-0" style="display: flex;justify-content: space-between; flex-direction: column;">
             <div style="display: flex;gap: 0rem; height: 100%;padding-bottom: 4rem; flex-direction: column;justify-content: space-between;">
 
              
@@ -45,7 +45,7 @@
 
 
                  
-                <div style="display: flex;justify-content: end;flex-direction: column; padding: 1rem; align-items: end;position: absolute;bottom: 0;text-align: end;width: 100%;right: 0;  gap: 0rem;justify-content:end;">
+                <div style="display: flex;justify-content: end;flex-direction: column; padding:1rem 0rem; align-items: end;position: absolute;bottom: 0;text-align: end;width: 100%;right: 0;  gap: 0rem;justify-content:end;">
                         
                         <!-- <Button label="Ver mas" rounded></Button> -->
                         <h4 v-if="props.product?.last_price" class="text-2xl p-0 m-0"
@@ -308,9 +308,17 @@ const sizes = ref([])
 
 
 .container2:hover{
-    background-color:var(--primary-color);
+    /* background-color:var(--primary-color); */
     transform: translatey(-.5rem);
-    color: white;
+    /* color: white; */
+    cursor: pointer;
+
+}
+
+.container2:hover  .imagen{
+    /* background-color:var(--primary-color); */
+    filter: brightness(1.3);
+    /* color: white; */
     cursor: pointer;
 
 }

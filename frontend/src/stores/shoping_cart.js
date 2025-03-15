@@ -108,7 +108,10 @@ export const usecartStore = defineStore('tezoqs-csart22', {
     
         console.log(flavorLists)
         // Fusionar los adicionales (si quieres) o simplemente manejarlo como lo has hecho:
-        cartProduct.additionalItems.push(...additionalItems);
+        additionalItems.forEach(adition => {
+          this.addAdditionToCart(adition)
+          console.log(adition)
+      })
     
       } else {
         // Agrega un nuevo elemento al arreglo 'products'
@@ -121,6 +124,11 @@ export const usecartStore = defineStore('tezoqs-csart22', {
           additionalItems: [...additionalItems],
           total_cost: this.calculateProductTotal(product, quantity, additionalItems, flavorLists),
         });
+
+        additionalItems.forEach(adition => {
+          this.addAdditionToCart(adition)
+          console.log(adition)
+      })
       }
     
       console.log(flavorLists)
@@ -227,10 +235,7 @@ export const usecartStore = defineStore('tezoqs-csart22', {
     
     calculateProductTotal(product, quantity, additionalItems, flavorLists = []) {
       // Costo de adicionales
-      const additionalCost = additionalItems.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
+      const additionalCost = 0
     
       let flavorCost = 0;
     
