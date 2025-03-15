@@ -117,7 +117,7 @@
                  
 
             <h6 style="width: 100%;" class="mb-2"><b>Valor de este producto en el combo</b></h6>
-            <InputNumber class="mb-3" prefix="$ " placeholder="Es el texto que aparece arriba de un selector" v-model="selector.price" style="width: 100%;"></InputNumber>
+            <InputNumber class="mb-3" prefix="$ " placeholder="Cuanto vale este producto en este combo" v-model="selector.price" style="width: 100%;"></InputNumber>
 
             
             </div>
@@ -228,8 +228,41 @@
         deletedSelectors.value = []
     }
 
+    if(!newval){
+        maintainedSelectors.value = []
+        newSelectors.value = []
+        deletedSelectors.value = []
+    }
+
 
   })
+
+
+
+
+  watch(() =>   store.visibles.dialogEditProduct
+  , (newval) => {
+
+    
+
+    if(!newval){
+        maintainedSelectors.value = []
+        newSelectors.value = []
+        deletedSelectors.value = []
+    }
+
+
+})
+
+
+
+
+
+
+
+
+
+
 
   // Computed para combinar maintained y nuevos en la vista
   const combinedSelectors = computed(() => {
