@@ -874,10 +874,11 @@ class Order2:
                 responsible_id, 
                 name
             FROM orders.combined_order_view
-            WHERE site_id = %s
+            WHERE site_id = %s 
             AND latest_status_timestamp >= %s 
             AND latest_status_timestamp < %s
             AND authorized = true
+            AND current_status = 'enviada'
             ORDER BY order_id, latest_status_timestamp DESC;
         """
         self.cursor.execute(combined_order_query, (site_id, start_date, end_date))

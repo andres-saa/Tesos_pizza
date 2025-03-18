@@ -19,16 +19,35 @@ class Adicional:
         self.conn = psycopg2.connect(self.conn_str)
         self.cursor = self.conn.cursor()
 
+
     def select_adicionales_for_product_active(self, product_instance_id):
-    # Ejecutar la consulta para obtener los detalles adicionales del producto
-        select_query = f"SELECT  aditional_item_instance_id,product_category_name, aditional_item_name,aditional_item_price,aditional_item_type_name FROM inventory.product_aditional_details WHERE product_instance_id = {product_instance_id} and status = true;"
+        """
+        Obtiene los detalles de adicionales de un producto filtrando 
+        por estatus activo (status = true) e incluye el valor max_selected 
+        a nivel de categoría.
+        """
+
+        # 1. Ejecutar la consulta para obtener los detalles adicionales del producto.
+        #    Incluimos max_selected en el SELECT, asumiendo que existe en la tabla.
+        select_query = f"""
+            SELECT 
+                aditional_item_instance_id,
+                product_category_name,
+                aditional_item_name,
+                aditional_item_price,
+                aditional_item_type_name,
+                max_selected
+            FROM inventory.product_aditional_details
+            WHERE product_instance_id = {product_instance_id}
+            AND status = true;
+        """
         self.cursor.execute(select_query)
-        
-        # Obtener los nombres de las columnas del resultado
+
+        # 2. Obtener los nombres de las columnas y convertir filas en diccionarios.
         columns = [desc[0] for desc in self.cursor.description]
-        
         additional_details = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
 
+        # 3. Agrupar los detalles adicionales por aditional_item_type_name.
         grouped_details = {}
         for detail in additional_details:
             type_name = detail["aditional_item_type_name"]
@@ -36,16 +55,23 @@ class Adicional:
                 grouped_details[type_name] = [detail]
             else:
                 grouped_details[type_name].append(detail)
-        
+
+        # 4. Preparar la salida, tomando max_selected del primer item de cada categoría.
         grouped_output = []
         for type_name, items in grouped_details.items():
+            # Suponiendo que max_selected es el mismo para todos los items de la misma categoría.
+            max_selected_value = items[0].get("max_selected") if items else None
+
             category_items = {
                 "category": type_name,
+                "max_selected": max_selected_value,
                 "items": items
             }
             grouped_output.append(category_items)
 
         return grouped_output
+
+
 
     def select_unique_adicionales_by_site(self, site_id):
         # Consulta SQL para seleccionar adiciones únicas por site_id, corregida para coincidir DISTINCT ON con ORDER BY
@@ -177,7 +203,7 @@ class Adicional:
     def select_all_aditional_registered_edit(self):
         # Ejecutar la consulta
         select_query = """
-        SELECT type_id, type_details from orders.vw_aditional_items_with_types3
+        SELECT * from orders.vw_aditional_items_with_types4
         """
         self.cursor.execute(select_query)
         result = self.cursor.fetchall()

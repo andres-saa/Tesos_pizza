@@ -5,6 +5,7 @@ from typing import List, Optional
 
 class aditional_type_schema(BaseModel):
     name:str
+    max_selected:int
 
 
 
@@ -130,7 +131,91 @@ class Aditions:
         return result1
 
     
-    
+        
+    def update_additional_item_available(self, status: bool, item_id: int):
+        """
+        Actualiza el 'available' de un ítem.
+        - Si status=False => el tipo se vuelve False.
+        - Si status=True  => si todos los ítems de su tipo están True => el tipo se vuelve True.
+        """
+        # 1) Actualizamos el ítem y recuperamos el type_id para el siguiente paso
+        query_item = """
+            UPDATE orders.aditional_items
+            SET available = %s
+            WHERE id = %s
+            RETURNING id, type_id
+        """
+        item_result = self.db.execute_query(query_item, [status, item_id], fetch=True)
+        if not item_result:
+            return {"error": f"No se encontró el item con id={item_id}"}
+
+        type_id = item_result[0]['type_id']
+
+        # 2) Si el ítem está en False, forzamos el tipo a False
+        if status is False:
+            query_type_false = """
+                UPDATE orders.aditional_order_types
+                SET available = false
+                WHERE id = %s
+            """
+            self.db.execute_query(query_type_false, [type_id])
+
+        else:
+            # 3) Si el ítem se activa (True):
+            #    Verificamos si todos los ítems de ese type_id están en True.
+            query_check_items = """
+                SELECT COUNT(*) AS total_items,
+                    SUM(CASE WHEN available THEN 1 ELSE 0 END) AS active_items
+                FROM orders.aditional_items
+                WHERE type_id = %s
+            """
+            check_result = self.db.execute_query(query_check_items, [type_id], fetch=True)
+            if check_result:
+                total_items = check_result[0]['total_items']
+                active_items = check_result[0]['active_items']
+                
+                # Si todos los items de ese tipo están activos => ponemos el tipo en True
+                if total_items == active_items:
+                    query_type_true = """
+                        UPDATE orders.aditional_order_types
+                        SET available = true
+                        WHERE id = %s
+                    """
+                    self.db.execute_query(query_type_true, [type_id])
+
+        return {"updated_item_id": item_id, "new_status": status}
+
+
+
+    def update_additional_order_type_available(self, status: bool, type_id: int):
+        """
+        Actualiza el 'available' de un 'type'.
+        - Si status=False => todos los items de ese type van a False.
+        - Si status=True  => todos los items de ese type van a True.
+        """
+        # 1) Actualizamos el tipo
+        query_type = """
+            UPDATE orders.aditional_order_types
+            SET available = %s
+            WHERE id = %s
+            RETURNING id
+        """
+        type_result = self.db.execute_query(query_type, [status, type_id], fetch=True)
+        if not type_result:
+            return {"error": f"No se encontró el tipo con id={type_id}"}
+
+        # 2) Actualizamos todos los ítems a ese mismo estado
+        query_items = """
+            UPDATE orders.aditional_items
+            SET available = %s
+            WHERE type_id = %s
+        """
+        self.db.execute_query(query_items, [status, type_id])
+
+        return {"updated_type_id": type_id, "new_status": status}
+
+
+
     
     def create_flavor(self,data,id):
         
@@ -270,10 +355,11 @@ class Aditions:
 
     
     
-    def create_aditional_group(self, name:str):
+    def create_aditional_group(self, name:str, max_selected:int):
         
         data = aditional_type_schema(
-            name=name
+            name=name,
+            max_selected = max_selected
         )
         query , params = self.db.build_insert_query('orders.aditional_order_types',data=data,returning='id')
         result = self.db.execute_query(query=query,params=params,fetch=True)
@@ -299,10 +385,12 @@ class Aditions:
     
     
     
-    def edit_aditional_group(self, name:str, type_id:int):
+    def edit_aditional_group(self, name:str,max_selected:int, type_id:int):
         
         data = aditional_type_schema(
-            name=name
+            name=name,
+            max_selected = max_selected
+            
         )
         query , params = self.db.build_update_query('orders.aditional_order_types',data=data,returning='id',condition=f'id = {type_id}')
         result = self.db.execute_query(query=query,params=params,fetch=True)

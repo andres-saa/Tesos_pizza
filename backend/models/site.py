@@ -154,6 +154,15 @@ class Site:
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
 
 
+    def toggle_site_open(self,status:bool):
+                # Suponiendo que necesitas obtener los correos relacionados con una sede, pero esta relación no está directamente definida en tu esquema
+        # Deberías ajustar esta función según tu diseño de base de datos y necesidades.
+        select_query = f"update sites set open = {status} where site_id = 31;"
+        self.cursor.execute(select_query)
+        
+
+
+
 
         
     def get_all_site_data(self):

@@ -21,6 +21,7 @@ class BannerReorderSchema(BaseModel):
 
 class aditional_type_schema(BaseModel):
     name:str
+    max_selected:int
     
 class aditional_schema(BaseModel):
     name:str
@@ -49,7 +50,7 @@ additions = Aditions()
 def create_adition_category(data:aditional_type_schema):
     
     aditional_instance = Aditions()
-    result = aditional_instance.create_aditional_group(name=data.name)
+    result = aditional_instance.create_aditional_group(name=data.name, max_selected=data.max_selected)
     return result
 
 
@@ -151,12 +152,28 @@ def create_adition_category(data:flavor_group_schema_edit):
     return result
 
 
+
+
+@adition_router.put('/update_additional_item_available/{status}/{item_id}', tags=['flavors and aditions'])
+def update_additional_item_available_endpoint(status: bool, item_id: int):
+    aditional_instance = Aditions()
+    result = aditional_instance.update_additional_item_available(status, item_id)
+    return result
+
+
+@adition_router.put('/update_additional_order_type_available/{status}/{type_id}', tags=['flavors and aditions'])
+def update_additional_order_type_available_endpoint(status: bool, type_id: int):
+    aditional_instance = Aditions()
+    result = aditional_instance.update_additional_order_type_available(status, type_id)
+    return result
+
+
 #actualiza el 
 @adition_router.put('/update_aditional_category/{type_id}',tags=['flavors and aditions'])
 def create_adition_category(data:aditional_type_schema,type_id:int):
     
     aditional_instance = Aditions()
-    result = aditional_instance.edit_aditional_group(name=data.name,type_id=type_id)
+    result = aditional_instance.edit_aditional_group(name=data.name,type_id=type_id,max_selected=data.max_selected)
     return result
 
 

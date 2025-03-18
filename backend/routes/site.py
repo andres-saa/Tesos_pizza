@@ -197,6 +197,13 @@ def get_all_site_details(site_id: int):
 
 
 
+@site_router.post('/toggle_site_open/{status}')
+def toggle_site_open(status:bool):
+    site_instance = Site(site_id=31)
+    site_details = site_instance.toggle_site_open(status=status)
+    site_instance.close_connection()
+    return site_details
+
 
 
 @site_router.post("/site/safe-box")
