@@ -142,6 +142,10 @@ img {
   
 }
 
+
+
+
+
 /* Botones de navegación */
 .button-left,
 .button-right {
@@ -167,6 +171,22 @@ img {
 
 i {
   font-size: xx-large;
+}
+
+
+@media (width < 600px) {
+
+  img {
+  width: 100%;
+  min-width: 100%;
+  aspect-ratio: 4 / 3; /* Ajusta según tu preferencia */
+  object-fit: cover;
+  height: 100%;
+  
+}
+
+
+  
 }
 
 /* Ajustes en pantallas más pequeñas */

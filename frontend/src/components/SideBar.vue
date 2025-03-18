@@ -106,6 +106,16 @@
                         frameborder="0" scrolling="no" allowtransparency="true">
                 </iframe>
 
+                
+                <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: max-content ;min-height:600px"
+                        frameborder="0" scrolling="no" allowtransparency="true">
+                </iframe>
+
+                
+                <iframe v-if="currentPost.link" :src="`${currentPost.link}embed`" width="100%" style="height: max-content ;min-height:600px"
+                        frameborder="0" scrolling="no" allowtransparency="true">
+                </iframe>
+
                 </div>
 
 
