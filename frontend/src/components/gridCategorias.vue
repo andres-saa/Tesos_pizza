@@ -17,7 +17,8 @@ import CategoryCard from './cards/CategoryCard.vue';
 import { fetchService } from '@/service/utils/fetchService';
 import { URI } from '@/service/conection';
 import { usecartStore } from '@/stores/shoping_cart';
-const store = usecartStore()
+import { useSitesStore } from '@/stores/site';
+const store = useSitesStore()
 const categories = ref([])
 
 
@@ -26,7 +27,7 @@ const categories = ref([])
 
 
 onMounted(async () => {
-    // store.categories = await fetchService.get(`${URI}/categories/31/5`)
+    store.categories = await fetchService.get(`${URI}/categories/31/5`)
 })
 </script>
 
