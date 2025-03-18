@@ -2,10 +2,13 @@
     <Loading v-if="guardando" tittle="guardando"></Loading>
     <Loading v-if="cargando" tittle="cargando horario"></Loading>
 
-    <p class="text-center my-6 text-4xl" style="font-weight: bold;"> Horario</p>
-    <!-- {{ horario }} -->
+    <p class="text-center mt-6 text-4xl" style="font-weight: bold;"> Horario</p>
+   
+    <div class=" mb-6" style="display: flex;justify-content: center;gap: 2rem; align-items: center;">
+        <p class="text-center text-2xl p-0 m-0" style=""> Abrir/Cerrar</p>
+        <InputSwitch @change="open_close_site(site_status)" v-model="site_status"></InputSwitch>
+    </div>
 
-    <!-- {{ horario }} -->
     <Dialog v-model:visible="isEditing" style="width: 30rem;" modal>
         <div class="m-auto p-0" style="max-width: 600px; ">
             <DataTable ref="dt" class="p-0" :value="horario" dataKey="id" style="border: 1rem;overflow: hidden;" :rows="7"
@@ -124,7 +127,29 @@
 import { URI } from '../../service/conection';
 import { onMounted, ref } from 'vue'
 import Loading from '@/components/Loading.vue'
+import { fetchService } from '@/service/utils/fetchService.js'
+
 const isEditing = ref(false);
+
+
+const site_status = ref(false)
+
+
+
+onMounted( async() => {
+
+    const status =  await fetchService.get(`${URI}/site/${31}`)
+
+    site_status.value = status.open
+    
+}
+)
+
+const open_close_site = async(status) => {
+
+     await fetchService.get(`${URI}/toggle_site_open/${status}`)
+
+}
 
 function formatearHora(fecha) {
     // Extraer la hora y los minutos

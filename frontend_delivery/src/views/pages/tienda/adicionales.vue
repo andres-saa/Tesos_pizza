@@ -72,11 +72,17 @@
         <div class="my-1 px-2" :class="updateanime? 'update' : ''" style="display: flex;justify-content: space-between;align-items: center;gap: 1rem;">
 
        
-            <div class="py-3 pl-2"   style="width: 100%;height:100%;display: flex;align-items: center;" @click="visible_groups[items.type_id] = !visible_groups[items.type_id]" >
+            <div class="py-3 pl-2"   style="width: 100%;height:100%;display: flex;justify-content: center;flex-direction: column;" @click="visible_groups[items.type_id] = !visible_groups[items.type_id]" >
 
 
-                <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;">
-                    {{ items?.name  }}</h6>
+                <h6 class="text-left text-xl m-0" style="font-weight: bold;text-transform: capitalize;">
+                       {{ items?.name  }}</h6> 
+                       
+                       
+                       <h6 v-if="items.max_selected > 0" style="text-transform: capitalize;" class="m-0">El usuario puede seleccionar hasta <b>{{ items.max_selected }}</b> variaciones </h6>
+                       <h6 v-else style="text-transform: capitalize;" class="m-0">El usuario puede seleccionar <b style="text-transform: capitalize;">todos los que el quiera</b> </h6>
+
+                       
 
                 </div>
 
@@ -85,7 +91,8 @@
           
 
             <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
-                <InputSwitch  @click="3"></InputSwitch>
+                
+                <InputSwitch v-model="items.available" @change="update_group_available(items.type_id,items.available)"  @click="3"></InputSwitch>
                 <Button @click="openAdditionGroupEdit(items)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning" class="p-1 m-0"
                     rounded icon=" pi pi-pencil"></Button>
                     <Button 
@@ -126,7 +133,7 @@
                     <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
 
 
-                        <InputSwitch  ></InputSwitch>
+                        <InputSwitch @change="update_aditional_available(adicion.data.id, adicion.data.available)" v-model="adicion.data.available"  ></InputSwitch>
 
                         <Button @click="openAditionEdit(adicion.data)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning"
                             class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
@@ -187,6 +194,10 @@
                 <h6 class="m-0 p-0"><b>Nombre</b> </h6>
                 <InputText v-model="new_adition_group.name" style="width: 100%;"></InputText>
 
+                <div style="display: flex; justify-content: space-between; width: 100%; text-transform: capitalize;"> <h6 class="m-0 p-0" style="width: max-content;">Limitar seleccion?</h6> <InputSwitch  v-model="limit"></InputSwitch> </div>
+                <h6 v-if="limit" class="m-0 p-0"><b>Limite de seleccion</b> </h6>
+                <InputNumber v-if="limit"  min="0" v-model="new_adition_group.max_selected" style="width: 100%;"></InputNumber>
+
             </div>
         </div>
 
@@ -244,7 +255,10 @@
 
                 <h6 class="m-0 p-0"><b>Nombre</b> </h6>
                 <InputText v-model="group_to_edit.name" style="width: 100%;"></InputText>
-                <!-- {{ group_to_edit }} -->
+
+                <div style="display: flex; justify-content: space-between; width: 100%; text-transform: capitalize;"> <h6 class="m-0 p-0" style="width: max-content;">Limitar seleccion?</h6> <InputSwitch  v-model="limit"></InputSwitch> </div>
+                <h6 v-if="limit" class="m-0 p-0"><b>Limite de seleccion</b> </h6>
+                <InputNumber v-if="limit"  min="0" v-model="group_to_edit.max_selected" style="width: 100%;"></InputNumber>
             </div>
         </div>
 
@@ -279,7 +293,7 @@ const route = useRoute()
 const adicionales = ref({});
 
 const visible_groups = ref({})
-
+const limit = ref(false)
 const visibleDialogAddAdition = ref(false)
 const visibleDialogAddAditionGroup = ref(false)
 const visibleDialogEditAdition = ref(false)
@@ -310,6 +324,23 @@ const new_adition_group = ref({
 
 
 
+const update_group_available = async(group_id, status) => {
+     
+     await fetchService.put(`${URI}/update_additional_order_type_available/${status}/${group_id}`)
+     update()
+ }
+ 
+ const update_aditional_available = async(group_id, status) => {
+      
+
+        alert
+      await fetchService.put(`${URI}/update_additional_item_available/${status}/${group_id}`)
+      update()
+  }
+ 
+ 
+ 
+ 
 
 
 const openDeleteAdition = (adition) => {
@@ -389,6 +420,10 @@ const deleteAditionGroup = async () => {
 
 
 
+watch(limit,() => {
+    new_adition_group.value.max_selected = 0,
+    addition_to_edit.value.max_selected = 0
+})
 
 
 
@@ -396,6 +431,10 @@ const create_adition_group = async() => {
     
     if (!new_adition_group.value.name){
         alert("El nombre del grupo es obligatorio")
+    }
+
+    if (!limit.value){
+        new_adition_group.value.max_selected = 0
     }
 
     await fetchService.post(`${URI}/create-aditional-category`,new_adition_group.value)
@@ -408,6 +447,10 @@ const edit_adition_group = async() => {
        
     if (!group_to_edit.value.name){
         alert("El nombre del grupo es obligatorio")
+    }
+
+    if (!limit.value){
+        group_to_edit.value.max_selected = 0
     }
 
     await fetchService.put(`${URI}/update_aditional_category/${group_to_edit.value?.type_id}`,group_to_edit.value)
