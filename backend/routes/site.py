@@ -197,7 +197,7 @@ def get_all_site_details(site_id: int):
 
 
 
-@site_router.post('/toggle_site_open/{status}')
+@site_router.get('/toggle_site_open/{status}')
 def toggle_site_open(status:bool):
     site_instance = Site()
     site_details = site_instance.toggle_site_open(status=status)
