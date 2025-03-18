@@ -202,12 +202,17 @@
 
         <!-- SECCIÓN DE ADICIONALES (extras) -->
         <div style="color: black">
+          <!-- v-for para cada "grupo" de adicionales.
+               Asumimos cada 'grupo' => { category, items, max_selected }
+          -->
           <div v-for="grupo in adicionales" :key="grupo.category">
             <div class="mb-2">
+              <!-- Nombre de la categoría -->
               <p class="mb-2 text-center" style="margin: 1rem 0">
                 <b>{{ grupo.category }}</b>
               </p>
               <div class="mt-2">
+                <!-- Cada ítem de ese grupo -->
                 <div
                   v-for="item in grupo.items"
                   :key="item.aditional_item_instance_id"
@@ -217,7 +222,7 @@
                     class="my-1"
                     :binary="true"
                     v-model="item.checked"
-                    @change="() => handleAdditionChange(item, grupo.category)"
+                    @change="() => handleAdditionChange(item, grupo)"
                   />
                   <div
                     style="
@@ -248,7 +253,7 @@
                               item.aditional_item_price *
                                 selectedAdditions[
                                   item.aditional_item_instance_id
-                                ]?.quantity,
+                                ]?.quantity
                             )
                           }}
                         </b>
@@ -321,7 +326,7 @@ import InputSwitch from 'primevue/inputswitch'
 import Checkbox from 'primevue/checkbox'
 import Dialog from 'primevue/dialog'
 import Tag from 'primevue/tag'
-// import const route = useRoute()
+
 import { usecartStore } from '@/stores/shoping_cart'
 import { adicionalesService } from '@/service/restaurant/aditionalService'
 import { fetchService } from '@/service/utils/fetchService'
@@ -330,55 +335,30 @@ import { URI } from '@/service/conection'
 
 const store = usecartStore()
 const toast = useToast()
-const groupSelections = ref([])
 
-
-
-
-/**
- * Arreglo con la información de grupos (shoping_name, invoice_name, flavors, etc.).
- * Viene desde el backend.
- */
+// Sabor Groups
 const flavorGroups = ref([])
-
-/**
- * Arreglo de objetos donde cada objeto ya tiene la forma que deseas enviar al carrito:
- * [
- *   {
- *     invoice_name: "...",
- *     flavors: [
- *       { id, name, price, etc. },
- *       { ... } // si combinan
- *     ]
- *   }
- * ]
- */
-
-/**
- * Un boolean por cada grupo para indicar si el usuario "combina" 2 sabores o no.
- */
+const groupSelections = ref([])
 const groupCombine = ref([])
 
-/**
- * Adicionales (extras)
- */
+// Adicionales
 const adicionales = ref([])
+/**
+ * selectedAdditions => key: aditional_item_instance_id
+ *                     value: { id, name, price, group, quantity }
+ */
 const selectedAdditions = ref({})
 
 // Lifecycle
 onMounted(loadProductData)
 
-/**
- * Cada vez que cambia el producto actual, recargamos la info.
- */
+// Re-load data when currentProduct changes
 watch(
   () => store.currentProduct,
   () => loadProductData()
 )
 
-/**
- * Cuando cambie flavorGroups, reiniciamos la estructura groupSelections (ya en formato final).
- */
+// Re-init groupSelections when flavorGroups changes
 watch(
   flavorGroups,
   () => {
@@ -388,29 +368,22 @@ watch(
 )
 
 /**
- * Funciones
+ * Carga data del producto y sus adicionales
  */
 async function loadProductData() {
+  // 1) Sabor groups (puede venir directo en store.currentProduct.flavors)
   flavorGroups.value = store.currentProduct.flavors || []
 
+  // 2) Cargar adicionales
   if (!store.currentProduct?.id) return
-
-  // 1) Carga adicionales
   adicionales.value = await adicionalesService.getAditional(store.currentProduct.id)
 
-  // 2) Carga info de sabores (según tu API)
-  const productId = store.currentProduct?.product_id
-  // const response = await fetchService.get(`${URI}/sabores/product_id/${productId}`)
-
-
-  // Limpiar selección de extras
+  // 3) Limpiar la selección de extras
   selectedAdditions.value = {}
 }
 
 /**
- * Inicializa groupSelections con la estructura deseada.
- * Cada grupo: { invoice_name, flavors: [ {} ] } (1 flavor por defecto).
- * Y resetea "combine" a false por cada grupo.
+ * Inicializa la estructura para los grupos de sabores
  */
 function initGroups() {
   if (!flavorGroups.value?.length) {
@@ -420,30 +393,27 @@ function initGroups() {
   }
 
   groupSelections.value = flavorGroups.value.map((grp) => ({
-    // Tomamos invoice_name de la data del grupo (siempre y cuando exista)
     invoice_name: grp.invoice_name,
-    selector_id:grp.id,
-    flavors: [{}], // Por defecto, 1 selección vacía
+    selector_id: grp.id,
+    flavors: [{}], // Por defecto, 1 selección
   }))
 
-  // Por defecto, cada grupo "no combina"
+  // Por defecto, todos "no combinan"
   groupCombine.value = flavorGroups.value.map(() => false)
 }
 
 /**
- * Togglear "combinar" en un grupo específico:
- * - Si se activa, añadimos un segundo objeto vacío a groupSelections[gIndex].flavors (si no existe).
- * - Si se desactiva, quitamos el segundo objeto, si lo hay.
+ * Cuando cambia el switch "combinar?"
  */
 function toggleCombine(gIndex) {
   const group = groupSelections.value[gIndex]
   if (groupCombine.value[gIndex]) {
-    // Si ahora está en true => añadimos un segundo objeto si solo hay 1
+    // Si se activa, nos aseguramos de que haya 2 slots
     if (group.flavors.length === 1) {
       group.flavors.push({})
     }
   } else {
-    // Si ahora está en false => si hay 2, quitamos uno
+    // Si se desactiva, quitar el segundo slot si existe
     if (group.flavors.length > 1) {
       group.flavors.pop()
     }
@@ -451,28 +421,61 @@ function toggleCombine(gIndex) {
 }
 
 /**
- * Manejo de extras
+ * Al marcar/desmarcar un adicional
  */
-function handleAdditionChange(item, group) {
+function handleAdditionChange(item, grupo) {
+  // El usuario acaba de marcar (checked=true)
   if (item.checked) {
+    // Sacar cuántos distintos ya hay en este grupo
+    const groupDistinctItems = Object.values(selectedAdditions.value).filter(
+      (add) => add.group === grupo.category
+    )
+    // Ver si este item ya estaba seleccionado
+    const alreadySelected = groupDistinctItems.some(
+      (add) => add.id === item.aditional_item_instance_id
+    )
+
+    // Si no está repetido, chequear si excedemos max_selected
+    if (!alreadySelected) {
+      if (grupo.max_selected !== 0 && groupDistinctItems.length >= grupo.max_selected) {
+        // revertir check
+        item.checked = false
+        toast.add({
+          severity: 'warn',
+          summary: 'Límite alcanzado',
+          detail: `Solo puedes seleccionar ${grupo.max_selected} variedades en la categoría "${grupo.category}".`,
+          life: 3000,
+        })
+        return
+      }
+    }
+
+    // Guardar en selectedAdditions
     selectedAdditions.value[item.aditional_item_instance_id] = {
       id: item.aditional_item_instance_id,
       name: item.aditional_item_name,
       price: item.aditional_item_price,
-      group,
+      group: grupo.category, // para que en el carrito aparezca bien
       quantity: 1,
     }
   } else {
+    // Quitarlo de selectedAdditions
     delete selectedAdditions.value[item.aditional_item_instance_id]
   }
 }
 
+/**
+ * Incrementar cantidad (misma variedad => no afecta max_selected)
+ */
 function increment(item) {
   if (item.checked && selectedAdditions.value[item.aditional_item_instance_id]) {
     selectedAdditions.value[item.aditional_item_instance_id].quantity++
   }
 }
 
+/**
+ * Decrementar cantidad sin bajar de 1
+ */
 function decrement(item) {
   const target = selectedAdditions.value[item.aditional_item_instance_id]
   if (target && target.quantity > 1) {
@@ -481,10 +484,10 @@ function decrement(item) {
 }
 
 /**
- * Agregar producto al carrito
+ * Agregar el producto al carrito
  */
 function addToCart(product) {
-  // Validar que todos los selects en cada grupo estén completos
+  // Verificar que en cada grupo de sabores se haya hecho la selección
   for (let gIndex = 0; gIndex < flavorGroups.value.length; gIndex++) {
     const groupArray = groupSelections.value[gIndex].flavors
     for (let sIndex = 0; sIndex < groupArray.length; sIndex++) {
@@ -500,14 +503,9 @@ function addToCart(product) {
     }
   }
 
-
   const additionsArray = Object.values(selectedAdditions.value)
 
-  // Simplemente enviamos groupSelections.value tal cual,
-  // pues ya tiene el formato que necesitamos: [{ invoice_name, flavors: [...] }, ...]
   store.addProductToCart(product, 1, groupSelections.value, additionsArray)
-
-  // Cerrar diálogo y notificar
   store.setVisible('currentProduct', false)
   toast.add({
     severity: 'success',
@@ -516,10 +514,6 @@ function addToCart(product) {
     life: 3000,
   })
 }
-
-/**
- * Formato pesos (ya tienes tu propia función importada)
- */
 </script>
 
 <style scoped>
