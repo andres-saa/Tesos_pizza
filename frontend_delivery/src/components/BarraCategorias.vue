@@ -8,7 +8,7 @@
 
         
 
-        <div v-for="section in categories" :key="section.id" class="p-1">
+        <div v-for="section in store.categories" :key="section.id" class="p-1">
             <button @click="navigateToCategory(section.category_name,section.category_id,section.products)"
                 :class="checkSelected(section) ? 'selected menu-button' : 'menu-button'"
                 class="p-1 text-lg titulo" style="font-weight: 400; text-transform: uppercase;min-width: max-content;">
@@ -53,23 +53,28 @@ const navigateToCategory = (categoryName,category_id,products = []) => {
 
 
 onMounted(async () => {
-    categories.value = await categoriesService.getCategories()
+    store.categories = await categoriesService.getCategories()
     
-    const { products } = categories.value.find(c => c.category_id == route.params.category_id)
-    store.currentProducts = products
-    console.log(products)
+    
+    if (route.params.category_id){
+        const { products } = store.categories.find(c => c.category_id == route.params.category_id)
+        store.currentProducts = products
+        console.log(products)
+    }
 
-    categories.value.push({
+
+    store.categories.push({
         category_name:'Adiciones',
         category_id:1000,
         products:[]
     })
 
-    categories.value.push({
+    store.categories.push({
         category_name:'Sabores',
         category_id:2000,
         products:[]
     })
+    
 }
    
 

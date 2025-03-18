@@ -40,8 +40,9 @@
 </div>
             <div style="display: flex;gap: 1rem;justify-content: end; align-items: center;">
 
-                <InputSwitch  @click="3"></InputSwitch>
+                <InputSwitch @change="update_group_available(grupo.group_id,grupo.available)" v-model="grupo.available"  @click="3"></InputSwitch>
 
+                <!-- {{ grupo.available }} -->
                 <Button @click="openFalvorGroupEdit(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;"
                     severity="warning" class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
                 <Button  @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
@@ -87,11 +88,11 @@
 
 
 
-            <Column style="width: 2rem;" class="p-0  py-1 pl-3 px-2" header="Interactuar">
+            <Column style="width: 2rem;" class="p-0  py-1 pl-3 px-3" header="Interactuar">
                 <template #body="adicion">
                     <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
 
-                        <InputSwitch  @click="3"></InputSwitch>
+                        <InputSwitch @change="update_flavor_available(adicion.data.flavor_id,adicion.data.available)"  v-model="adicion.data.available"  @click="3"></InputSwitch>
                         <Button @click="openFlavorEdit(adicion.data)"
                             style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning"
                             class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
@@ -437,22 +438,6 @@ const update = async () => {
 
 onMounted(async () => {
 
-    const categoires = await categoriesService.getCategories()
-    siteStore.categories = categoires
-
-
-    siteStore.categories.push({
-        category_name:'Adiciones',
-        category_id:1000,
-        products:[]
-    })
-
-    siteStore.categories.push({
-        category_name:'Sabores',
-        category_id:2000,
-        products:[]
-    })
-
     await update()
 });
 
@@ -504,6 +489,21 @@ watch(visibleDialogAddFlavorGroup, () => {
     new_flavor_group.value = {}
 
 })
+
+
+const update_group_available = async(group_id, status) => {
+     
+    await fetchService.put(`${URI}/update_flavor_group_available/${status}/${group_id}`)
+    update()
+}
+
+const update_flavor_available = async(group_id, status) => {
+     
+     await fetchService.put(`${URI}/update_flavor_available/${status}/${group_id}`)
+     update()
+ }
+
+
 
 
 </script>

@@ -7,10 +7,11 @@ import { orderService } from './service/orderService';
 import { URI } from './service/conection';
 import { useReportesStore } from './store/reportes';
 import { categoriesService } from '@/service/restaurant/categoriesService';
+import { useRoute } from 'vue-router';
 
 
 const reportes = useReportesStore()
-
+const route = useRoute()
 const sitestore = useSitesStore();
 const store = useOrderStore();
 
@@ -88,22 +89,25 @@ const actualiza = async() => {
 
 
     const categoires = await categoriesService.getCategories()
-    siteStore.categories = categoires
+    sitestore.categories = categoires
 
 
-    siteStore.categories.push({
+    sitestore.categories.push({
         category_name:'Adiciones',
         category_id:1000,
         products:[]
     })
 
-    siteStore.categories.push({
+    sitestore.categories.push({
         category_name:'Sabores',
         category_id:2000,
         products:[]
     })
-    const { products } = categoires.find(c => c.category_id == route.params.category_id)
-    siteStore.currentProducts = products
+    if (route.params.category_id) {
+      const { products } = categoires.find(c => c.category_id == route.params.category_id)
+      sitestore.currentProducts = products
+    }
+
     // console.log(products)
 ;
 
