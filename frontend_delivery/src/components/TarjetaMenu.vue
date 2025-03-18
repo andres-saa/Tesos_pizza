@@ -1,7 +1,7 @@
 <template>
     <!-- {{ store.currentProduct }} -->
 
-    <div :class="anim['true']" v-if="renderComponent" @mouseover=" () => house = true" @mouseleave="() => house = false" class="container shadow-2 col-12 shadow-2 p-3" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
+    <div :class="anim['true']" v-if="renderComponent" @mouseover=" () => house = true" @mouseleave="() => house = false" class="container shadow-2 col-12  p-0" style="border-radius: 0.5rem;background-color: white; height: 100%;position: relative;">
 
         <div style="display: flex; position: absolute; right: -1rem; top: -1rem; gap: 0.2rem;z-index: 9;">
             
@@ -51,7 +51,7 @@
         <div class="imagen3" style="overflow: hidden;">
 
             <img     :class="loaded? 'cargado': 'sin-cargar'" class=""
-                style="width: 100%;aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0.2rem;"
+                style="width: 100%;aspect-ratio: 1 / 1; background-color: rgb(255, 255, 255);object-fit: cover; border-radius: 0;"
                 :src="src" alt=""
                 >
 
@@ -62,7 +62,7 @@
 
         </div>
 
-        <div class="texto" style="">
+        <div class="texto p-3" style="">
             <div style="display: flex;gap: 1rem; height: 100%; flex-direction: column;justify-content: space-between;">
 
                 <div style="display: grid;grid-template-columns: auto auto; width: 100%; justify-content: space-between; align-items: center;">

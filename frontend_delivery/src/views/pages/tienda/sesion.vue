@@ -17,7 +17,7 @@
         
     </p>
 
-    <div v-if="!noProducts" class="grid p-1 pb-8" style="max-width: 900px;margin: auto;" >
+    <div v-if="!noProducts" class="grid p-1 pb-8" style="max-width: 1200px;margin: auto;" >
     
         <div v-for="(product, index) in siteStore.currentProducts" :key="product.id" class=" col-12 md:col-4 lg:col-3 sm:col-6">
             
@@ -105,6 +105,19 @@ const actualiza = async() => {
 setTimeout(async() => {
     const categoires = await categoriesService.getCategories()
     siteStore.categories = categoires
+
+
+    siteStore.categories.push({
+        category_name:'Adiciones',
+        category_id:1000,
+        products:[]
+    })
+
+    siteStore.categories.push({
+        category_name:'Sabores',
+        category_id:2000,
+        products:[]
+    })
     const { products } = categoires.find(c => c.category_id == route.params.category_id)
     siteStore.currentProducts = products
 }, 2000);

@@ -1,5 +1,5 @@
 <template>
-    <Dialog closeOnEscape v-model:visible="store.visibles.dialogEditProduct" modal style="width:max-content;min-width: 90vw;">
+    <Dialog closeOnEscape v-model:visible="store.visibles.dialogEditProduct" modal style="width:90w;min-width: 800px; max-width: 1200px;">
       <Button @click="store.visibles.dialogEditProduct = false" severity="danger"
         style="position: absolute; right: -1rem; top: -1rem; border-radius: 50%;" rounded icon="pi pi-times"></Button>
   
@@ -24,14 +24,51 @@
 
 <h6 class="m-0" style="min-width: max-content;"><b>Es un combo?</b></h6>
 <InputSwitch  v-model="store.currentProductToEdit.is_combo" ></InputSwitch>
+
+<h6 class="m-0" style="min-width: max-content;"><b>Programar disponibilidad?</b></h6>
+<InputSwitch  v-model="programar" ></InputSwitch>
+
+
+
 </div>
+
+
+
+
+
+
+<div>
+ 
+  <div v-if="programar" style="width: 100%;gap: 1rem;border: 2px dashed var(--primary-color);border-radius: .5rem;background-color: #ff000020; " class="p-3"> 
+
+    <div style="display: flex;"> <h6 class="m-0"> <b>Configura el horario de disponibilidad </b> </h6> <i class="pi ml-2 pi-clock text-2xl"></i> </div>
+    
+
+
+    <div style="display: flex;gap: 2rem;">
+      <div>
+    <h6 class="my-2"> <b>Inicio</b></h6>
+    <Calendar v-model="store.currentProductToEdit.start_date" timeOnly hourFormat="12"></Calendar>
+  </div>
+
+  <div> 
+    <h6 class="my-2"  ><b>Fin</b></h6>
+    <Calendar v-model="store.currentProductToEdit.end_date" timeOnly hourFormat="12"></Calendar>
+
+  </div>
+    </div>
+ 
+</div>
+
+</div>
+
+
+
             <div style="display: flex; width: 100%;gap: 1rem;">
                 <div style="display: flex;flex-direction: column; gap: 1rem; width: 100%;">
                     <h6 class="m-0"><b>Nombre:</b></h6>
                     <InputText v-model="store.currentProductToEdit.product_name" style="width: 100%;"></InputText>
                 </div>
-
-                
              
             </div>
 
@@ -111,9 +148,9 @@
                 <h6 class="mb-2"><b>Producto de Referencia</b></h6>
               <Dropdown class="" filter filterPlaceholder="Busca un producto" 
               v-model="selector.reference_id"
-              optionLabel="name" :options="all_products" optionValue="id" style="width: 100%;"></Dropdown>
+              optionLabel="name" :options="all_products.filter(p => !p.is_combo && p.visible && p.product_id !== store.currentProductToEdit.product_id )" optionValue="id" style="width: 100%;"></Dropdown>
 
-
+        
                  
 
             <h6 style="width: 100%;" class="mb-2"><b>Valor de este producto en el combo</b></h6>
@@ -178,14 +215,17 @@
   import { URI } from '@/service/conection';
   import { fetchService } from '../../service/utils/fetchService';
   import { useSitesStore } from '../../store/site';
+import { useRoute } from 'vue-router';
   
   const store = useProductStore();
-
+  const route = useRoute()
 
   const handleChangeSwitch = () => {
     alert(hola)
   }
 
+
+  const programar = ref(false)
 
   const emit = defineEmits(['actualizar'])
 
@@ -249,14 +289,19 @@
         maintainedSelectors.value = []
         newSelectors.value = []
         deletedSelectors.value = []
+        imagePreview.value = null
+
     }
+
 
 
 })
 
 
 
-
+watch(programar,() => {
+   store.currentProductToEdit.start_date = store.currentProductToEdit.end_date = null
+})
 
 
 

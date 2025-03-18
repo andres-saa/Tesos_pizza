@@ -44,7 +44,7 @@
 
     <div class="px-3" style="">
         <div class="p-2 mx-auto"
-            style=" max-width: 540px;overflow: hidden;background-color: var(--primary-color);border-bottom: 2px solid #00000050; border-radius: .5rem .5rem 0 0;  box-shadow:  0 1rem 1rem #00000030;overflow: hidden; gap: 1rem; padding:  0 3rem;margin: auto;display: flex;justify-content: space-between;align-items: center;">
+            style=" max-width: 600px;overflow: hidden;background-color: var(--primary-color);border-bottom: 2px solid #00000050; border-radius: .5rem .5rem 0 0;  box-shadow:  0 1rem 1rem #00000030;overflow: hidden; gap: 1rem; padding:  0 3rem;margin: auto;display: flex;justify-content: space-between;align-items: center;">
             <p class="text-center pl-3 text-xl p-0 m-0"
                 style="font-weight: bold;width:min-content;color: white; gap: 1rem; align-items: center;">
                 ADICIONES
@@ -68,23 +68,24 @@
 
 
 
-        <div class="m-auto col-12 m-0 p-0" style="max-width: 540px;box-shadow:  0 1rem 1rem #00000030; overflow: hidden;border-bottom: 2px solid #00000050;"  v-for="(items) in adicionales" :key="grupo">
-        <div class="my-1 px-2" style="display: flex;justify-content: space-between;align-items: center;gap: 1rem;">
+        <div  class="m-auto col-12 m-0 p-0 selector" style="max-width: 600px;box-shadow:  0 1rem 1rem #00000030; overflow: hidden;border-bottom: 2px solid #00000050;"  v-for="(items) in adicionales" :key="grupo">
+        <div class="my-1 px-2" :class="updateanime? 'update' : ''" style="display: flex;justify-content: space-between;align-items: center;gap: 1rem;">
 
-            <Button @click="visible_groups[items.type_id] = !visible_groups[items.type_id]" text  style="color: var(--primary-color)"> <b> 
-                
-                
+       
+            <div class="py-3 pl-2"   style="width: 100%;height:100%;display: flex;align-items: center;" @click="visible_groups[items.type_id] = !visible_groups[items.type_id]" >
 
-                <i v-if="visible_groups[items.type_id]" class="pi pi-angle-up text-2xl"></i> 
-                <i v-else class="pi pi-angle-down text-2xl"></i> 
-            
-            
-            </b>  </Button>
 
-            <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;">{{ items?.name }}</h6>
+                <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;">
+                    {{ items?.name  }}</h6>
 
-            <b><i class="pi pi-arrow-left"> </i></b>
-            <div style="display: flex;gap: .5rem;justify-content: end;">
+                </div>
+
+            <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;"></h6>
+
+          
+
+            <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
+                <InputSwitch  @click="3"></InputSwitch>
                 <Button @click="openAdditionGroupEdit(items)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning" class="p-1 m-0"
                     rounded icon=" pi pi-pencil"></Button>
                     <Button 
@@ -122,7 +123,11 @@
             </Column>
             <Column style="width: 2rem;" class="p-0  py-1 pl-3 px-2" header="Interactuar">
                 <template #body="adicion">
-                    <div style="display: flex;gap: .5rem;justify-content: end;">
+                    <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
+
+
+                        <InputSwitch  ></InputSwitch>
+
                         <Button @click="openAditionEdit(adicion.data)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning"
                             class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
                             <Button 
@@ -471,7 +476,10 @@ const update = async() => {
 }
 
 
+const updateanime = ref(false)
+
 onMounted(async () => {
+    updateanime.value = true
     await update()
 });
 
@@ -532,5 +540,34 @@ watch(visibleDialogEditAditionGroup, () => {
 <style scoped>
 * {
     text-transform: uppercase;
+}
+
+
+.selector:hover{
+    background-color: rgba(0, 198, 56, 0.19);
+    cursor: pointer;
+  
+}
+
+
+.update{
+    /* background-color: red; */
+    animation: animate .5s ease;
+}
+
+
+@keyframes animate {
+
+    0%{
+        transform: translateX(2rem);
+        background-color: rgba(0, 198, 56, 0.19);
+        opacity: 0  ;
+    }
+    100%{
+        transform: translateX(0);
+    }
+    
+
+    
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="px-3" style="">
         <div class="p-2 mx-auto"
-            style=" max-width: 540px;overflow: hidden;background-color: var(--primary-color);border-bottom: 2px solid #00000050; border-radius: .5rem .5rem 0 0;  box-shadow:  0 1rem 1rem #00000030;overflow: hidden; gap: 1rem; padding:  0 3rem;margin: auto;display: flex;justify-content: space-between;align-items: center;">
+            style=" max-width: 600px;overflow: hidden;background-color: var(--primary-color);border-bottom: 2px solid #00000050; border-radius: .5rem .5rem 0 0;  box-shadow:  0 1rem 1rem #00000030;overflow: hidden; gap: 1rem; padding:  0 3rem;margin: auto;display: flex;justify-content: space-between;align-items: center;">
             <p class="text-center pl-3 text-xl p-0 m-0"
                 style="font-weight: bold;width:min-content;color: white; gap: 1rem; align-items: center;">
                 SABORES
@@ -24,29 +24,27 @@
     </div>
 
 
-    <div class="m-auto col-12 m-0 p-0" style="max-width: 540px;box-shadow:  0 1rem 1rem #00000030; border-bottom: 2px solid #00000050; overflow: hidden;" v-for="grupo in flavors">
-        <div class="my-1 px-2" style="display: flex;justify-content: space-between;align-items: center;gap: 1rem;">
+    <div class="mx-auto  m-0 p-0 selector" style="max-width: 600px;box-shadow:  0 1rem 1rem #00000030; border-bottom: 2px solid #00000050; overflow: hidden;" v-for="grupo in flavors">
 
-            <Button @click="visible_groups[grupo.group_id] = !visible_groups[grupo.group_id]" text  style="color: var(--primary-color)"> <b> 
-                
-                
+        
+        <div   class="my-0 py-0 px-3" :class="updateanime? 'update' : ''" style="display: flex;justify-content: space-between;align-items: center;gap: 1rem;">
 
-                <i v-if="visible_groups[grupo.group_id]" class="pi pi-angle-up text-2xl"></i> 
-                <i v-else class="pi pi-angle-down text-2xl"></i> 
-            
-            
-            </b>  </Button>
+<div class="py-3 pl-2"  style="width: 100%;height:100%;display: flex;align-items: center;" @click="visible_groups[grupo.group_id] = !visible_groups[grupo.group_id]">
 
 
-            <Tag style="width: 1rem;height: 1rem; border-radius:50%;" severity="success" v-if="grupo.gaseosa"></Tag>
+
+
             <h6 class="text-center text-xl m-0" style="font-weight: bold;text-transform: capitalize;">{{
                 grupo.group_name }}</h6>
 
-            <b><i class="pi pi-arrow-left"> </i></b>
-            <div style="display: flex;gap: .5rem;justify-content: end;">
+</div>
+            <div style="display: flex;gap: 1rem;justify-content: end; align-items: center;">
+
+                <InputSwitch  @click="3"></InputSwitch>
+
                 <Button @click="openFalvorGroupEdit(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;"
                     severity="warning" class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
-                <Button v-if="!grupo.gaseosa" @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
+                <Button  @click="openGroupDeleteDialog(grupo)" style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="danger" class="p-1" rounded
                     icon=" pi pi-trash"></Button>
             </div>
 
@@ -56,7 +54,7 @@
 
 
         <DataTable v-if="visible_groups[grupo.group_id]" showGridlines stripedRows :value="grupo?.flavors">
-            <Column style="text-transform: capitalize;" class="p-0 px-2" field="aditional_item_name" header="NOMBRE">
+            <Column style="text-transform: capitalize;" class="p-0 m-00 px-2" field="aditional_item_name" header="NOMBRE">
 
                 <template #body="adicion">
 
@@ -67,10 +65,10 @@
             </Column>
 
 
-            <Column class="p px-2 " field="aditional_item_price" header="PRECIO"
+            <Column class="  px-2 " field="aditional_item_price" header="PRECIO"
                 style="text-transform: capitalize;display: flex;justify-content: center;">
                 <template #body="adicion">
-                    <h6 class="m-0" style="font-weight: bold;text-align: end;" v-if="adicion.data.flavor_price != 0">
+                    <h6 class="m-0" style="font-weight: bold;text-align: end;" >
                         {{ formatoPesosColombianos(adicion.data.flavor_price) }}
                     </h6>
                 </template>
@@ -91,7 +89,9 @@
 
             <Column style="width: 2rem;" class="p-0  py-1 pl-3 px-2" header="Interactuar">
                 <template #body="adicion">
-                    <div style="display: flex;gap: .5rem;justify-content: end;">
+                    <div style="display: flex;gap: 1rem;justify-content: end;align-items: center;">
+
+                        <InputSwitch  @click="3"></InputSwitch>
                         <Button @click="openFlavorEdit(adicion.data)"
                             style="width: 2.5rem;height: 2.5rem;border-radius: .3rem;" severity="warning"
                             class="p-1 m-0" rounded icon=" pi pi-pencil"></Button>
@@ -261,7 +261,7 @@ import { useSitesStore } from '../../../store/site';
 import { nextTick } from 'vue';
 import { fetchService } from '@/service/utils/fetchService.js'
 import { URI } from '../../../service/conection';
-
+import { categoriesService } from '../../../service/restaurant/categoriesService';
 const siteStore = useSitesStore()
 const route = useRoute()
 
@@ -313,6 +313,7 @@ const deleteFlavorGroup = async () => {
 };
 
 
+const updateanime = ref(false)
 
 const types_flavor = ref({})
 
@@ -428,11 +429,30 @@ await fetchService.post(`${URI}/edit-flavor/${falvor_to_edit.value.flavor_id}`, 
 
 const update = async () => {
     flavors.value = await fetchService.get(`${URI}/get-flavor-grouped`);
+    updateanime.value = true
     types_flavor.value = await fetchService.get(`${URI}/get-aditional-category`)
+    
 }
 
 
 onMounted(async () => {
+
+    const categoires = await categoriesService.getCategories()
+    siteStore.categories = categoires
+
+
+    siteStore.categories.push({
+        category_name:'Adiciones',
+        category_id:1000,
+        products:[]
+    })
+
+    siteStore.categories.push({
+        category_name:'Sabores',
+        category_id:2000,
+        products:[]
+    })
+
     await update()
 });
 
@@ -492,5 +512,33 @@ watch(visibleDialogAddFlavorGroup, () => {
 <style scoped>
 * {
     text-transform: uppercase;
+}
+
+.selector:hover{
+    background-color: rgba(0, 198, 56, 0.19);
+    cursor: pointer;
+  
+}
+
+
+.update{
+    /* background-color: red; */
+    animation: animate .5s ease;
+}
+
+
+@keyframes animate {
+
+    0%{
+        transform: translateX(2rem);
+        background-color: rgba(0, 198, 56, 0.19);
+        opacity: 0  ;
+    }
+    100%{
+        transform: translateX(0);
+    }
+    
+
+    
 }
 </style>
