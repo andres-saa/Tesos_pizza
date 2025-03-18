@@ -159,6 +159,7 @@ class Site:
         # Deberías ajustar esta función según tu diseño de base de datos y necesidades.
         select_query = f"update sites set open = {status} where site_id = 31;"
         self.cursor.execute(select_query)
+        self.conn.commit()
         
 
 
