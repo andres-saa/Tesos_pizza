@@ -74,6 +74,62 @@ class Aditions:
         
         return result
     
+    def update_flavor_group_available(self,status:bool,group_id:int):
+        query_1 = "UPDATE inventory.flavor_group SET available = %s where id = %s returning id"
+        query_2 = "UPDATE inventory.sabor set available = %s where id in (SELECT flavor_id from inventory.flavor_group_flavor where flavor_group_id = %s)"
+        
+        result1 = self.db.execute_query(query_1,[status,group_id],fetch=True)
+        result2 = self.db.execute_query(query_2,[status,group_id])
+
+        return result1
+    
+        
+    def update_flavor_available(self, status: bool, flavor_id: int):
+        # 1) Actualiza el sabor
+        query_1 = """
+            UPDATE inventory.sabor
+            SET available = %s
+            WHERE id = %s
+            RETURNING id
+        """
+        result1 = self.db.execute_query(query_1, [status, flavor_id], fetch=True)
+
+        # 2) Si desactivamos el sabor -> desactivamos el/los grupo(s) asociado(s)
+        if not status:
+            query_2 = """
+                UPDATE inventory.flavor_group
+                SET available = false
+                WHERE id IN (
+                    SELECT flavor_group_id
+                    FROM inventory.flavor_group_flavor
+                    WHERE flavor_id = %s
+                )
+            """
+            self.db.execute_query(query_2, [flavor_id])
+        else:
+            # 3) Si activamos el sabor -> verificamos si el grupo puede reactivarse
+            #    Esto se logra revisando si *todos* los sabores del grupo están activos
+            query_3 = """
+                UPDATE inventory.flavor_group fg
+                SET available = true
+                WHERE fg.id IN (
+                    SELECT flavor_group_id
+                    FROM inventory.flavor_group_flavor
+                    WHERE flavor_id = %s
+                )
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM inventory.flavor_group_flavor fff
+                    JOIN inventory.sabor s ON fff.flavor_id = s.id
+                    WHERE fff.flavor_group_id = fg.id
+                    AND s.available = false
+                )
+            """
+            self.db.execute_query(query_3, [flavor_id])
+
+        return result1
+
+    
     
     
     def create_flavor(self,data,id):
@@ -155,7 +211,7 @@ class Aditions:
         JOIN inventory.flavor_group_flavor fgf ON fg.id = fgf.flavor_group_id
         JOIN inventory.sabor s ON s.id = fgf.flavor_id
         LEFT JOIN inventory.sabor_product sp ON s.id = sp.sabor_id AND sp.product_id = %s
-        WHERE fg.exist = TRUE AND s.exist = TRUE
+        WHERE fg.exist = TRUE AND s.exist = TRUE AND s.available = true
         ORDER BY s.premium DESC;
         """
         params = (product_id,)

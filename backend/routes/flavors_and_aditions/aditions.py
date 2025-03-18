@@ -117,6 +117,33 @@ def create_adition_category(data:flavor_group_schema):
 
 
 
+
+@adition_router.put('/update_flavor_group_available/{status}/{group_id}',tags=['flavors and aditions'])
+def update_flavor_group_available(status:bool, group_id:int):
+    
+    aditional_instance = Aditions()
+    result = aditional_instance.update_flavor_group_available(status,group_id)
+    return result
+
+
+@adition_router.put('/update_flavor_group_available/{status}/{group_id}',tags=['flavors and aditions'])
+def update_flavor_group_available(status:bool, group_id:int):
+    
+    aditional_instance = Aditions()
+    result = aditional_instance.update_flavor_group_available(status,group_id)
+    return result
+
+
+
+@adition_router.put('/update_flavor_available/{status}/{id}',tags=['flavors and aditions'])
+def update_flavor_group_available(status:bool, id:int):
+    aditional_instance = Aditions()
+    result = aditional_instance.update_flavor_available(status,id)
+    return result
+
+
+
+
 @adition_router.post('/edit-flavor-grouped',tags=['flavors and aditions'])
 def create_adition_category(data:flavor_group_schema_edit):
     aditional_instance = Aditions()
