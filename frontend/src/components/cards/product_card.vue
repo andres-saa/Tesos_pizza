@@ -13,6 +13,12 @@
                     </span>
                   
         </div>
+
+
+
+
+
+
         <div class="container p-0 ">
             
         <div class="imagen" style="display: flex;align-items: center; " >
@@ -29,11 +35,18 @@
              
 
                 <div class="name-pc">
-                    <p class="pt-0" style="">
+                    <p class="pt-0 pb-0" style="">
                         <b style="text-transform: uppercase;">
                             {{ props.product.product_name }}
                         </b>
+                        
                     </p>
+
+                    <div style="display: flex; justify-content: end; width: 100%;"> 
+
+                        <Tag s v-if="props.product.end" severity="danger" style="border-radius: 0;background-color: var(--primary-color);color: white;" ><i class="pi pi-bolt"></i> Finaliza a las {{ props.product.end }}</Tag>
+
+                    </div>
                     <!-- <Button text style="color: black;" icon="pi pi-ellipsis-v p-0 text-xl" /> -->
                     <!-- <img class="character" style="width:4rem;" :src="`/images/characters/${props.index}.png`" alt=""> -->
                 </div>
@@ -90,6 +103,7 @@
 
 import { formatoPesosColombianos } from '@/service/utils/formatoPesos';
 import { computed, ref, onMounted } from 'vue';
+
 import { usecartStore } from '@/stores/shoping_cart';
 import router from '@/router/index.js'
 import { useRoute } from 'vue-router'

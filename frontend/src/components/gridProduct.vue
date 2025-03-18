@@ -6,7 +6,7 @@
 
     <div class="container4 " style="margin-top: 3rem;">
 
-        <product_card v-for="(category) in products" :key="category.id" class="card" :product="category" />
+        <product_card v-for="(category) in sitestore.currentCategorie?.products" :key="category.id" class="card" :product="category" />
 
     </div>
 </template>
@@ -19,12 +19,14 @@ import { URI } from '@/service/conection';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { usecartStore } from '@/stores/shoping_cart';
+import { useSitesStore } from '@/stores/site';
 
 const store = usecartStore()
 const route = useRoute()
 const products = ref([])
 const show_sizes = ref(false)
 const selected_size = ref({ id: 7 })
+const sitestore = useSitesStore()
 
 const router = useRouter();
 const categories = ref([]);
@@ -42,7 +44,7 @@ const update = async () => {
 
 
    
-    products.value = store.currentCategorie.products
+
     const category_id = route.params.category_id
     if (!products.value) {
         products.value = await fetchService.get(`${URI}/products-active/category-id/${category_id}/site/31/5`)

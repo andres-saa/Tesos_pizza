@@ -39,18 +39,25 @@ onMounted(async() => {
   // Ejecutamos inicialmente la función
   obtenerstatus()
 
-  cartStore.categories = await fetchService.get(`${URI}/categories/31/5`)
+  store.categories = await fetchService.get(`${URI}/categories/31/5`)
+
 
   if (route.params?.category_id) {
-    cartStore.currentCategorie = cartStore.categories.filter(c => c.category_id == route.params.category_id)
-
+    store.currentCategorie = store.categories.find(c => c.category_id == route.params.category_id)
   }
+
   cartStore.versionMenu++
-  // alert(cartStore.versionMenu)
-  // Repetimos cada 5 segundos
-  intervalId = setInterval(() => {
+
+
+  intervalId = setInterval(async() => {
     obtenerstatus()
-  }, 60000)
+    store.categories = await fetchService.get(`${URI}/categories/31/5`)
+
+    if (route.params?.category_id) {
+      store.currentCategorie = store.categories.find(c => c.category_id == route.params.category_id)
+      
+    }
+  }, 30000)
 })
 
 onBeforeUnmount(() => {

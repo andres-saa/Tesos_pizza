@@ -21,20 +21,27 @@ import { useRoute, useRouter } from 'vue-router';
 import { fetchService } from '@/service/utils/fetchService';
 import { URI } from '@/service/conection';
 import { usecartStore } from '@/stores/shoping_cart';
+import { useSitesStore } from '@/stores/site';
 
-const store = usecartStore()
+const store = useSitesStore()
 const route = useRoute();
 const router = useRouter();
 const categories = ref([]);
 
 onMounted(async () => {
     store.categories = await fetchService.get(`${URI}/categories/31/5`);
+    if (route.params?.category_id) {
+      store.currentCategorie = store.categories.find(c => c.category_id == route.params.category_id)
+      
+    }
+
 });
 
 const navigate_to_category = (categorie) => {
     router.push(`/categoria/${categorie.category_name}/${categorie.category_id}`);
     store.currentCategorie = categorie
 
+  
 };
 </script>
 
