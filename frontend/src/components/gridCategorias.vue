@@ -24,11 +24,6 @@ const categories = ref([])
 
 
 
-
-
-onMounted(async () => {
-    store.categories = await fetchService.get(`${URI}/categories/31/5`)
-})
 </script>
 
 <style scoped>
