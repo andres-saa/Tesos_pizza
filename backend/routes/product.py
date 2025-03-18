@@ -117,7 +117,9 @@ def update_product_and_instances(product_instance_id: int, product: ProductSchem
             "parent_id": product.parent_id,
             "img_identifier": product.img_identifier,
             "max_flavor": product.max_flavor,
-            "is_combo": product.is_combo
+            "is_combo": product.is_combo,
+            "start_date":product.start_date,
+            "end_date":product.end_date
         }
         
         # Llama al método de actualización que maneja el producto, sus instancias, adicionales y sabores

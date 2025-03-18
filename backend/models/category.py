@@ -102,6 +102,41 @@ class Category:
         
     
     
+    def select_all_categories_all_all(self, site_id, restaurant_id):
+        # Consulta que devuelve cada categoría activa, añadiéndole
+        # el campo products con la lista de productos en formato JSON.
+        select_query = f"""
+            SELECT
+                c.*,
+                COALESCE(
+                    (
+                        SELECT json_agg(row_to_json(pi))
+                        FROM (
+                            SELECT *
+                            FROM inventory.complete_product_instances2
+                            WHERE site_id = c.site_id
+                            AND restaurant_id = c.restaurant_id
+                            AND category_id = c.category_id
+                            ORDER BY price
+                        ) AS pi
+                    ),
+                    '[]'
+                ) AS products
+            FROM inventory.active_product_categories AS c
+            WHERE c.site_id = {site_id}
+            AND c.restaurant_id = {restaurant_id}
+            ORDER BY c.index;
+        """
+
+        self.cursor.execute(select_query)
+        columns = [desc[0] for desc in self.cursor.description]
+        rows = self.cursor.fetchall()
+
+        # Convertimos cada fila en un diccionario {columna: valor}
+        return [dict(zip(columns, row)) for row in rows]
+
+        
+    
     
     
     

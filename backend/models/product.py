@@ -260,7 +260,7 @@ class Product:
 
             update_product_query = """
             UPDATE inventory.products
-            SET name = %s, description = %s, img_identifier = %s, max_flavor = %s, is_combo = %s
+            SET name = %s, description = %s, img_identifier = %s, max_flavor = %s, is_combo = %s, start_date = %s, end_date = %s
             WHERE id = %s;
             """
             self.cursor.execute(update_product_query, (
@@ -268,8 +268,10 @@ class Product:
                 product_info['description'],
                 product_info['img_identifier'],
                 product_info['max_flavor'],
-                product_info['is_combo'],  # Asumiendo que max_flavor se pasa en product_info
-                product_info['product_id']
+                product_info['is_combo'],
+                product_info['start_date'],
+                product_info['end_date'],
+                product_info['product_id'],
             ))
 
             # Recupera todos los site_id disponibles

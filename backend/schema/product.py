@@ -19,7 +19,9 @@ class ProductSchemaPost(BaseModel):
     gramos: Optional[int] = None
     size_id: Optional[int] = 7
     max_flavor:int
-    is_combo:Optional[bool]=False
+    is_combo:Optional[bool]=False,
+    start_date:Optional[str] = None,
+    end_date:Optional[str] = None
     
 
 
