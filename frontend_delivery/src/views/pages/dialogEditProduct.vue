@@ -49,6 +49,8 @@
       <div>
     <h6 class="my-2"> <b>Inicio</b></h6>
     <Calendar v-model="store.currentProductToEdit.start_date" timeOnly hourFormat="12"></Calendar>
+
+    
   </div>
 
   <div> 
@@ -298,10 +300,25 @@ import { useRoute } from 'vue-router';
 
 })
 
+const get_date = (date) => {
+
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+
+  const formattedTime = `${hours}:${minutes}`;
+
+  return formattedTime
+}
 
 
-watch(programar,() => {
-   store.currentProductToEdit.start_date = store.currentProductToEdit.end_date = null
+
+watch(programar,(status) => {
+
+
+ if(status && !store.currentProductToEdit.start_date || !store.currentProductToEdit.end_date) {
+    store.currentProductToEdit.start_date = store.currentProductToEdit.end_date = new Date()
+ }
+
 })
 
 
@@ -426,6 +443,11 @@ watch(programar,() => {
         return
     }
 
+    if (store.currentProductToEdit.start_date && store.currentProductToEdit.end_date){
+      programar.value = true
+    } else {
+      programar.value = false
+    }
     currentAditions.value = await adicionalesService.getAditional(store.currentProductToEdit.id);
     adicionales.value = await adicionalesService.getAllAditionsRegistered();
     updateAdicionalesStatus();
@@ -469,6 +491,24 @@ watch(programar,() => {
     new: newSelectors.value
   };
 
+
+  let start_date =  null
+  let end_date = null
+
+   if (programar.value) {
+
+    if( !store.currentProductToEdit.start_date || !store.currentProductToEdit.end_date) {
+      
+      alert('Si vas a programar este producto debes proporcionar el tiempo de disponibilidad')
+      return
+    }
+
+    start_date = get_date(store.currentProductToEdit.start_date)
+    end_date = get_date(store.currentProductToEdit.end_date)
+   }
+
+   
+
   const product = {
     product_id: store.currentProductToEdit.id,
     name: store.currentProductToEdit.product_name,
@@ -480,7 +520,9 @@ watch(programar,() => {
     img_identifier: img.value || store.currentProductToEdit.img_identifier,
     parent_id: store.currentProductToEdit.product_id,
     max_flavor: store.currentProductToEdit.max_flavor,
-    is_combo: store.currentProductToEdit.is_combo
+    is_combo: store.currentProductToEdit.is_combo,
+    start_date,
+    end_date
   };
 
   if (store.currentProductToEdit.is_combo) {
