@@ -6,6 +6,7 @@ import { useSitesStore } from './store/site';
 import { orderService } from './service/orderService';
 import { URI } from './service/conection';
 import { useReportesStore } from './store/reportes';
+import { categoriesService } from '@/service/restaurant/categoriesService';
 
 
 const reportes = useReportesStore()
@@ -41,6 +42,7 @@ const stopNotificationSound = () => {
 onMounted(() => {
     // requestNotificationPermission();
 
+    actualiza()
     const fetchOrdersAndNotify = async () => {
         try {
             const site_id = sitestore.site.site_id;
@@ -79,6 +81,34 @@ const acept = () => {
     notif.value = false
     sonido.play()
 }
+
+
+const actualiza = async() => {
+// const { proxy } = getCurrentInstance()
+
+
+    const categoires = await categoriesService.getCategories()
+    siteStore.categories = categoires
+
+
+    siteStore.categories.push({
+        category_name:'Adiciones',
+        category_id:1000,
+        products:[]
+    })
+
+    siteStore.categories.push({
+        category_name:'Sabores',
+        category_id:2000,
+        products:[]
+    })
+    const { products } = categoires.find(c => c.category_id == route.params.category_id)
+    siteStore.currentProducts = products
+    // console.log(products)
+;
+
+}
+
 </script>
 
 <template>

@@ -1,11 +1,11 @@
 import axios from "axios";
 import { URI } from "../conection";
 import { useSitesStore } from "../../store/site";
-const store = useSitesStore()
 export const categoriesService = {
     
     async getCategories() {
-      
+        const store = useSitesStore()
+
         const site_id = 31
         const restaurant_id = store.restaurant
         if(site_id){
@@ -27,7 +27,8 @@ export const categoriesService = {
     },
 
     async getCategoriesByRestaurantId(restaurant_id) {
-      
+        const store = useSitesStore()
+
         const site_id = 1
         if(site_id){
             try {

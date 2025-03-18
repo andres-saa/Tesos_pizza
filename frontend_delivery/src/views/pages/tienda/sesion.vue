@@ -49,6 +49,7 @@ import dialogEditProduct from '../dialogEditProduct.vue'
 import dialogAddProduct from '../dialogAddProduct.vue'
 import dialogDeleteProduct from '../dialogDeleteProduct.vue'
 import { useSitesStore } from '@/store/site'
+
 import dialogGestorCategorias from '../dialogGestorCategorias.vue'
 // import { nextTick } from 'vue'
 import { categoriesService } from '../../../service/restaurant/categoriesService'
@@ -120,6 +121,7 @@ setTimeout(async() => {
     })
     const { products } = categoires.find(c => c.category_id == route.params.category_id)
     siteStore.currentProducts = products
+    console.log(products)
 }, 2000);
 
 

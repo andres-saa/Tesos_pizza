@@ -211,6 +211,7 @@
   import { useProductStore } from '@/store/productStore';
   import { adicionalesService } from '@/service/restaurant/aditionalService';
   import { formatoPesosColombianos } from '@/service/formatoPesos';
+  
   import { productService } from '@/service/ProductService';
   import { URI } from '@/service/conection';
   import { fetchService } from '../../service/utils/fetchService';
@@ -421,6 +422,7 @@ watch(programar,() => {
 
     if (!newval){
         cargado.value = false
+        img.value = null
         return
     }
 

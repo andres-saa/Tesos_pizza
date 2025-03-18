@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed,onUnmounted, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { URI } from '../service/conection';
 import { PrimeIcons } from 'primevue/api';
-
+import { categoriesService } from '../service/restaurant/categoriesService';
 import { ableMenu } from '../service/menuOptions';
 import router from '@/router/index.js'
 import { buscarSedePorId } from '../service/sedes'
@@ -13,6 +13,7 @@ import { useSitesStore } from '../store/site';
 const siteStore = useSitesStore()
 const ruta = ref(router.currentRoute)
 
+const route = useRoute()
 const { layoutConfig, onMenuToggle } = useLayout();
 const screenWidth = ref(window.innerWidth);
 const outsideClickListener = ref(null);
@@ -25,11 +26,13 @@ const products = ref([])
 
 const categories = ref([{}])
 
+const sitestore = useSitesStore()
 
 
 
+const currentCategory = ref({
 
-
+})
 
 
 
@@ -126,6 +129,55 @@ window.addEventListener('storage', (e) => {
 
 
 
+const actualiza = async() => {
+// const { proxy } = getCurrentInstance()
+
+
+    const categoires = await categoriesService.getCategories()
+    siteStore.categories = categoires
+
+
+    siteStore.categories.push({
+        category_name:'Adiciones',
+        category_id:1000,
+        products:[]
+    })
+
+    siteStore.categories.push({
+        category_name:'Sabores',
+        category_id:2000,
+        products:[]
+    })
+    const { products } = categoires[0]?.products
+    currentCategory.value = categoires[0]
+    menus.value = [
+    { name: 'Atender', to: '/' },
+    // { name: ' Pedido manual', to: '/pedido-manual' },
+    // { name: 'Historial de pedidos', to: '/historial' },
+    { name: ' Validar direcciones', to: '/validar' },
+    { name: ' Cuadre de caja', to: '/cuadre' },
+ 
+    { name: ' Menu', to: `/tienda-menu/productos/${currentCategory.value.category_name}/${currentCategory.value.category_id}` },
+    { name: ' Horarios', to: '/horarios' },
+    { name: ' Admin', to: '/tienda-menu/productos/PROMOCIONES/31' },
+    // { name: ' Reportes', to: '/reporte-ventas/valor-ventas' }
+
+]
+    console.log(currentCategory.value, 34)
+;
+
+}
+
+
+const current_categorie = ref({})
+
+onMounted(async() => {
+    await actualiza()
+    // siteStore.currentCategory = siteStore.categories[0]
+    console.log(siteStore.categories)
+
+})
+
 
 
 
@@ -161,19 +213,9 @@ const changeCurrentGroupMenu = (grupoMenu) => {
 
 
 }
-const menus = [
-    { name: 'Atender', to: '/' },
-    // { name: ' Pedido manual', to: '/pedido-manual' },
-    // { name: 'Historial de pedidos', to: '/historial' },
-    { name: ' Validar direcciones', to: '/validar' },
-    { name: ' Cuadre de caja', to: '/cuadre' },
- 
-    { name: ' Menu', to: '/tienda-menu/productos/PIZZA/25' },
-    { name: ' Horarios', to: '/horarios' },
-    { name: ' Admin', to: '/tienda-menu/productos/PROMOCIONES/31' },
-    // { name: ' Reportes', to: '/reporte-ventas/valor-ventas' }
 
-]
+
+const menus = ref() 
 
 
 const menusAdmin = [
